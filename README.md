@@ -1,1 +1,2 @@
 # rate_judge
+test
