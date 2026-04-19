@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# Rate Judge 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**ジャグリング競技のための、直感的なリアルタイム採点システム**
 
-Currently, two official plugins are available:
+Rate Judgeは、審査員が演技の細部まで集中できるよう、シンプルかつ強力な操作性を提供するブラウザベースの採点ツールです。複雑な集計作業を自動化し、採点結果を即座に視覚化します。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🌟 主な特長
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. スムーズなスコア入力
+スプレッドシート形式のインターフェースにより、全選手のスコアを一覧しながら素早く入力できます。
+- **双方向入力モード**: 「満点に対する割合(%)」と「直接の得点(pt)」をいつでも切り替えて入力可能。
+- **入力バリデーション**: 設定された採点単位（0.1pt刻みなど）に合わせた入力をアシストします。
 
-## Expanding the ESLint configuration
+### 2. 柔軟なCSVインポート/エクスポート
+外部ツールや表計算ソフトとの連携を強力にサポートします。
+- **データの一括登録**: 選手リストや審査項目をCSVからインポートし、大会の準備を素早く完了。
+- **結果の確実な保存**: 採点結果（得点・コメント合計）をCSV形式で瞬時にエクスポートし、最終集計や報告に活用。
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 3. 多角的な分析（ダッシュボード）
+統計データやグラフにより、大会全体の傾向や選手ごとの特性を視覚化します。
+- **統計サマリー**: 平均、中央値、最大・最小値、分散を自動計算。
+- **視覚化チャート**: スコア分布（積み上げ棒グラフ）や、項目別バランス（レーダーチャート）を表示。
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 4. 安心のオフライン・プライバシー対応
+- **完全ローカル動作**: データはブラウザ内（LocalStorage）にのみ保存され、外部サーバーに送信されることはありません。
+- **オフライン利用可能**: インターネット環境が不安定な会場でも安心してご利用いただけます。
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📖 クイック・ガイド（審査員・運営者向け）
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 準備（設定画面）
+1. 「設定」タブで**大会名**と**部門名**を入力します。
+2. **審査項目**（項目名と満点）を定義します。
+3. **選手リスト**を登録します（CSVからのインポートも可能です）。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 採点（採点画面）
+1. 「採点」タブを開き、各選手のセルに数値を入力します。
+2. 画面上部のトグルで **[数値(pt) / 割合(%)]** を好みの入力形式に切り替えます。
+3. 講評を残したい場合は、詳細アイコンをクリックしてコメントを入力します。
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 記録（データ出力）
+1. 採点が完了したら、画面内の「CSV出力」ボタンをクリックして結果を保存します。
+2. 大会データを別のPCに移行したい場合は、設定画面から「設定の出力」を行い、移行先でインポートしてください。
+
+---
+
+## ⚠️ ご利用にあたっての注意
+
+- 本ツールはブラウザのデータを消去（キャッシュクリア等）すると、保存されているデータも削除されます。**大切なデータはこまめにCSVエクスポート**してバックアップを取るようにしてください。
+
+---
+
+© 2026 Rate Judge Project
