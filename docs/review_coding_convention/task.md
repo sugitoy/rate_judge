@@ -1,0 +1,8 @@
+- [x] コーディング規約の修正
+    - [x] 命名規則の追加 (hook, utils)
+    - [x] 状態管理 (Zustand分割) の追加
+    - [x] デザインシステム (z-index) の追加
+    - [x] コメント指針 (JSDoc) の追加
+    - [x] a11y, エラーハンドリングの追加
+- [x] プロジェクトドキュメントの同期 (`docs/review_coding_convention/`)
+- [x] 完了報告 (Walkthrough)
