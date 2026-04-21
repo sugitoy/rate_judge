@@ -1,4 +1,4 @@
-// src/hooks/useDashboardData.ts
+// src/hooks/useAnalysisData.ts
 import { useMemo, useState, useEffect } from 'react';
 import type { TournamentConfig, PlayerScore } from '../types';
 
@@ -19,7 +19,7 @@ function getVariance(arr: number[], mean: number) {
   return arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / arr.length;
 }
 
-export const useDashboardData = (
+export const useAnalysisData = (
   activeT: TournamentConfig | null | undefined,
   currentScores: Record<string, PlayerScore>
 ) => {

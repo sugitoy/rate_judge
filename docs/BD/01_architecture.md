@@ -13,7 +13,7 @@
 - **Language**: TypeScript
 - **Build Tool**: Vite
 - **State Management**: Zustand
-- **Styling**: Vanilla CSS
+- **Styling**: Tailwind CSS
 - **Icons**: Lucide React
 - **Data Parsing**: PapaParse (CSV)
 - **Visualization**: Recharts

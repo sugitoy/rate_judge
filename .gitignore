@@ -23,5 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# AI
-docs/juggling_judge_tool/*
+# AI documents
+docs/*
+!docs/RD/
+!docs/BD/

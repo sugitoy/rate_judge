@@ -1,6 +1,6 @@
 // src/components/features/scoring/ScoringTab.tsx
 import React, { useState } from 'react';
-import { Download, Upload, Trophy, Medal, FileText } from 'lucide-react';
+import { Download, Upload, FileText } from 'lucide-react';
 import { MESSAGES } from '../../../constants/messages';
 import { useTournamentStore } from '../../../store/useTournamentStore';
 import { useScoringStore } from '../../../store/useScoringStore';
@@ -54,13 +54,90 @@ export const ScoringTab = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 pb-20">
+    <div className="flex flex-col lg:flex-row gap-8 animate-in pb-12">
+      {/* A) メインコンテンツ（採点テーブル） */}
+      <div className="flex-1 min-w-0 order-2 lg:order-1">
+        <div className="card-table scroll-x-auto shadow-md border-slate-200">
+          <table className="min-w-full border-collapse" style={{ minWidth: '1000px' }}>
+            <thead className="bg-slate-50">
+              <tr className="border-b-2 border-slate-200">
+                <th className="p-4 w-12 text-center font-bold text-slate-400 sticky left-0 z-20 bg-slate-50 border-r border-slate-200">{MESSAGES.CONFIG_PLAYER_TH_NO}</th>
+                <th className="p-4 text-left font-bold text-slate-700 sticky left-12 z-20 bg-slate-50 shadow-[1px_0_0_#e2e8f0] whitespace-nowrap min-w-[200px] border-r border-slate-200">{MESSAGES.SCORING_TH_PLAYER}</th>
 
-      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-        <div>
-          <h2 className="text-xl font-bold">{MESSAGES.SCORING_TITLE}</h2>
-          <div className="flex items-center gap-3 mt-2 pr-4 pl-0 py-1">
-            <span className="text-sm font-medium text-gray-500">{MESSAGES.SCORING_TOGGLE_MODE}:</span>
+                {activeT.criteria.map(c => (
+                  <th key={c.id} className="p-4 text-center border-r border-slate-100 min-w-[130px]">
+                    <div className="font-bold text-slate-800 leading-tight">{c.name}</div>
+                    <div className="text-[11px] text-slate-400 font-normal mt-1 border-t border-slate-100 pt-1">MAX {c.maxScore}pt</div>
+                  </th>
+                ))}
+                <th className="p-4 text-center border-l-2 border-slate-200 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_TOTAL}</th>
+                <th className="p-4 text-center bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_RANK}</th>
+                <th className="p-4 text-center border-l-2 border-slate-200 bg-slate-50 text-slate-500 font-bold">{MESSAGES.SCORING_TABLE_DETAIL_BTN}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 bg-white">
+              {tableData.map((row) => (
+                <tr key={row.player.id} className="hover:bg-slate-50/80 transition-colors group">
+                  <td className="p-4 text-center font-bold text-slate-400 sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-200">{row.entryNo}</td>
+                  <td className="p-4 sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[1px_0_0_#e2e8f0] border-r border-slate-200 align-middle">
+                    <div className="font-bold text-slate-900 tabular-nums">{row.player.name}</div>
+                  </td>
+
+                  {activeT.criteria.map(c => (
+                    <td key={c.id} className="p-2 border-r border-slate-100 align-middle bg-white group-hover:bg-slate-50/30">
+                      <ScoreCell
+                        criterion={c}
+                        inputUnit={activeT.inputUnit}
+                        mode={inputMode}
+                        value={row.scores[c.id]?.absoluteScore}
+                        onChange={(val) => updateScore(activeT.id, row.player.id, c.id, val)}
+                      />
+                    </td>
+                  ))}
+
+                  <td className="p-4 text-center border-l flex-none align-middle bg-primary-light/10">
+                    <div className="font-bold text-2xl text-primary tabular-nums tracking-tight">
+                      {row.total}<span className="text-xs text-primary/60 font-semibold ml-0.5 uppercase">pt</span>
+                    </div>
+                  </td>
+                  <td className="p-4 text-center align-middle bg-primary-light/10 border-l border-primary/5">
+                    {(() => {
+                      const r = row.rank;
+                      if (r === 1) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-300 rounded-full font-bold text-yellow-700 shadow-sm text-sm">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                      if (r === 2) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-300 rounded-full font-bold text-slate-600 shadow-sm text-sm">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                      if (r === 3) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full font-bold text-orange-700 shadow-sm text-sm">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                      return <div className="inline-block px-3 py-1 bg-white border border-slate-200 rounded-full font-bold text-slate-500 shadow-sm text-sm">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                    })()}
+                  </td>
+                  <td className="p-4 text-center border-l-2 border-slate-200 align-middle bg-slate-50/20">
+                    <button
+                      onClick={() => setCommentModalData({ playerId: row.player.id })}
+                      className={`w-10 h-10 rounded-xl transition-all flex items-center justify-center mx-auto border outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 ${
+                        row.comment
+                          ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white shadow-sm'
+                          : 'bg-white text-slate-400 border-slate-200 hover:text-primary hover:border-primary hover:bg-slate-50'
+                      }`}
+                      title="詳細・コメント"
+                    >
+                      <FileText size={20} strokeWidth={2} className={row.comment ? 'fill-current opacity-30' : ''} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* B) サイドコンテンツ（コントロール） */}
+      <aside className="w-full lg:w-80 shrink-0 order-1 lg:order-2">
+        <div className="lg:sticky lg:top-24 flex flex-col gap-6 p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
+          <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3 mb-2 flex items-center gap-2">
+            採点コントロール
+          </h3>
+          
+          <div className="space-y-3">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.SCORING_TOGGLE_MODE}</span>
             <ToggleSwitch
               options={[
                 { value: 'percentage', label: MESSAGES.SCORING_TOGGLE_PCT },
@@ -70,92 +147,24 @@ export const ScoringTab = () => {
               onChange={(val) => setInputMode(val as 'percentage' | 'points')}
             />
           </div>
+
+          <div className="pt-4 border-t border-slate-100 space-y-3">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">データ入出力</span>
+            <div className="grid grid-cols-1 gap-2">
+              <label className="btn btn-outline btn-action w-full flex items-center justify-center gap-2 cursor-pointer py-3">
+                <Download size={18} /> {MESSAGES.CSV_IMPORT_SCORES}
+                <input type="file" accept=".csv" onChange={handleImportCSV} className="hidden" />
+              </label>
+              <button 
+                onClick={handleExportCSV} 
+                className="btn btn-outline btn-action w-full flex items-center justify-center gap-2 py-3"
+              >
+                <Upload size={18} /> {MESSAGES.CSV_EXPORT_SCORES}
+              </button>
+            </div>
+          </div>
         </div>
-
-        <div className="flex gap-2">
-          <label className="btn btn-outline flex items-center gap-1 cursor-pointer mb-0">
-            <Upload size={16} /> {MESSAGES.CSV_IMPORT_SCORES}
-            <input type="file" accept=".csv" onChange={handleImportCSV} style={{ display: 'none' }} />
-          </label>
-          <button onClick={handleExportCSV} className="btn btn-primary flex items-center gap-1">
-            <Download size={16} /> {MESSAGES.CSV_EXPORT_SCORES}
-          </button>
-        </div>
-      </div>
-
-      <div className="card w-full overflow-x-auto shadow-sm">
-        <table className="min-w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-100 border-b-2 border-gray-300">
-              <th className="p-3 w-10 text-center font-bold text-gray-400 sticky left-0 z-10 bg-gray-100 border-r">{MESSAGES.CONFIG_PLAYER_TH_NO}</th>
-              <th className="p-3 text-left font-bold text-gray-600 sticky left-10 z-10 bg-gray-100 shadow-[1px_0_0_#e5e7eb] whitespace-nowrap min-w-[200px]">{MESSAGES.SCORING_TH_PLAYER}</th>
-
-              {activeT.criteria.map(c => (
-                <th key={c.id} className="p-3 text-center border-l border-gray-200 min-w-[140px]">
-                  <div className="font-bold text-gray-800">{c.name}</div>
-                  <div className="text-[11px] text-gray-500 font-normal">満点: {c.maxScore} (単位: {activeT.inputUnit})</div>
-                </th>
-              ))}
-              <th className="p-3 text-center border-l bg-blue-50 text-blue-900 border-blue-200">{MESSAGES.SCORING_TABLE_HEAD_TOTAL}</th>
-              <th className="p-3 text-center bg-blue-50 text-blue-900">{MESSAGES.SCORING_TABLE_HEAD_RANK}</th>
-              <th className="p-3 text-center border-l border-gray-200">{MESSAGES.SCORING_TABLE_DETAIL_BTN}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((row) => (
-              <tr key={row.player.id} className="border-b border-gray-200 hover:bg-yellow-50 relative group">
-                <td className="p-3 text-center font-bold text-gray-400 sticky left-0 z-10 bg-white group-hover:bg-yellow-50 border-r">{row.entryNo}</td>
-                <td className="p-3 sticky left-10 z-10 bg-white group-hover:bg-yellow-50 shadow-[1px_0_0_#e5e7eb] align-middle">
-                  <div className="font-bold text-gray-800 tabular-nums">{row.player.name}</div>
-                  {(row.player.affiliation || row.player.props) && (
-                    <div className="text-[10px] text-gray-400 opacity-70 mt-0.5 truncate max-w-[180px]">
-                      {row.player.affiliation} / {row.player.props}
-                    </div>
-                  )}
-                </td>
-
-                {activeT.criteria.map(c => (
-                  <td key={c.id} className="p-2 border-l border-gray-100 align-middle relative">
-                    <ScoreCell
-                      criterion={c}
-                      inputUnit={activeT.inputUnit}
-                      mode={inputMode}
-                      value={row.scores[c.id]?.absoluteScore}
-                      onChange={(val) => updateScore(activeT.id, row.player.id, c.id, val)}
-                    />
-                  </td>
-                ))}
-
-                <td className="p-3 text-center border-l align-middle bg-blue-50/30">
-                  <div className="font-bold text-xl text-blue-700 tabular-nums">{row.total}<span className="text-sm text-blue-500 font-normal ml-1">pt</span></div>
-                </td>
-                <td className="p-3 text-center align-middle bg-blue-50/30">
-                  {(() => {
-                    const r = row.rank;
-                    if (r === 1) return <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-50 border border-yellow-400 rounded-full font-bold text-yellow-700 shadow-sm text-sm"><Trophy size={16} className="text-yellow-500" /> {r}{MESSAGES.DASHBOARD_RANK_SUFFIX}</div>;
-                    if (r === 2) return <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 border border-slate-300 rounded-full font-bold text-slate-700 shadow-sm text-sm"><Medal size={16} className="text-slate-500" /> {r}{MESSAGES.DASHBOARD_RANK_SUFFIX}</div>;
-                    if (r === 3) return <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-50 border border-orange-300 rounded-full font-bold text-orange-800 shadow-sm text-sm"><Medal size={16} className="text-orange-500" /> {r}{MESSAGES.DASHBOARD_RANK_SUFFIX}</div>;
-                    return <div className="inline-block px-3 py-1 bg-white border border-blue-200 rounded-full font-bold text-gray-600 shadow-sm text-sm">{r}{MESSAGES.DASHBOARD_RANK_SUFFIX}</div>;
-                  })()}
-                </td>
-                <td className="p-3 text-center border-l align-middle">
-                  <button
-                    onClick={() => setCommentModalData({ playerId: row.player.id })}
-                    className={`p-2 rounded-lg transition-all flex items-center justify-center mx-auto border outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-1 ${
-                      row.comment
-                        ? 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 hover:border-blue-300 shadow-sm'
-                        : 'bg-white text-gray-400 border-gray-200 hover:text-blue-600 hover:bg-gray-50 hover:border-gray-300'
-                    }`}
-                    title="詳細・コメント"
-                  >
-                    <FileText size={18} strokeWidth={2} className={row.comment ? 'fill-blue-100' : ''} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      </aside>
 
       {commentModalData && (() => {
         const rowData = tableData.find(d => d.player.id === commentModalData.playerId);

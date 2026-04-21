@@ -6,6 +6,7 @@ import type { TournamentConfig } from '../../../types';
 import { useTournamentStore } from '../../../store/useTournamentStore';
 import { useScoringStore } from '../../../store/useScoringStore';
 import { parseConfigCSV, parsePlayersCSV } from '../../../utils/csvImport';
+import { exportConfigToCSV, exportPlayersToCSV } from '../../../utils/csvExport';
 import { BasicConfig } from './BasicConfig';
 import { PlayerList } from './PlayerList';
 
@@ -111,59 +112,103 @@ export const ConfigurationTab = ({ triggerCreateNew }: { triggerCreateNew?: numb
     }
   };
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', margin: '0 auto', paddingBottom: '5rem', paddingLeft: '0.5rem', paddingRight: '0.5rem' }}>
-      {!activeT && !isCreatingNew && (
-        <div className="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-md mb-2 flex items-center justify-between">
-          <span>{MESSAGES.CONFIG_EMPTY_LIST}</span>
-        </div>
-      )}
-      
-      {isCreatingNew && (
-        <div style={{ background: 'var(--color-warning-bg)', border: '1px solid var(--color-warning)', color: '#92400e', padding: '0.75rem', borderRadius: 'var(--radius-md)', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.875rem' }}>
-          {MESSAGES.CONFIG_EDITING_NEW}
-        </div>
-      )}
+  const handleExportConfig = () => {
+    if (!localT.name) {
+      alert(MESSAGES.CONFIG_NO_NAME_ALERT);
+      return;
+    }
+    exportConfigToCSV(localT);
+  };
 
-      {/* Main Content Area */}
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '1.5rem', alignItems: 'flex-start' }}>
+  const handleExportPlayers = () => {
+    if (!localT.name) {
+      alert(MESSAGES.CONFIG_NO_NAME_ALERT);
+      return;
+    }
+    exportPlayersToCSV(localT.name, localT.players);
+  };
+
+  return (
+    <div className="flex flex-col lg:flex-row gap-8 animate-in tabular-nums pb-12">
+      {/* メインコンテンツ領域 (A, B) */}
+      <div className="flex-1 flex flex-col gap-8 min-w-0">
+        {!activeT && !isCreatingNew && (
+          <div className="bg-primary-light text-primary border border-primary/20 p-4 rounded-xl flex items-center justify-between shadow-sm">
+            <span className="font-medium">{MESSAGES.CONFIG_EMPTY_LIST}</span>
+          </div>
+        )}
+        
+        {isCreatingNew && (
+          <div className="bg-warning-bg text-warning border border-warning/20 p-4 rounded-xl font-bold text-sm shadow-sm flex items-center gap-2">
+            <span className="bg-warning text-white rounded-full w-5 h-5 flex items-center justify-center shrink-0">!</span>
+            {MESSAGES.CONFIG_EDITING_NEW}
+          </div>
+        )}
+
+        {/* A) 大会基本情報・審査項目 */}
         <BasicConfig 
           localT={localT} 
           setLocalT={setLocalT} 
           handleConfigCSV={handleConfigCSV} 
+          handleExportConfig={handleExportConfig}
           downloadConfigSample={downloadConfigSample} 
         />
+
+        {/* B) 選手管理 */}
         <PlayerList 
           localT={localT} 
           setLocalT={setLocalT} 
           handlePlayersCSV={handlePlayersCSV} 
+          handleExportPlayers={handleExportPlayers}
           downloadPlayerSample={downloadPlayerSample} 
         />
       </div>
 
-      {/* Footer controls */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#fff', borderTop: '1px solid var(--color-border)', padding: '1rem', boxShadow: 'var(--shadow-lg)', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', zIndex: 40 }}>
-        <button onClick={handleSaveInfo} className="btn btn-primary" style={{ padding: '0.625rem 3rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Save size={18} /> {MESSAGES.CONFIG_SAVE_BTN}
-        </button>
-        
-        {isCreatingNew && Object.keys(tournaments).length > 0 && (
-          <button className="btn btn-outline" style={{ padding: '0.625rem 1.5rem' }} onClick={() => {
-            const keys = Object.keys(tournaments);
-            if (keys.length > 0) {
-              setIsCreatingNew(false);
-              setActiveTournament(keys[0]);
-              setLocalT(tournaments[keys[0]]);
-            }
-          }}>{MESSAGES.CANCEL}</button>
-        )}
-
-        {!isCreatingNew && activeT && (
-          <button onClick={handleDeleteTournament} className="btn btn-outline" style={{ color: 'var(--color-danger)', padding: '0.625rem 1rem', marginLeft: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem', borderColor: 'var(--color-border)' }}>
-            <Trash2 size={16} /> {MESSAGES.CONFIG_DELETE_BTN}
+      {/* C) サイドコンテンツ（操作・アクション） */}
+      <aside className="w-full lg:w-80 shrink-0">
+        <div className="lg:sticky lg:top-24 flex flex-col gap-4 p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
+          <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3 mb-2 flex items-center gap-2">
+            アクション
+          </h3>
+          
+          <button 
+            onClick={handleSaveInfo} 
+            className="btn btn-primary w-full py-3 text-base shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
+          >
+            <Save size={20} /> {MESSAGES.CONFIG_SAVE_BTN}
           </button>
-        )}
-      </div>
+          
+          {isCreatingNew && Object.keys(tournaments).length > 0 && (
+            <button 
+              className="btn btn-outline border-slate-200 text-slate-500 w-full py-3" 
+              onClick={() => {
+                const keys = Object.keys(tournaments);
+                if (keys.length > 0) {
+                  setIsCreatingNew(false);
+                  setActiveTournament(keys[0]);
+                  setLocalT(tournaments[keys[0]]);
+                }
+              }}
+            >
+              {MESSAGES.CANCEL}
+            </button>
+          )}
+
+          {!isCreatingNew && activeT && (
+            <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-2">
+              <button 
+                onClick={handleDeleteTournament} 
+                className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
+              >
+                <Trash2 size={18} /> {MESSAGES.CONFIG_DELETE_BTN}
+              </button>
+              <p className="text-[10px] text-slate-400 text-center px-2">
+                ※大会を削除すると、関連する全選手の採点データも完全に消去されます。
+              </p>
+            </div>
+          )}
+        </div>
+      </aside>
     </div>
   );
 };

@@ -77,41 +77,47 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
   const isInvalid = !isValidUnit(absStr, inputUnit);
 
   return (
-    <div className="flex flex-col gap-1 w-full justify-center items-center h-full">
+    <div className="flex flex-col gap-1 w-full justify-center items-center h-full group/cell relative">
       {mode === 'percentage' && (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <div className="relative">
             <input
               type="text"
               inputMode="decimal"
-              className="form-input p-1 text-right text-sm w-16 tabular-nums"
+              className="form-input py-1 px-2 text-right text-sm w-20 tabular-nums border-slate-200 focus:border-primary focus:ring-primary/20 block"
               value={pctStr}
               onChange={handlePctChange}
               onBlur={handlePctBlur}
               placeholder="%"
             />
           </div>
-          <span className="text-gray-400 text-xs w-3">%</span>
+          <span className="text-slate-400 text-[10px] font-bold w-4 select-none">%</span>
         </div>
       )}
 
       {mode === 'points' && (
-        <div className="flex items-center gap-1">
-          <div className="relative">
+        <div className="flex flex-col items-center gap-0.5">
+          <div className="flex items-center gap-1.5">
             <input
               type="text"
               inputMode="decimal"
-              className={`form-input p-1 text-right text-sm w-16 font-bold text-blue-700 tabular-nums ${isInvalid ? 'border-red-500 bg-red-50' : ''}`}
+              className={`form-input py-1 px-2 text-right text-sm w-20 font-bold border-slate-200 tabular-nums transition-all focus:ring-primary/20 ${
+                isInvalid 
+                  ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20' 
+                  : 'text-primary focus:border-primary'
+              }`}
               value={absStr}
               onChange={handleAbsChange}
               placeholder="pt"
             />
+            <span className="text-slate-400 text-[10px] font-bold w-4 select-none uppercase tracking-tighter">pt</span>
           </div>
-          <span className="text-gray-400 text-xs w-3">pt</span>
+          {isInvalid && (
+            <span className="text-[9px] text-danger font-bold uppercase tracking-tight animate-in fade-in slide-in-from-top-1 duration-150">
+              {MESSAGES.SCORING_ERR_UNIT}
+            </span>
+          )}
         </div>
-      )}
-      {mode === 'points' && isInvalid && (
-        <span className="text-[10px] text-red-500 absolute -bottom-4 whitespace-nowrap">{MESSAGES.SCORING_ERR_UNIT}</span>
       )}
     </div>
   );
