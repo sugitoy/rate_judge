@@ -8,6 +8,7 @@ import { AnalysisStats } from './AnalysisStats';
 import { AnalysisFilter } from './AnalysisFilter';
 import { AnalysisOverallDistChart, AnalysisCritDistCharts } from './AnalysisDistCharts';
 import { AnalysisRadarChart } from './AnalysisRadarChart';
+import { SidePanel } from '../../ui/SidePanel';
 
 export const AnalysisTab = () => {
   const { tournaments, activeTournamentId } = useTournamentStore();
@@ -78,17 +79,15 @@ export const AnalysisTab = () => {
       </div>
 
       {/* E) サイドコンテンツ（フィルタ） */}
-      <aside className="w-full lg:w-80 shrink-0 order-1 lg:order-2">
-        <div className="lg:sticky lg:top-24">
-          <AnalysisFilter 
-            playersInfo={playersInfo}
-            selectedPlayers={selectedPlayers}
-            togglePlayer={togglePlayer}
-            selectAll={selectAll}
-            deselectAll={deselectAll}
-          />
-        </div>
-      </aside>
+      <SidePanel title="表示対象フィルタ" className="order-1 lg:order-2">
+        <AnalysisFilter 
+          playersInfo={playersInfo}
+          selectedPlayers={selectedPlayers}
+          togglePlayer={togglePlayer}
+          selectAll={selectAll}
+          deselectAll={deselectAll}
+        />
+      </SidePanel>
     </div>
   );
 };

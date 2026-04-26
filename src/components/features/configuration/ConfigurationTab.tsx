@@ -9,6 +9,7 @@ import { parseConfigCSV, parsePlayersCSV } from '../../../utils/csvImport';
 import { exportConfigToCSV, exportPlayersToCSV } from '../../../utils/csvExport';
 import { BasicConfig } from './BasicConfig';
 import { PlayerList } from './PlayerList';
+import { SidePanel } from '../../ui/SidePanel';
 
 const createEmptyTournament = (): TournamentConfig => ({
   id: Date.now().toString(),
@@ -165,12 +166,8 @@ export const ConfigurationTab = ({ triggerCreateNew }: { triggerCreateNew?: numb
       </div>
 
       {/* C) サイドコンテンツ（操作・アクション） */}
-      <aside className="w-full lg:w-80 shrink-0">
-        <div className="lg:sticky lg:top-24 flex flex-col gap-4 p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-          <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3 mb-2 flex items-center gap-2">
-            アクション
-          </h3>
-          
+      <SidePanel title="アクション">
+        <div className="flex flex-col gap-4">
           <button 
             onClick={handleSaveInfo} 
             className="btn btn-primary w-full py-3 text-base shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
@@ -208,7 +205,7 @@ export const ConfigurationTab = ({ triggerCreateNew }: { triggerCreateNew?: numb
             </div>
           )}
         </div>
-      </aside>
+      </SidePanel>
     </div>
   );
 };

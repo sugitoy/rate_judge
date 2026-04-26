@@ -10,6 +10,7 @@ import { parseScoresCSV } from '../../../utils/csvImport';
 import { ScoreCell } from './ScoreCell';
 import { DetailModal } from './DetailModal';
 import { ToggleSwitch } from '../../ui/ToggleSwitch';
+import { SidePanel } from '../../ui/SidePanel';
 
 export const ScoringTab = () => {
   const { tournaments, activeTournamentId } = useTournamentStore();
@@ -130,12 +131,8 @@ export const ScoringTab = () => {
       </div>
 
       {/* B) サイドコンテンツ（コントロール） */}
-      <aside className="w-full lg:w-80 shrink-0 order-1 lg:order-2">
-        <div className="lg:sticky lg:top-24 flex flex-col gap-6 p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-          <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3 mb-2 flex items-center gap-2">
-            採点コントロール
-          </h3>
-          
+      <SidePanel title="採点コントロール" className="order-1 lg:order-2">
+        <div className="flex flex-col gap-6">
           <div className="space-y-3">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.SCORING_TOGGLE_MODE}</span>
             <ToggleSwitch
@@ -164,7 +161,7 @@ export const ScoringTab = () => {
             </div>
           </div>
         </div>
-      </aside>
+      </SidePanel>
 
       {commentModalData && (() => {
         const rowData = tableData.find(d => d.player.id === commentModalData.playerId);
