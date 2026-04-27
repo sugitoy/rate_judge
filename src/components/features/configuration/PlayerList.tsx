@@ -66,50 +66,50 @@ export const PlayerList: React.FC<PlayerListProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
             <tr>
-              <th className="py-4 w-14 text-center uppercase tracking-tighter text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_NO}</th>
-              <th className="py-3 text-left font-bold uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_NAME}</th>
-              <th className="py-3 text-left font-bold uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_AFFIL}</th>
-              <th className="py-3 text-left font-bold uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_PROP}</th>
-              <th className="py-3 w-16 text-center uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_ACTION}</th>
+              <th className="py-2 w-14 text-center uppercase tracking-tighter text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_NO}</th>
+              <th className="py-2 text-left font-bold uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_NAME}</th>
+              <th className="py-2 text-left font-bold uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_AFFIL}</th>
+              <th className="py-2 text-left font-bold uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_PROP}</th>
+              <th className="py-2 w-16 text-center uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_ACTION}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 bg-white">
             {localT.players.map((p, i) => (
               <tr key={p.id} className="hover:bg-slate-50 transition-colors group/row">
-                <td className="text-center font-bold text-slate-400 py-2 border-r border-slate-50">{i + 1}</td>
-                <td className="py-2 pr-4 pl-2">
+                <td className="text-center font-bold text-slate-400 py-1 border-r border-slate-50">{i + 1}</td>
+                <td className="py-1 pr-2 pl-2">
                   <input 
                     type="text" 
-                    className="form-input py-2 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all" 
+                    className="form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all" 
                     value={p.name} 
                     onChange={e => updatePlayer(p.id, 'name', e.target.value)} 
                     placeholder={MESSAGES.CONFIG_PLAYER_TH_NAME}
                   />
                 </td>
-                <td className="py-2 pr-4">
+                <td className="py-1 pr-2">
                   <input 
                     type="text" 
-                    className="form-input py-2 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all" 
+                    className="form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all" 
                     value={p.affiliation || ''} 
                     onChange={e => updatePlayer(p.id, 'affiliation', e.target.value)} 
                     placeholder={MESSAGES.CONFIG_PLAYER_TH_AFFIL}
                   />
                 </td>
-                <td className="py-2 pr-4">
+                <td className="py-1 pr-2">
                   <input 
                     type="text" 
-                    className="form-input py-2 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all" 
+                    className="form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all" 
                     value={p.props || ''} 
                     onChange={e => updatePlayer(p.id, 'props', e.target.value)} 
                     placeholder={MESSAGES.CONFIG_PLAYER_TH_PROP}
                   />
                 </td>
-                <td className="text-center py-2">
+                <td className="text-center py-1">
                   <button 
                     onClick={() => removePlayer(p.id)} 
-                    className="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-danger hover:bg-danger-bg rounded-lg transition-all opacity-0 group-hover/row:opacity-100"
+                    className="w-8 h-8 flex items-center justify-center mx-auto text-slate-300 hover:text-danger hover:bg-danger-bg rounded-lg transition-all opacity-0 group-hover/row:opacity-100"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} />
                   </button>
                 </td>
               </tr>

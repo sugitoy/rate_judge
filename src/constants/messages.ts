@@ -1,10 +1,10 @@
 // アプリケーション内のすべての静的メッセージ・ラベルを管理するファイル
 
 export const MESSAGES = {
-  APP_TITLE: 'ジャグリング審査データシステム',
+  APP_TITLE: 'RateJudge',
 
   // Common
-  NO_DATA: '表示するデータがありません。大会設定が行われているか確認してください。',
+  NO_DATA: '大会情報がありません。表示する大会を設定してください。',
   ADD: '追加',
   DELETE: '削除',
   CANCEL: 'キャンセル',
@@ -45,7 +45,7 @@ export const MESSAGES = {
   CONFIG_EDITING_NEW: '「新しい大会」を編集中です。保存すると追加されます。',
   CONFIG_NO_NAME_ALERT: '大会名を入力してください。',
   CONFIG_NAME_LABEL: '大会名',
-  CONFIG_NAME_PH: '例: ジャグリング全国大会 2026',
+  CONFIG_NAME_PH: '例: ジャグリング大会 2026',
   CONFIG_DIV_LABEL: '部門',
   CONFIG_DIV_PH: '例: 男子個人部門',
   CONFIG_UNIT_1: '1刻み (整数)',

@@ -84,7 +84,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
             <input
               type="text"
               inputMode="decimal"
-              className="form-input py-1 px-2 text-right text-sm w-20 tabular-nums border-slate-200 focus:border-primary focus:ring-primary/20 block"
+              className="form-input py-0.5 px-2 text-right text-sm w-20 tabular-nums border-slate-200 focus:border-primary focus:ring-primary/20 block"
               value={pctStr}
               onChange={handlePctChange}
               onBlur={handlePctBlur}
@@ -101,7 +101,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
             <input
               type="text"
               inputMode="decimal"
-              className={`form-input py-1 px-2 text-right text-sm w-20 font-bold border-slate-200 tabular-nums transition-all focus:ring-primary/20 ${
+              className={`form-input py-0.5 px-2 text-right text-sm w-20 font-bold border-slate-200 tabular-nums transition-all focus:ring-primary/20 ${
                 isInvalid 
                   ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20' 
                   : 'text-primary focus:border-primary'

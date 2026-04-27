@@ -62,30 +62,30 @@ export const ScoringTab = () => {
           <table className="min-w-full border-collapse" style={{ minWidth: '1000px' }}>
             <thead className="bg-slate-50">
               <tr className="border-b-2 border-slate-200">
-                <th className="p-4 w-12 text-center font-bold text-slate-400 sticky left-0 z-20 bg-slate-50 border-r border-slate-200">{MESSAGES.CONFIG_PLAYER_TH_NO}</th>
-                <th className="p-4 text-left font-bold text-slate-700 sticky left-12 z-20 bg-slate-50 shadow-[1px_0_0_#e2e8f0] whitespace-nowrap min-w-[200px] border-r border-slate-200">{MESSAGES.SCORING_TH_PLAYER}</th>
+                <th className="px-3 py-2 w-12 text-center font-bold text-slate-400 sticky left-0 z-20 bg-slate-50 border-r border-slate-200">{MESSAGES.CONFIG_PLAYER_TH_NO}</th>
+                <th className="px-3 py-2 text-left font-bold text-slate-700 sticky left-12 z-20 bg-slate-50 shadow-[1px_0_0_#e2e8f0] whitespace-nowrap min-w-[200px] border-r border-slate-200">{MESSAGES.SCORING_TH_PLAYER}</th>
 
                 {activeT.criteria.map(c => (
-                  <th key={c.id} className="p-4 text-center border-r border-slate-100 min-w-[130px]">
+                  <th key={c.id} className="px-2 py-2 text-center border-r border-slate-100 min-w-[130px]">
                     <div className="font-bold text-slate-800 leading-tight">{c.name}</div>
-                    <div className="text-[11px] text-slate-400 font-normal mt-1 border-t border-slate-100 pt-1">MAX {c.maxScore}pt</div>
+                    <div className="text-[11px] text-slate-400 font-normal mt-0.5 border-t border-slate-100 pt-0.5">MAX {c.maxScore}pt</div>
                   </th>
                 ))}
-                <th className="p-4 text-center border-l-2 border-slate-200 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_TOTAL}</th>
-                <th className="p-4 text-center bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_RANK}</th>
-                <th className="p-4 text-center border-l-2 border-slate-200 bg-slate-50 text-slate-500 font-bold">{MESSAGES.SCORING_TABLE_DETAIL_BTN}</th>
+                <th className="px-3 py-2 text-center border-l-2 border-slate-200 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_TOTAL}</th>
+                <th className="px-3 py-2 text-center bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_RANK}</th>
+                <th className="px-3 py-2 text-center border-l-2 border-slate-200 bg-slate-50 text-slate-500 font-bold">{MESSAGES.SCORING_TABLE_DETAIL_BTN}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
               {tableData.map((row) => (
                 <tr key={row.player.id} className="hover:bg-slate-50/80 transition-colors group">
-                  <td className="p-4 text-center font-bold text-slate-400 sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-200">{row.entryNo}</td>
-                  <td className="p-4 sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[1px_0_0_#e2e8f0] border-r border-slate-200 align-middle">
+                  <td className="px-3 py-1.5 text-center font-bold text-slate-400 sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-200">{row.entryNo}</td>
+                  <td className="px-3 py-1.5 sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[1px_0_0_#e2e8f0] border-r border-slate-200 align-middle">
                     <div className="font-bold text-slate-900 tabular-nums">{row.player.name}</div>
                   </td>
 
                   {activeT.criteria.map(c => (
-                    <td key={c.id} className="p-2 border-r border-slate-100 align-middle bg-white group-hover:bg-slate-50/30">
+                    <td key={c.id} className="px-2 py-1 border-r border-slate-100 align-middle bg-white group-hover:bg-slate-50/30">
                       <ScoreCell
                         criterion={c}
                         inputUnit={activeT.inputUnit}
@@ -96,24 +96,24 @@ export const ScoringTab = () => {
                     </td>
                   ))}
 
-                  <td className="p-4 text-center border-l flex-none align-middle bg-primary-light/10">
-                    <div className="font-bold text-2xl text-primary tabular-nums tracking-tight">
-                      {row.total}<span className="text-xs text-primary/60 font-semibold ml-0.5 uppercase">pt</span>
+                  <td className="px-3 py-1.5 text-center border-l flex-none align-middle bg-primary-light/10">
+                    <div className="font-bold text-xl leading-none text-primary tabular-nums tracking-tight">
+                      {row.total}<span className="text-[10px] text-primary/60 font-semibold ml-0.5 uppercase">pt</span>
                     </div>
                   </td>
-                  <td className="p-4 text-center align-middle bg-primary-light/10 border-l border-primary/5">
+                  <td className="px-3 py-1.5 text-center align-middle bg-primary-light/10 border-l border-primary/5">
                     {(() => {
                       const r = row.rank;
-                      if (r === 1) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-300 rounded-full font-bold text-yellow-700 shadow-sm text-sm">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                      if (r === 2) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-300 rounded-full font-bold text-slate-600 shadow-sm text-sm">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                      if (r === 3) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full font-bold text-orange-700 shadow-sm text-sm">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                      return <div className="inline-block px-3 py-1 bg-white border border-slate-200 rounded-full font-bold text-slate-500 shadow-sm text-sm">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                      if (r === 1) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-300 rounded-full font-bold text-yellow-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                      if (r === 2) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-300 rounded-full font-bold text-slate-600 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                      if (r === 3) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full font-bold text-orange-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                      return <div className="inline-block px-3 py-1 bg-white border border-slate-200 rounded-full font-bold text-slate-500 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
                     })()}
                   </td>
-                  <td className="p-4 text-center border-l-2 border-slate-200 align-middle bg-slate-50/20">
+                  <td className="px-3 py-1.5 text-center border-l-2 border-slate-200 align-middle bg-slate-50/20">
                     <button
                       onClick={() => setCommentModalData({ playerId: row.player.id })}
-                      className={`w-10 h-10 rounded-xl transition-all flex items-center justify-center mx-auto border outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 ${
+                      className={`w-8 h-8 rounded-xl transition-all flex items-center justify-center mx-auto border outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 ${
                         row.comment
                           ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white shadow-sm'
                           : 'bg-white text-slate-400 border-slate-200 hover:text-primary hover:border-primary hover:bg-slate-50'
