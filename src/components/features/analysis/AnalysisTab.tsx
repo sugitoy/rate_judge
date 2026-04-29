@@ -9,6 +9,7 @@ import { PlayerFilter } from '../shared/PlayerFilter';
 import { AnalysisOverallDistChart, AnalysisCritDistCharts } from './AnalysisDistCharts';
 import { AnalysisRadarChart } from './AnalysisRadarChart';
 import { SidePanel } from '../../ui/SidePanel';
+import { ToggleSwitch } from '../../ui/ToggleSwitch';
 
 export const AnalysisTab = () => {
   const { tournaments, activeTournamentId } = useTournamentStore();
@@ -26,7 +27,9 @@ export const AnalysisTab = () => {
     statsData,
     togglePlayer,
     selectAll,
-    deselectAll
+    deselectAll,
+    displayMode,
+    setDisplayMode
   } = useAnalysisData(activeT, currentScores);
 
   if (!activeT || activeT.players.length === 0 || activeT.criteria.length === 0) {
@@ -45,7 +48,7 @@ export const AnalysisTab = () => {
       <div className="flex-1 min-w-0 order-2 lg:order-1 flex flex-col gap-8">
         
         {/* A) 統計分析 (Analytics) */}
-        <AnalysisStats totalStat={totalStat!} critStats={critStats} />
+        <AnalysisStats totalStat={totalStat!} critStats={critStats} displayMode={displayMode} />
 
         {distBarData.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
@@ -53,6 +56,7 @@ export const AnalysisTab = () => {
             <AnalysisOverallDistChart 
               activeT={activeT}
               distBarData={distBarData}
+              displayMode={displayMode}
             />
 
             {/* C) 各項目別分布 (複数タイル) */}
@@ -60,6 +64,7 @@ export const AnalysisTab = () => {
               activeT={activeT}
               distBarData={distBarData}
               selectedPlayersCount={selectedPlayers.length}
+              displayMode={displayMode}
             />
 
             {/* D) レーダーチャート (比較用) */}
@@ -79,14 +84,30 @@ export const AnalysisTab = () => {
       </div>
 
       {/* E) サイドコンテンツ（フィルタ） */}
-      <SidePanel title="表示対象フィルタ" className="order-1 lg:order-2">
-        <PlayerFilter 
-          players={playersInfo}
-          selectedIds={selectedPlayers}
-          onToggle={togglePlayer}
-          onSelectAll={selectAll}
-          onDeselectAll={deselectAll}
-        />
+      <SidePanel title="分析コントロール" className="order-1 lg:order-2">
+        <div className="flex flex-col gap-6">
+          <div className="space-y-3">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.SCORING_TOGGLE_MODE}</span>
+            <ToggleSwitch
+              options={[
+                { value: 'percentage', label: MESSAGES.SCORING_TOGGLE_PCT },
+                { value: 'points', label: MESSAGES.SCORING_TOGGLE_ABS }
+              ]}
+              value={displayMode}
+              onChange={(val) => setDisplayMode(val as 'percentage' | 'points')}
+            />
+          </div>
+
+          <div className="pt-4 border-t border-slate-100">
+            <PlayerFilter 
+              players={playersInfo}
+              selectedIds={selectedPlayers}
+              onToggle={togglePlayer}
+              onSelectAll={selectAll}
+              onDeselectAll={deselectAll}
+            />
+          </div>
+        </div>
       </SidePanel>
     </div>
   );

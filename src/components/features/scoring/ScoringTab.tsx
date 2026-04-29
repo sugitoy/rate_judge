@@ -19,7 +19,6 @@ export const ScoringTab = () => {
   const { tournaments, activeTournamentId } = useTournamentStore();
   const { tournamentScores, updateScore, updateComment, importScores } = useScoringStore();
 
-  const [inputMode, setInputMode] = useState<'percentage' | 'points'>('points');
   const [showRank, setShowRank] = useState(true); // 順位表示の切り替え
   const [commentModalData, setCommentModalData] = useState<{ playerId: string } | null>(null);
 
@@ -32,7 +31,9 @@ export const ScoringTab = () => {
     togglePlayerSelection, 
     setSelectedPlayerIds,
     initializedTournamentId,
-    setInitializedTournamentId
+    setInitializedTournamentId,
+    displayMode,
+    setDisplayMode
   } = useUIStore();
 
   // 初期表示または大会切り替え時に全選手を選択状態にする
@@ -147,7 +148,7 @@ export const ScoringTab = () => {
                       <ScoreCell
                         criterion={c}
                         inputUnit={activeT.inputUnit}
-                        mode={inputMode}
+                        mode={displayMode}
                         value={row.scores[c.id]}
                         rank={row.criterionRanks?.[c.id]}
                         showRank={showRank}
@@ -202,8 +203,8 @@ export const ScoringTab = () => {
                 { value: 'percentage', label: MESSAGES.SCORING_TOGGLE_PCT },
                 { value: 'points', label: MESSAGES.SCORING_TOGGLE_ABS }
               ]}
-              value={inputMode}
-              onChange={(val) => setInputMode(val as 'percentage' | 'points')}
+              value={displayMode}
+              onChange={(val) => setDisplayMode(val as 'percentage' | 'points')}
             />
           </div>
 
@@ -264,8 +265,8 @@ export const ScoringTab = () => {
             activeT={activeT}
             scores={rowData.scores}
             comment={rowData.comment}
-            inputMode={inputMode}
-            toggleInputMode={(mode) => setInputMode(mode)}
+            inputMode={displayMode}
+            toggleInputMode={(mode) => setDisplayMode(mode)}
             onSaveScore={(cId, val) => updateScore(activeT.id, rowData.player.id, cId, val)}
             onSaveComment={(cmt) => updateComment(activeT.id, rowData.player.id, cmt)}
             onClose={() => setCommentModalData(null)}

@@ -18,6 +18,17 @@ export const AnalysisRadarChart: React.FC<AnalysisRadarChartProps> = ({
   radarPlayers,
   selectedPlayersCount
 }) => {
+  // 全選手の全項目の値から、最小値と最大値を算出してドメインを決定する
+  const allValues: number[] = [];
+  radarData.forEach(d => {
+    radarPlayers.forEach(p => {
+      if (typeof d[p.id] === 'number') allValues.push(d[p.id]);
+    });
+  });
+
+  const minVal = allValues.length > 0 ? Math.max(0, Math.floor(Math.min(...allValues) - 2)) : 0;
+  const maxVal = allValues.length > 0 ? Math.min(100, Math.ceil(Math.max(...allValues) + 2)) : 100;
+
   return (
     <div className="card shadow-sm w-full animate-in">
       <h3 className="text-lg font-bold text-slate-900 mb-2">{MESSAGES.ANALYSIS_RADAR_TITLE}</h3>
@@ -34,7 +45,13 @@ export const AnalysisRadarChart: React.FC<AnalysisRadarChartProps> = ({
           <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
             <PolarGrid stroke="#e2e8f0" />
             <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 600 }} />
-            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} stroke="#f1f5f9" />
+            <PolarRadiusAxis 
+              angle={30} 
+              domain={[minVal, maxVal]} 
+              tick={{ fill: '#94a3b8', fontSize: 10 }} 
+              stroke="#f1f5f9" 
+              tickFormatter={(val) => val.toFixed(1)}
+            />
             <Tooltip 
               formatter={(value: any) => [`${Number(value).toFixed(1)}%`, 'スコア割合']} 
               contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px', padding: '10px' }}

@@ -28,7 +28,9 @@ export const useAnalysisData = (
     togglePlayerSelection: togglePlayer, 
     setSelectedPlayerIds,
     initializedTournamentId,
-    setInitializedTournamentId
+    setInitializedTournamentId,
+    displayMode,
+    setDisplayMode
   } = useUIStore();
 
   // 初期表示または大会切り替え時に全選手を選択状態にする
@@ -157,6 +159,8 @@ export const useAnalysisData = (
     statsData,
     togglePlayer,
     selectAll,
-    deselectAll
+    deselectAll,
+    displayMode,
+    setDisplayMode
   };
 };

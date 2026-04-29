@@ -12,12 +12,24 @@ const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'
 interface AnalysisOverallDistChartProps {
   activeT: TournamentConfig;
   distBarData: any[];
+  displayMode: 'points' | 'percentage';
 }
 
 export const AnalysisOverallDistChart: React.FC<AnalysisOverallDistChartProps> = ({
   activeT,
   distBarData,
+  displayMode
 }) => {
+  const totalMax = activeT.criteria.reduce((s, c) => s + c.maxScore, 0);
+
+  const processedData = distBarData.map(d => {
+    if (displayMode === 'points') return d;
+    const newD = { ...d };
+    activeT.criteria.forEach(c => {
+      newD[c.id] = totalMax > 0 ? (d[c.id] / totalMax) * 100 : 0;
+    });
+    return newD;
+  });
   return (
     <div className="card shadow-sm w-full animate-in">
       <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center justify-between">
@@ -29,22 +41,38 @@ export const AnalysisOverallDistChart: React.FC<AnalysisOverallDistChartProps> =
       <div className="w-full h-[400px]">
         <ResponsiveContainer>
           <BarChart
-            data={distBarData}
+            data={processedData}
             margin={{ top: 20, right: 30, left: 0, bottom: 80 }}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
             <XAxis dataKey="label" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 11, fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
-            <YAxis tick={{ fontSize: 12, fill: '#64748b' }} stroke="#e2e8f0" />
+            <YAxis 
+              tick={{ fontSize: 12, fill: '#64748b' }} 
+              stroke="#e2e8f0" 
+              unit={displayMode === 'percentage' ? '%' : ''}
+              tickFormatter={(val) => val.toFixed(1)}
+              domain={([dataMin, dataMax]) => {
+                const padding = displayMode === 'percentage' ? 2 : 5;
+                const limit = displayMode === 'percentage' ? 100 : totalMax;
+                const min = Math.max(0, Math.floor(dataMin - padding));
+                const max = Math.min(limit, Math.ceil(dataMax + padding));
+                return [min, max];
+              }}
+            />
             <Tooltip 
               cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }} 
               contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px', padding: '12px' }} 
+              formatter={(val: any) => {
+                const n = Number(val);
+                return displayMode === 'percentage' ? `${n.toFixed(1)}%` : `${n.toFixed(1)}pt`;
+              }}
             />
             <Legend verticalAlign="top" wrapperStyle={{ paddingBottom: '20px', fontSize: '13px', fontWeight: 500 }} />
             {activeT.criteria.map((c, index) => (
               <Bar
                 key={c.id}
                 dataKey={c.id}
-                name={c.name}
+                name={displayMode === 'percentage' ? `${c.name} (%)` : c.name}
                 stackId="a"
                 fill={COLORS[index % COLORS.length]}
                 radius={index === activeT.criteria.length - 1 ? [4, 4, 0, 0] as any : [0, 0, 0, 0] as any}
@@ -61,12 +89,14 @@ interface AnalysisCritDistChartsProps {
   activeT: TournamentConfig;
   distBarData: any[];
   selectedPlayersCount: number;
+  displayMode: 'points' | 'percentage';
 }
 
 export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
   activeT,
   distBarData,
   selectedPlayersCount,
+  displayMode
 }) => {
   return (
     <>
@@ -85,19 +115,41 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
           <div className="w-full h-[240px]">
             <ResponsiveContainer>
               <BarChart
-                data={distBarData}
+                data={distBarData.map(d => {
+                  if (displayMode === 'points') return d;
+                  return {
+                    ...d,
+                    [c.id]: c.maxScore > 0 ? (d[c.id] / c.maxScore) * 100 : 0
+                  };
+                })}
                 margin={{ top: 10, right: 10, left: -20, bottom: 50 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="label" angle={-45} textAnchor="end" height={50} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
-                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} stroke="#e2e8f0" />
+                <YAxis 
+                  tick={{ fontSize: 10, fill: '#64748b' }} 
+                  stroke="#e2e8f0" 
+                  unit={displayMode === 'percentage' ? '%' : ''}
+                  tickFormatter={(val) => val.toFixed(1)}
+                  domain={([dataMin, dataMax]) => {
+                    const padding = 2;
+                    const limit = displayMode === 'percentage' ? 100 : c.maxScore;
+                    const min = Math.max(0, Math.floor(dataMin - padding));
+                    const max = Math.min(limit, Math.ceil(dataMax + padding));
+                    return [min, max];
+                  }}
+                />
                 <Tooltip 
                   cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }} 
                   contentStyle={{ borderRadius: '10px', fontSize: '11px', padding: '8px', border: '1px solid #e2e8f0' }} 
+                  formatter={(val: any) => {
+                    const n = Number(val);
+                    return displayMode === 'percentage' ? `${n.toFixed(1)}%` : `${n.toFixed(1)}pt`;
+                  }}
                 />
                 <Bar
                   dataKey={c.id}
-                  name={`${c.name} (pt)`}
+                  name={displayMode === 'percentage' ? `${c.name} (%)` : `${c.name} (pt)`}
                   fill={COLORS[index % COLORS.length]}
                   radius={[4, 4, 0, 0] as any}
                 />

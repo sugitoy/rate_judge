@@ -16,13 +16,17 @@ interface StatData {
 interface AnalysisStatsProps {
   totalStat: StatData | null;
   critStats: StatData[];
+  displayMode: 'points' | 'percentage';
 }
 
-export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critStats }) => {
+export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critStats, displayMode }) => {
   const fmtStats = (val: number, max: number) => {
-    if (max === 0) return `0.0% (${val.toFixed(1)}pt)`;
+    const ptStr = `${val.toFixed(1)}pt`;
+    if (max === 0) return displayMode === 'percentage' ? '0.0%' : ptStr;
     const pct = (val / max) * 100;
-    return `${pct.toFixed(1)}% (${val.toFixed(1)}pt)`;
+    const pctStr = `${pct.toFixed(1)}%`;
+    
+    return displayMode === 'percentage' ? pctStr : ptStr;
   };
 
   return (

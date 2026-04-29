@@ -10,6 +10,8 @@ interface UIState {
   setSelectedPlayerIds: (ids: string[]) => void;
   togglePlayerSelection: (id: string) => void;
   setInitializedTournamentId: (id: string | null) => void;
+  displayMode: 'points' | 'percentage';
+  setDisplayMode: (mode: 'points' | 'percentage') => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -18,6 +20,7 @@ export const useUIStore = create<UIState>()(
       isSidePanelOpen: true,
       selectedPlayerIds: [],
       initializedTournamentId: null,
+      displayMode: 'points',
       toggleSidePanel: () => set((state) => ({ isSidePanelOpen: !state.isSidePanelOpen })),
       setSidePanel: (isOpen: boolean) => set({ isSidePanelOpen: isOpen }),
       setSelectedPlayerIds: (ids: string[]) => set({ selectedPlayerIds: ids }),
@@ -27,6 +30,7 @@ export const useUIStore = create<UIState>()(
           : [...state.selectedPlayerIds, id],
       })),
       setInitializedTournamentId: (id: string | null) => set({ initializedTournamentId: id }),
+      setDisplayMode: (mode: 'points' | 'percentage') => set({ displayMode: mode }),
     }),
     {
       name: 'rate-judge-ui-storage',
