@@ -1,6 +1,6 @@
 // src/components/features/scoring/ScoringTab.tsx
 import React, { useState } from 'react';
-import { Download, Upload, FileText } from 'lucide-react';
+import { Download, Upload, Maximize2 } from 'lucide-react';
 import { MESSAGES } from '../../../constants/messages';
 import { useTournamentStore } from '../../../store/useTournamentStore';
 import { useScoringStore } from '../../../store/useScoringStore';
@@ -52,6 +52,28 @@ export const ScoringTab = () => {
       alert(MESSAGES.SCORING_IMPORT_ERR);
     } finally {
       e.target.value = '';
+    }
+  };
+
+  const sortedPlayersForNav = activeT.players.slice().sort((a, b) => a.entryNumber - b.entryNumber);
+
+  const handlePrevPlayer = (currentComment: string) => {
+    if (!activeT || !commentModalData) return;
+    updateComment(activeT.id, commentModalData.playerId, currentComment);
+    
+    const currentIndex = sortedPlayersForNav.findIndex(p => p.id === commentModalData.playerId);
+    if (currentIndex > 0) {
+      setCommentModalData({ playerId: sortedPlayersForNav[currentIndex - 1].id });
+    }
+  };
+
+  const handleNextPlayer = (currentComment: string) => {
+    if (!activeT || !commentModalData) return;
+    updateComment(activeT.id, commentModalData.playerId, currentComment);
+    
+    const currentIndex = sortedPlayersForNav.findIndex(p => p.id === commentModalData.playerId);
+    if (currentIndex < sortedPlayersForNav.length - 1) {
+      setCommentModalData({ playerId: sortedPlayersForNav[currentIndex + 1].id });
     }
   };
 
@@ -125,9 +147,8 @@ export const ScoringTab = () => {
                           ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white shadow-sm'
                           : 'bg-white text-slate-400 border-slate-200 hover:text-primary hover:border-primary hover:bg-slate-50'
                       }`}
-                      title="詳細・コメント"
                     >
-                      <FileText size={20} strokeWidth={2} className={row.comment ? 'fill-current opacity-30' : ''} />
+                      <Maximize2 size={18} strokeWidth={2.5} className={row.comment ? 'text-primary' : 'text-slate-400'} />
                     </button>
                   </td>
                 </tr>
@@ -186,6 +207,8 @@ export const ScoringTab = () => {
       {commentModalData && (() => {
         const rowData = tableData.find(d => d.player.id === commentModalData.playerId);
         if (!rowData) return null;
+        const navIndex = sortedPlayersForNav.findIndex(p => p.id === rowData.player.id);
+
         return (
           <DetailModal
             player={rowData.player}
@@ -197,6 +220,10 @@ export const ScoringTab = () => {
             onSaveScore={(cId, val) => updateScore(activeT.id, rowData.player.id, cId, val)}
             onSaveComment={(cmt) => updateComment(activeT.id, rowData.player.id, cmt)}
             onClose={() => setCommentModalData(null)}
+            onPrevPlayer={handlePrevPlayer}
+            onNextPlayer={handleNextPlayer}
+            hasPrev={navIndex > 0}
+            hasNext={navIndex < sortedPlayersForNav.length - 1}
           />
         );
       })()}

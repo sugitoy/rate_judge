@@ -10,9 +10,10 @@ interface ToggleSwitchProps {
   value: string;
   onChange: (value: string) => void;
   className?: string;
+  small?: boolean; // 追加
 }
 
-export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ options, value, onChange, className = '' }) => {
+export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ options, value, onChange, className = '', small }) => {
   const isRight = value === options[1].value;
 
   return (
@@ -29,7 +30,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ options, value, onCh
         return (
           <div
             key={opt.value}
-            className={`relative z-10 flex-1 text-center py-2 text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
+            className={`relative z-10 flex-1 text-center ${small ? 'py-1' : 'py-2'} text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
               isActive ? 'text-primary' : 'text-slate-500 hover:text-slate-700'
             }`}
             onClick={() => onChange(opt.value)}

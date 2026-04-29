@@ -80,7 +80,6 @@ export const MESSAGES = {
   CSV_IMPORT_SCORES: 'インポート',
   SCORING_ERR_UNIT: '単位エラー',
   SCORING_TH_PLAYER: '選手',
-  SCORING_MODAL_TITLE_SUFFIX: ' のコメント/詳細',
   SCORING_MODAL_DESC_PH: 'この選手へのメモ・講評...',
   SCORING_IMPORT_SUCCESS: 'スコアのインポートが完了しました。',
   SCORING_IMPORT_ERR: '一致する選手名・審査項目が見つかりませんでした。',
