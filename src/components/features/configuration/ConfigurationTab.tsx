@@ -1,6 +1,5 @@
-// src/components/features/configuration/ConfigurationTab.tsx
 import React, { useState, useEffect } from 'react';
-import { Save, Trash2 } from 'lucide-react';
+import { Save, Trash2, Plus } from 'lucide-react';
 import { MESSAGES } from '../../../constants/messages';
 import type { TournamentConfig } from '../../../types';
 import { useTournamentStore } from '../../../store/useTournamentStore';
@@ -27,25 +26,23 @@ export const ConfigurationTab = ({
   triggerCreateNew?: number,
   onTriggerConsumed?: () => void
 }) => {
-  const { tournaments, activeTournamentId, addTournament, updateTournament, deleteTournament, setActiveTournament } = useTournamentStore();
-  const { deleteTournamentScores } = useScoringStore();
+  const { tournaments, activeTournamentId, addTournament, updateTournament, deleteTournament, setActiveTournament, clearTournaments } = useTournamentStore();
+  const { deleteTournamentScores, clearAllScores } = useScoringStore();
   
   const activeT = activeTournamentId ? tournaments[activeTournamentId] : null;
+  const tournamentList = Object.values(tournaments);
 
   const [localT, setLocalT] = useState<TournamentConfig>(activeT || createEmptyTournament());
-  // activeTournamentIdが有効な大会を指している場合は編集モード、それ以外は新規作成モードで初期化する
   const [isCreatingNew, setIsCreatingNew] = useState(
     !activeTournamentId || !tournaments[activeTournamentId]
   );
 
-  // Sync state when activeT changes (from header dropdown)
+  // Sync state when activeT changes
   useEffect(() => {
     if (activeT) {
-      // 既存の大会が選択された場合は、編集モードに切り替えてデータを同期する
       setLocalT(activeT);
       setIsCreatingNew(false);
     } else {
-      // 大会が未選択の場合は、新規作成モードにする
       setLocalT(createEmptyTournament());
       setIsCreatingNew(true);
     }
@@ -54,13 +51,16 @@ export const ConfigurationTab = ({
   // ヘッダーからの新規作成トリガー
   useEffect(() => {
     if (triggerCreateNew && triggerCreateNew > 0) {
-      setIsCreatingNew(true);
-      setActiveTournament('');
-      setLocalT(createEmptyTournament());
-      // トリガーを消費したことを親に通知
+      handleAddNew();
       onTriggerConsumed?.();
     }
-  }, [triggerCreateNew, setActiveTournament, onTriggerConsumed]);
+  }, [triggerCreateNew]);
+
+  const handleAddNew = () => {
+    setIsCreatingNew(true);
+    setActiveTournament('');
+    setLocalT(createEmptyTournament());
+  };
 
   const handleSaveInfo = () => {
     if (!localT.name.trim()) {
@@ -79,7 +79,15 @@ export const ConfigurationTab = ({
   const handleDeleteTournament = () => {
     if (activeT && window.confirm(MESSAGES.CONFIG_DELETE_CONFIRM)) {
       deleteTournament(activeT.id);
-      deleteTournamentScores(activeT.id); // 関連するスコアも削除
+      deleteTournamentScores(activeT.id);
+    }
+  };
+
+  const handleGlobalClear = () => {
+    if (window.confirm(MESSAGES.HEADER_CLEAR_CONFIRM)) {
+      clearTournaments();
+      clearAllScores();
+      alert(MESSAGES.HEADER_CLEAR_SUCCESS);
     }
   };
 
@@ -145,7 +153,6 @@ export const ConfigurationTab = ({
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 animate-in tabular-nums pb-12">
-      {/* メインコンテンツ領域 (A, B) */}
       <div className="flex-1 flex flex-col gap-8 min-w-0">
         {!activeT && !isCreatingNew && (
           <div className="bg-primary-light text-primary border border-primary/20 p-4 rounded-xl flex items-center justify-between shadow-sm">
@@ -160,7 +167,6 @@ export const ConfigurationTab = ({
           </div>
         )}
 
-        {/* A) 大会基本情報・審査項目 */}
         <BasicConfig 
           localT={localT} 
           setLocalT={setLocalT} 
@@ -169,7 +175,6 @@ export const ConfigurationTab = ({
           downloadConfigSample={downloadConfigSample} 
         />
 
-        {/* B) 選手管理 */}
         <PlayerList 
           localT={localT} 
           setLocalT={setLocalT} 
@@ -179,45 +184,88 @@ export const ConfigurationTab = ({
         />
       </div>
 
-      {/* C) サイドコンテンツ（操作・アクション） */}
       <SidePanel>
-        <div className="flex flex-col gap-4">
-          <button 
-            onClick={handleSaveInfo} 
-            className="btn btn-primary w-full py-3 text-base shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
-          >
-            <Save size={20} /> {MESSAGES.CONFIG_SAVE_BTN}
-          </button>
-          
-          {isCreatingNew && Object.keys(tournaments).length > 0 && (
-            <button 
-              className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all" 
-              onClick={() => {
-                const keys = Object.keys(tournaments);
-                if (keys.length > 0) {
-                  setIsCreatingNew(false);
-                  setActiveTournament(keys[0]);
-                  setLocalT(tournaments[keys[0]]);
-                }
-              }}
-            >
-              {MESSAGES.CANCEL}
-            </button>
-          )}
-
-          {!isCreatingNew && activeT && (
-            <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-2">
-              <button 
-                onClick={handleDeleteTournament} 
-                className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
+        <div className="flex flex-col h-full gap-8">
+          {/* A) 大会選択・追加 */}
+          <div className="flex flex-col gap-3">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-1">
+              {MESSAGES.HEADER_TOURNAMENT_SELECT}
+            </label>
+            <div className="flex flex-col gap-2">
+              <select
+                className="form-input py-2 px-3 text-sm font-bold w-full bg-slate-50 border-slate-200"
+                value={activeTournamentId || ''}
+                onChange={(e) => setActiveTournament(e.target.value)}
               >
-                <Trash2 size={18} /> {MESSAGES.CONFIG_DELETE_BTN}
+                {!activeTournamentId && <option value='' disabled>（未選択）</option>}
+                {tournamentList.map(t => (
+                  <option key={t.id} value={t.id}>{t.name} ({t.division})</option>
+                ))}
+              </select>
+              <button
+                onClick={handleAddNew}
+                className="btn border border-primary/20 text-primary hover:bg-primary-light flex items-center justify-center gap-2 py-2 text-sm"
+              >
+                <Plus size={16} /> {MESSAGES.CONFIG_ADD_TOURNAMENT}
               </button>
-              <p className="text-[10px] text-slate-400 text-center px-2">
-                ※大会を削除すると、関連する全選手の採点データも完全に消去されます。
-              </p>
             </div>
-          )}
+          </div>
+
+          {/* B) 操作アクション */}
+          <div className="flex flex-col gap-4">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-1">
+              アクション
+            </label>
+            <button 
+              onClick={handleSaveInfo} 
+              className="btn btn-primary w-full py-3 text-base shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
+            >
+              <Save size={20} /> {MESSAGES.CONFIG_SAVE_BTN}
+            </button>
+            
+            {isCreatingNew && tournamentList.length > 0 && (
+              <button 
+                className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all" 
+                onClick={() => {
+                  if (tournamentList.length > 0) {
+                    setIsCreatingNew(false);
+                    const firstId = tournamentList[0].id;
+                    setActiveTournament(firstId);
+                    setLocalT(tournaments[firstId]);
+                  }
+                }}
+              >
+                {MESSAGES.CANCEL}
+              </button>
+            )}
+
+            {!isCreatingNew && activeT && (
+              <div className="flex flex-col gap-2">
+                <button 
+                  onClick={handleDeleteTournament} 
+                  className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
+                >
+                  <Trash2 size={18} /> {MESSAGES.CONFIG_DELETE_BTN}
+                </button>
+                <p className="text-[10px] text-slate-400 text-center px-2">
+                  ※大会を削除すると、関連する全選手の採点データも完全に消去されます。
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* C) 初期化（最下部へ配置） */}
+          <div className="mt-auto pt-12">
+            <button
+              onClick={handleGlobalClear}
+              className="w-full py-2 px-4 text-xs font-medium text-slate-400 hover:text-danger hover:bg-danger-bg rounded-lg border border-transparent hover:border-danger/10 transition-all flex items-center justify-center gap-2"
+            >
+              <Trash2 size={14} /> {MESSAGES.HEADER_CLEAR_DATA}
+            </button>
+            <p className="text-[9px] text-slate-400 text-center mt-2 px-4 leading-relaxed opacity-60">
+              全大会および採点データを初期化します。<br />この操作は取り消せません。
+            </p>
+          </div>
         </div>
       </SidePanel>
     </div>
