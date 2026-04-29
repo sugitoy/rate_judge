@@ -84,11 +84,11 @@ export const ConfigurationTab = ({
   };
 
   const downloadConfigSample = () => {
-    const data = "設定項目,値\n大会名,JJF2026\n部門,男子個人\n入力単位,0.5\n審査項目:技術,40\n審査項目:芸術,60";
+    const data = "大会名,部門,入力単位,審査項目:技術,審査項目:構成\nJJF2026,男子個人,0.5,40,60";
     const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), data], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "config_sample.csv";
+    link.download = "大会設定_sample.csv";
     link.click();
   };
 
@@ -97,7 +97,7 @@ export const ConfigurationTab = ({
     const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), data], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "players_sample.csv";
+    link.download = "選手リスト_sample.csv";
     link.click();
   };
 

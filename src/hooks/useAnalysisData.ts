@@ -38,12 +38,12 @@ export const useAnalysisData = (
   const playersInfo = useMemo(() => {
     if (!activeT) return [];
 
-    let info = activeT.players.map((p, index) => {
+    let info = activeT.players.map((p) => {
       let total = 0;
       activeT.criteria.forEach(c => {
-        total += currentScores[p.id]?.scores[c.id]?.absoluteScore || 0;
+        total += currentScores[p.id]?.scores[c.id] || 0;
       });
-      return { id: p.id, name: p.name, total: Number(total.toFixed(2)), entryNo: index + 1, rank: 0 };
+      return { id: p.id, name: p.name, total: Number(total.toFixed(2)), entryNo: p.entryNumber, rank: 0 };
     });
 
     const sortedByScore = [...info].sort((a, b) => b.total - a.total);
@@ -69,7 +69,7 @@ export const useAnalysisData = (
       .map(p => {
         const point: any = { id: p.id, label: `${p.entryNo}. ${p.name}` };
         activeT.criteria.forEach(c => {
-          point[c.id] = currentScores[p.id]?.scores[c.id]?.absoluteScore || 0;
+          point[c.id] = currentScores[p.id]?.scores[c.id] || 0;
         });
         point['total'] = p.total;
         return point;
@@ -86,7 +86,7 @@ export const useAnalysisData = (
     return activeT.criteria.map(c => {
       const point: any = { subject: c.name, fullMark: 100 };
       radarPlayers.forEach(p => {
-        const absScore = currentScores[p.id]?.scores[c.id]?.absoluteScore || 0;
+        const absScore = currentScores[p.id]?.scores[c.id] || 0;
         const normalized = c.maxScore > 0 ? (absScore / c.maxScore) * 100 : 0;
         point[p.id] = normalized;
       });
@@ -115,7 +115,7 @@ export const useAnalysisData = (
     };
 
     const critStats = activeT.criteria.map(c => {
-      const arr = activeT.players.map(p => currentScores[p.id]?.scores[c.id]?.absoluteScore || 0);
+      const arr = activeT.players.map(p => currentScores[p.id]?.scores[c.id] || 0);
       const mean = getMean(arr);
       return {
         id: c.id,

@@ -6,6 +6,7 @@ export interface Criteria {
 
 export interface Player {
   id: string;
+  entryNumber: number; // エントリーNo (表示・ソート用)
   name: string;
   affiliation?: string; // 所属(任意)
   props?: string; // 使用道具(任意)
@@ -20,13 +21,8 @@ export interface TournamentConfig {
   players: Player[];
 }
 
-export interface ScoreEntry {
-  criteriaId: string;
-  absoluteScore: number;
-}
-
 export interface PlayerScore {
   playerId: string;
-  scores: Record<string, ScoreEntry>;
+  scores: Record<string, number | undefined>; // 項目IDをキーとした得点データ
   comment?: string;
 }

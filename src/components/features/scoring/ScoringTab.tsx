@@ -90,7 +90,7 @@ export const ScoringTab = () => {
                         criterion={c}
                         inputUnit={activeT.inputUnit}
                         mode={inputMode}
-                        value={row.scores[c.id]?.absoluteScore}
+                        value={row.scores[c.id]}
                         onChange={(val) => updateScore(activeT.id, row.player.id, c.id, val)}
                       />
                     </td>

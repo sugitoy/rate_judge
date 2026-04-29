@@ -9,7 +9,7 @@ import { ToggleSwitch } from '../../ui/ToggleSwitch';
 interface DetailModalProps {
   player: Player;
   activeT: TournamentConfig;
-  scores: Record<string, { absoluteScore: number }>;
+  scores: Record<string, number | undefined>;
   comment: string;
   inputMode: 'percentage' | 'points';
   toggleInputMode: (mode: 'percentage' | 'points') => void;
@@ -69,7 +69,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                     criterion={c}
                     inputUnit={activeT.inputUnit}
                     mode={inputMode}
-                    value={scores[c.id]?.absoluteScore}
+                    value={scores[c.id]}
                     onChange={(val) => onSaveScore(c.id, val)}
                   />
                 </div>

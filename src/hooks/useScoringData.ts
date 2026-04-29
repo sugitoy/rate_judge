@@ -13,15 +13,15 @@ export const useScoringData = (
   const tableData = useMemo<ScoreTableDataRow[]>(() => {
     if (!activeT) return [];
 
-    const data = activeT.players.map((p, index) => {
+    const data = activeT.players.map((p) => {
       const pScore = currentScores[p.id]?.scores || {};
       const cmt = currentScores[p.id]?.comment || '';
       let total = 0;
       activeT.criteria.forEach(c => {
-        total += pScore[c.id]?.absoluteScore || 0;
+        total += pScore[c.id] || 0;
       });
       return { 
-        entryNo: index + 1, 
+        entryNo: p.entryNumber, 
         player: p, 
         scores: pScore, 
         comment: cmt, 

@@ -3,8 +3,8 @@ import type { Criteria, Player } from '../types';
 
 export interface ScoreTableDataRow {
   entryNo: number;
-  player: { id: string; name: string; affiliation?: string; props?: string };
-  scores: Record<string, { absoluteScore: number }>;
+  player: Player;
+  scores: Record<string, number | undefined>;
   total: number;
   rank: number;
   comment: string;
@@ -14,10 +14,11 @@ export interface ScoreTableDataRow {
  * 汎用的なCSVダウンロード処理
  */
 const downloadCSV = (filename: string, headers: string[], rows: (string | number)[][]) => {
-  const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + [headers, ...rows].map(e => e.join(",")).join("\n");
-  const encodedUri = encodeURI(csvContent);
+  const csvContent = "\uFEFF" + [headers, ...rows].map(e => e.join(",")).join("\n");
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
+  link.setAttribute("href", url);
   link.setAttribute("download", filename);
   document.body.appendChild(link);
   link.click();
@@ -34,7 +35,7 @@ export const exportScoringToCSV = (
 ) => {
   const headers = ['エントリーNo', '氏名', ...criteria.map(c => c.name), '合計得点(pt)', 'コメント'];
   const rows = tableData.map(row => {
-    const scoreCols = criteria.map(c => row.scores[c.id]?.absoluteScore || 0);
+    const scoreCols = criteria.map(c => row.scores[c.id] ?? '');
     return [
       row.entryNo,
       row.player.name,

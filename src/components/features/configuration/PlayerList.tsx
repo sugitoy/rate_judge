@@ -23,11 +23,17 @@ export const PlayerList: React.FC<PlayerListProps> = ({
   const addPlayer = () => {
     setLocalT(prev => ({
       ...prev,
-      players: [...prev.players, { id: Date.now().toString() + Math.random(), name: '', affiliation: '', props: '' }]
+      players: [...prev.players, { 
+        id: crypto.randomUUID(), 
+        entryNumber: prev.players.length + 1, 
+        name: '', 
+        affiliation: '', 
+        props: '' 
+      }]
     }));
   };
 
-  const updatePlayer = (id: string, field: keyof Player, value: string) => {
+  const updatePlayer = (id: string, field: keyof Player, value: string | number) => {
     setLocalT(prev => ({
       ...prev,
       players: prev.players.map(p => p.id === id ? { ...p, [field]: value } : p)
@@ -35,10 +41,15 @@ export const PlayerList: React.FC<PlayerListProps> = ({
   };
 
   const removePlayer = (id: string) => {
-    setLocalT(prev => ({
-      ...prev,
-      players: prev.players.filter(p => p.id !== id)
-    }));
+    setLocalT(prev => {
+      const remaining = prev.players.filter(p => p.id !== id);
+      // エントリーNoを再振り直し
+      const renumbered = remaining.map((p, idx) => ({ ...p, entryNumber: idx + 1 }));
+      return {
+        ...prev,
+        players: renumbered
+      };
+    });
   };
 
   return (
@@ -74,9 +85,16 @@ export const PlayerList: React.FC<PlayerListProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 bg-white">
-            {localT.players.map((p, i) => (
+            {localT.players.map((p) => (
               <tr key={p.id} className="hover:bg-slate-50 transition-colors group/row">
-                <td className="text-center font-bold text-slate-400 py-1 border-r border-slate-50">{i + 1}</td>
+                <td className="text-center font-bold text-slate-400 py-1 border-r border-slate-50">
+                  <input
+                    type="number"
+                    className="w-10 text-center bg-transparent border-none focus:ring-0 font-bold text-slate-500"
+                    value={p.entryNumber}
+                    onChange={(e) => updatePlayer(p.id, 'entryNumber', Number(e.target.value))}
+                  />
+                </td>
                 <td className="py-1 pr-2 pl-2">
                   <input 
                     type="text" 

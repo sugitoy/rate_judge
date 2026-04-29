@@ -56,7 +56,7 @@ export const useTournamentStore = create<TournamentState>()(
     }),
     {
       name: 'tournament-storage',
-      version: 1,
+      version: 2,
     }
   )
 );

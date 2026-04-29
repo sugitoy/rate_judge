@@ -3,43 +3,45 @@ import Papa from 'papaparse';
 import type { Criteria, Player, PlayerScore, TournamentConfig } from '../types';
 
 /**
- * 構成情報CSVから大会設定と審査項目を抽出
+ * 構成情報CSVから大会設定と審査項目を抽出 (横持ち形式対応)
  */
 export const parseConfigCSV = (file: File): Promise<Partial<TournamentConfig>> => {
   return new Promise((resolve, reject) => {
     Papa.parse(file, {
+      skipEmptyLines: true,
       complete: (results) => {
         const rows = results.data as string[][];
-        let hasName = false;
-
-        rows.forEach(row => {
-          if (row.length >= 2 && row[0].trim() === '大会名') hasName = true;
-        });
-
-        if (!hasName) {
+        if (rows.length < 2) {
           reject(new Error('INVALID_CONFIG'));
           return;
         }
 
-        const newCriteria: Criteria[] = [];
+        const header = rows[0].map(h => h.trim());
+        const data = rows[1].map(d => d.trim());
+        
         const configData: Partial<TournamentConfig> = {};
+        const newCriteria: Criteria[] = [];
 
-        rows.forEach(row => {
-          if (row.length >= 2) {
-            const key = row[0].trim();
-            const val = row[1].trim();
-            if (key === '大会名') configData.name = val;
-            else if (key === '部門') configData.division = val;
-            else if (key === '入力単位') configData.inputUnit = Number(val) || 1;
-            else if (key.startsWith('審査項目:')) {
-              newCriteria.push({
-                id: Date.now().toString() + Math.random(),
-                name: key.replace('審査項目:', '').trim(),
-                maxScore: Number(val) || 0
-              });
-            }
+        header.forEach((h, idx) => {
+          const val = data[idx];
+          if (!val) return;
+
+          if (h === '大会名') configData.name = val;
+          else if (h === '部門') configData.division = val;
+          else if (h === '入力単位') configData.inputUnit = Number(val) || 1;
+          else if (h.startsWith('審査項目:')) {
+            newCriteria.push({
+              id: crypto.randomUUID(),
+              name: h.replace('審査項目:', '').trim(),
+              maxScore: Number(val) || 0
+            });
           }
         });
+
+        if (!configData.name) {
+          reject(new Error('INVALID_CONFIG'));
+          return;
+        }
 
         if (newCriteria.length > 0) configData.criteria = newCriteria;
         resolve(configData);
@@ -50,7 +52,7 @@ export const parseConfigCSV = (file: File): Promise<Partial<TournamentConfig>> =
 };
 
 /**
- * 選手情報CSVから選手リストを抽出
+ * 選手情報CSVから選手リストを抽出 (entryNumberを自動付与)
  */
 export const parsePlayersCSV = (file: File): Promise<Player[]> => {
   return new Promise((resolve, reject) => {
@@ -59,24 +61,27 @@ export const parsePlayersCSV = (file: File): Promise<Player[]> => {
       complete: (results) => {
         const rows = results.data as string[][];
 
-        if (rows.length === 0 || (rows.length === 1 && rows[0].length < 1)) {
+        if (rows.length === 0) {
           reject(new Error('INVALID_PLAYERS'));
           return;
         }
 
         const newPlayers: Player[] = [];
         let startIndex = 0;
+        // ヘッダーがあるか判定 (1列目が「氏名」または「名前」)
         if (rows[0] && (rows[0][0].includes('氏名') || rows[0][0].includes('名前'))) {
           startIndex = 1;
         }
 
         for (let i = startIndex; i < rows.length; i++) {
-          if (rows[i].length >= 1) {
+          const row = rows[i];
+          if (row.length >= 1 && row[0].trim()) {
             newPlayers.push({
-              id: Date.now().toString() + Math.random(),
-              name: rows[i][0]?.trim() || '',
-              affiliation: rows[i][1]?.trim() || '',
-              props: rows[i][2]?.trim() || '',
+              id: crypto.randomUUID(),
+              entryNumber: newPlayers.length + 1,
+              name: row[0].trim(),
+              affiliation: row[1]?.trim() || '',
+              props: row[2]?.trim() || '',
             });
           }
         }
@@ -89,7 +94,7 @@ export const parsePlayersCSV = (file: File): Promise<Player[]> => {
 };
 
 /**
- * スコアCSVから採点情報を抽出
+ * スコアCSVから採点情報を抽出 (エントリーNoで紐付け、簡易スコア形式)
  */
 export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<Record<string, PlayerScore>> => {
   return new Promise((resolve, reject) => {
@@ -102,27 +107,46 @@ export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<R
           return;
         }
         
-        const header = rows[0];
+        const header = rows[0].map(h => h.trim());
+        const entryNoIdx = header.findIndex(h => h === 'エントリーNo' || h === 'No');
+        
         const criteriaIndices = activeT.criteria.map(c => ({
           cId: c.id,
-          idx: header.findIndex(h => h.trim() === c.name)
+          idx: header.findIndex(h => h === c.name)
         })).filter(ci => ci.idx !== -1);
 
+        const commentIdx = header.findIndex(h => h.includes('コメント'));
         const newScoresData: Record<string, PlayerScore> = {};
 
         for (let i = 1; i < rows.length; i++) {
           const row = rows[i];
-          const rawName = row[header.findIndex(h => h.includes('氏名')) || 1]?.trim();
-          const pMatched = activeT.players.find(p => p.name === rawName);
+          let pMatched: Player | undefined;
+
+          // 1. エントリーNoで検索
+          if (entryNoIdx !== -1) {
+            const entryNo = Number(row[entryNoIdx]);
+            pMatched = activeT.players.find(p => p.entryNumber === entryNo);
+          }
+          
+          // 2. 名前でバックアップ検索 (エントリーNoで見つからない場合)
+          if (!pMatched) {
+            const nameIdx = header.findIndex(h => h.includes('氏名') || h.includes('名前'));
+            if (nameIdx !== -1) {
+              const rawName = row[nameIdx]?.trim();
+              pMatched = activeT.players.find(p => p.name === rawName);
+            }
+          }
 
           if (pMatched) {
-            const pScoreData: Record<string, { criteriaId: string, absoluteScore: number }> = {};
+            const pScoreData: Record<string, number> = {};
             criteriaIndices.forEach(ci => {
-              const val = Number(row[ci.idx]) || 0;
-              pScoreData[ci.cId] = { criteriaId: ci.cId, absoluteScore: val };
+              const val = Number(row[ci.idx]);
+              if (!isNaN(val)) {
+                pScoreData[ci.cId] = val;
+              }
             });
-            const cmtIdx = header.findIndex(h => h.includes('コメント'));
-            const cmt = cmtIdx !== -1 ? row[cmtIdx] : '';
+            
+            const cmt = commentIdx !== -1 ? row[commentIdx]?.trim() : '';
 
             newScoresData[pMatched.id] = {
               playerId: pMatched.id,

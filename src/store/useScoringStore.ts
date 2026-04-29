@@ -31,7 +31,7 @@ export const useScoringStore = create<ScoringState>()(
                   ...pScore,
                   scores: {
                     ...pScore.scores,
-                    [criteriaId]: { criteriaId, absoluteScore },
+                    [criteriaId]: absoluteScore,
                   },
                 },
               },
@@ -42,7 +42,7 @@ export const useScoringStore = create<ScoringState>()(
       updateComment: (tournamentId, playerId, comment) =>
         set((state) => {
           const tScores = state.tournamentScores[tournamentId] || {};
-          const pScore = tScores[playerId] || { playerId, scores: {} };
+          const pScore = tScores[playerId] || { playerId, scores: {}, comment: '' };
 
           return {
             tournamentScores: {
@@ -80,7 +80,7 @@ export const useScoringStore = create<ScoringState>()(
     }),
     {
       name: 'scoring-storage',
-      version: 1,
+      version: 2,
     }
   )
 );
