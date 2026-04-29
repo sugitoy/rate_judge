@@ -92,6 +92,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
               value={pctStr}
               onChange={handlePctChange}
               onBlur={handlePctBlur}
+              onFocus={(e) => e.target.select()}
               placeholder="%"
             />
           </div>
@@ -112,6 +113,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
               }`}
               value={absStr}
               onChange={handleAbsChange}
+              onFocus={(e) => e.target.select()}
               placeholder="pt"
             />
             <span className="text-slate-400 text-[10px] font-bold w-4 select-none uppercase tracking-tighter">pt</span>

@@ -69,6 +69,7 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
               className="form-input text-base py-2.5 px-4 bg-slate-50/50 border-slate-200 focus:bg-white"
               value={localT.name}
               onChange={e => setLocalT({ ...localT, name: e.target.value })}
+              onFocus={(e) => e.target.select()}
               placeholder={MESSAGES.CONFIG_NAME_PH}
             />
           </div>
@@ -80,6 +81,7 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
               className="form-input text-base py-2.5 px-4 bg-slate-50/50 border-slate-200 focus:bg-white"
               value={localT.division}
               onChange={e => setLocalT({ ...localT, division: e.target.value })}
+              onFocus={(e) => e.target.select()}
               placeholder={MESSAGES.CONFIG_DIV_PH}
             />
           </div>
@@ -121,6 +123,7 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
                   className="form-input text-sm py-2 px-3 flex-1 border-slate-200 bg-slate-50 group-hover/item:bg-white group-hover/item:border-slate-300 transition-all font-medium"
                   value={c.name}
                   onChange={e => updateCriteria(c.id, 'name', e.target.value)}
+                  onFocus={(e) => e.target.select()}
                   placeholder={MESSAGES.CONFIG_CRITERIA_PH}
                 />
                 <div className="relative w-24 shrink-0 group/score">
@@ -129,6 +132,7 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
                     className="form-input text-sm py-2 pl-3 pr-8 w-full border-slate-200 bg-slate-50 group-hover/item:bg-white group-hover/item:border-slate-300 transition-all font-bold text-primary text-right"
                     value={c.maxScore}
                     onChange={e => updateCriteria(c.id, 'maxScore', Number(e.target.value))}
+                    onFocus={(e) => e.target.select()}
                     min={1}
                   />
                   <span className="text-[10px] font-bold text-slate-300 absolute right-2.5 top-1/2 -translate-y-1/2 uppercase select-none group-hover/score:text-primary/40 transition-colors">pt</span>
