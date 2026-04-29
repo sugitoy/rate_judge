@@ -19,17 +19,37 @@ export const isValidUnit = (valStr: string, inputUnit: number): boolean => {
   if (valStr === '' || valStr === '-') return true;
   const num = parseFloat(valStr);
   if (isNaN(num)) return false;
-  // JavaScriptの浮動小数点演算誤差を考慮した判定
-  const remainder = num % inputUnit;
-  return Math.abs(remainder) < 0.0001 || Math.abs(remainder - inputUnit) < 0.0001;
+  
+  // 浮動小数点誤差を避けるため、整数に変換して判定
+  const precision = 10; // 小数点以下10桁程度を考慮
+  const multiplier = Math.pow(10, precision);
+  const v = Math.round(num * multiplier);
+  const u = Math.round(inputUnit * multiplier);
+  
+  return v % u === 0;
 };
 
 /**
- * 割合（%）ベースの数値を、単位（inputUnit）に合わせて最も近い適切な実数点に補正する
+ * 割合（%）ベースの数値を、単位（inputUnit）に合わせて補正する
+ * 仕様: 前後の近い値に補正。乖離が等しい場合は低い方に寄せる。
  */
 export const calculateAutoCorrect = (rawPct: number, maxScore: number, inputUnit: number): number => {
+  if (maxScore <= 0) return 0;
+  
   const rawAbs = (rawPct / 100) * maxScore;
-  const base = Math.floor(rawAbs / inputUnit) * inputUnit;
-  const m = rawAbs - base;
-  return m <= inputUnit / 2 + 0.0001 ? base : base + inputUnit;
+  
+  // inputUnitの何倍にあたるか（小数含む）
+  const ratio = rawAbs / inputUnit;
+  const floor = Math.floor(ratio);
+  const diff = ratio - floor;
+
+  // 乖離が 0.5 以下（等距離または低い方に近い）なら床、そうでなければ天井
+  // 浮動小数点の誤差を考慮し、0.5000000001 のようなケースを許容
+  const correctedScore = (diff <= 0.5 + 1e-10) 
+    ? floor * inputUnit 
+    : (floor + 1) * inputUnit;
+
+  // 浮動小数点の誤差を丸める（例: 5.000000000000001 -> 5）
+  // 有効桁数は inputUnit の精度に合わせるのが理想
+  return Number(correctedScore.toFixed(10)) * 1 / 1;
 };

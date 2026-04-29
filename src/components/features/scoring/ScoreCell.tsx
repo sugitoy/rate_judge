@@ -23,10 +23,11 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
       return;
     }
     const currentAbs = parseFloat(absStr);
-    if (isNaN(currentAbs) || Math.abs(currentAbs - value) > 0.001) {
+    if (isNaN(currentAbs) || Math.abs(currentAbs - value) > 0.0000000001) {
       setAbsStr(value.toString());
       if (criterion.maxScore > 0) {
-        setPctStr(Number(((value / criterion.maxScore) * 100).toFixed(2)).toString());
+        // スコアから割合を逆算（丸めなし）
+        setPctStr((Number(value) / criterion.maxScore * 100).toString());
       }
     }
   }, [value, criterion.maxScore]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -38,7 +39,8 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
     const num = parseFloat(newVal);
     if (!isNaN(num)) {
       if (criterion.maxScore > 0) {
-        setPctStr(Number(((num / criterion.maxScore) * 100).toFixed(2)).toString());
+        // リアルタイムで割合を同期（丸めなし）
+        setPctStr((num / criterion.maxScore * 100).toString());
       }
       onChange(num);
     } else {
@@ -58,6 +60,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
     setPctStr(newVal);
     const num = parseFloat(newVal);
     if (!isNaN(num)) {
+      // 入力された割合から補正後のスコアを算出
       const calcAbs = calculateAutoCorrect(num, criterion.maxScore, inputUnit);
       setAbsStr(calcAbs.toString());
       onChange(calcAbs);
@@ -69,8 +72,9 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
   const handlePctBlur = () => {
     const num = parseFloat(pctStr);
     if (!isNaN(num) && criterion.maxScore > 0) {
+      // Blur時に、補正後のスコアに合致する割合へと表示を更新する
       const abs = calculateAutoCorrect(num, criterion.maxScore, inputUnit);
-      setPctStr(Number(((abs / criterion.maxScore) * 100).toFixed(2)).toString());
+      setPctStr((abs / criterion.maxScore * 100).toString());
     }
   };
 
