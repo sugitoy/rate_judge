@@ -56,6 +56,3 @@ npm run dev
 npm run build
 ```
 
-## ライセンス
-
-Copyright (c) 2026 RateJudge Team. All rights reserved.
