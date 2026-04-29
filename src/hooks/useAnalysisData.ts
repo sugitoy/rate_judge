@@ -30,7 +30,10 @@ export const useAnalysisData = (
     initializedTournamentId,
     setInitializedTournamentId,
     displayMode,
-    setDisplayMode
+    setDisplayMode,
+    sortKey,
+    sortOrder,
+    setSortConfig
   } = useUIStore();
 
   // 初期表示または大会切り替え時に全選手を選択状態にする
@@ -67,8 +70,27 @@ export const useAnalysisData = (
       }
     });
 
-    return info.map(p => ({ ...p, rank: rankMap.get(p.id) || 0 }));
-  }, [activeT, currentScores]);
+    const result = info.map(p => ({ ...p, rank: rankMap.get(p.id) || 0 }));
+
+    // ソート処理の適用
+    return [...result].sort((a, b) => {
+      let valA: number, valB: number;
+      if (sortKey === 'entryNo') {
+        valA = a.entryNo;
+        valB = b.entryNo;
+      } else if (sortKey === 'total') {
+        valA = a.total;
+        valB = b.total;
+      } else {
+        // 審査項目IDによるソート
+        valA = currentScores[a.id]?.scores[sortKey] || 0;
+        valB = currentScores[b.id]?.scores[sortKey] || 0;
+      }
+
+      if (sortOrder === 'asc') return valA - valB;
+      return valB - valA;
+    });
+  }, [activeT, currentScores, sortKey, sortOrder]);
 
 
   // 2. グラフ用分布データ (エントリーNo順 + フィルター適用)
@@ -161,6 +183,9 @@ export const useAnalysisData = (
     selectAll,
     deselectAll,
     displayMode,
-    setDisplayMode
+    setDisplayMode,
+    sortKey,
+    sortOrder,
+    setSortConfig
   };
 };

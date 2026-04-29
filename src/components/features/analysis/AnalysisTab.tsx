@@ -29,7 +29,9 @@ export const AnalysisTab = () => {
     selectAll,
     deselectAll,
     displayMode,
-    setDisplayMode
+    setDisplayMode,
+    sortKey,
+    setSortConfig
   } = useAnalysisData(activeT, currentScores);
 
   if (!activeT || activeT.players.length === 0 || activeT.criteria.length === 0) {
@@ -96,6 +98,27 @@ export const AnalysisTab = () => {
               value={displayMode}
               onChange={(val) => setDisplayMode(val as 'percentage' | 'points')}
             />
+          </div>
+
+          <div className="space-y-3 pt-4 border-t border-slate-100">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.PLAYER_SORT_TITLE}</span>
+            <div className="flex flex-col gap-2">
+              <select 
+                className="form-input w-full text-sm"
+                value={sortKey}
+                onChange={(e) => {
+                  const newKey = e.target.value;
+                  const newOrder = newKey === 'entryNo' ? 'asc' : 'desc';
+                  setSortConfig(newKey, newOrder);
+                }}
+              >
+                <option value="entryNo">{MESSAGES.PLAYER_SORT_KEY_ENTRY}</option>
+                <option value="total">{MESSAGES.PLAYER_SORT_KEY_TOTAL}</option>
+                {activeT.criteria.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="pt-4 border-t border-slate-100">

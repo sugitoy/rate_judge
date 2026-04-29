@@ -12,6 +12,9 @@ interface UIState {
   setInitializedTournamentId: (id: string | null) => void;
   displayMode: 'points' | 'percentage';
   setDisplayMode: (mode: 'points' | 'percentage') => void;
+  sortKey: string; // 'entryNo' | 'total' | criterionId
+  sortOrder: 'asc' | 'desc';
+  setSortConfig: (key: string, order: 'asc' | 'desc') => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -21,6 +24,8 @@ export const useUIStore = create<UIState>()(
       selectedPlayerIds: [],
       initializedTournamentId: null,
       displayMode: 'points',
+      sortKey: 'entryNo',
+      sortOrder: 'asc',
       toggleSidePanel: () => set((state) => ({ isSidePanelOpen: !state.isSidePanelOpen })),
       setSidePanel: (isOpen: boolean) => set({ isSidePanelOpen: isOpen }),
       setSelectedPlayerIds: (ids: string[]) => set({ selectedPlayerIds: ids }),
@@ -31,6 +36,7 @@ export const useUIStore = create<UIState>()(
       })),
       setInitializedTournamentId: (id: string | null) => set({ initializedTournamentId: id }),
       setDisplayMode: (mode: 'points' | 'percentage') => set({ displayMode: mode }),
+      setSortConfig: (key: string, order: 'asc' | 'desc') => set({ sortKey: key, sortOrder: order }),
     }),
     {
       name: 'rate-judge-ui-storage',

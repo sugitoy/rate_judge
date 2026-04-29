@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { TournamentConfig, PlayerScore, ScoreTableDataRow } from '../types';
+import { useUIStore } from '../store/useUIStore';
 
 /**
  * 汎用的な順位計算関数 (同点の場合は同じ順位)
@@ -38,6 +39,8 @@ export const useScoringData = (
   activeT: TournamentConfig | null | undefined,
   currentScores: Record<string, PlayerScore>
 ) => {
+  const { sortKey, sortOrder } = useUIStore();
+
   const tableData = useMemo<ScoreTableDataRow[]>(() => {
     if (!activeT) return [];
 
@@ -71,7 +74,7 @@ export const useScoringData = (
       );
     });
 
-    return data.map(item => {
+    const result = data.map(item => {
       const cRanks: Record<string, number> = {};
       activeT.criteria.forEach(c => {
         cRanks[c.id] = criterionRankMaps[c.id].get(item.player.id) || 0;
@@ -82,7 +85,28 @@ export const useScoringData = (
         criterionRanks: cRanks
       };
     });
-  }, [activeT, currentScores]);
+
+    // ソート処理の適用
+    const sortedData = [...result].sort((a, b) => {
+      let valA: number, valB: number;
+      if (sortKey === 'entryNo') {
+        valA = a.entryNo;
+        valB = b.entryNo;
+      } else if (sortKey === 'total') {
+        valA = a.total;
+        valB = b.total;
+      } else {
+        // 審査項目IDによるソート
+        valA = a.scores[sortKey] || 0;
+        valB = b.scores[sortKey] || 0;
+      }
+
+      if (sortOrder === 'asc') return valA - valB;
+      return valB - valA;
+    });
+
+    return sortedData;
+  }, [activeT, currentScores, sortKey, sortOrder]);
 
   return { tableData };
 };
