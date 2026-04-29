@@ -9,10 +9,12 @@ interface ScoreCellProps {
   value?: number;
   inputUnit: number;
   mode: 'percentage' | 'points';
+  rank?: number; // 追加
+  showRank?: boolean; // 追加
   onChange: (val: number) => void;
 }
 
-export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUnit, mode, onChange }) => {
+export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUnit, mode, rank, showRank, onChange }) => {
   const [absStr, setAbsStr] = useState(value !== undefined ? value.toString() : '');
   const [pctStr, setPctStr] = useState(value !== undefined && criterion.maxScore > 0 ? ((value / criterion.maxScore) * 100).toString() : '');
 
@@ -96,7 +98,14 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
               placeholder="%"
             />
           </div>
-          <span className="text-slate-400 text-[10px] font-bold w-4 select-none">%</span>
+          <div className="flex flex-col items-start -space-y-0.5 min-w-[32px]">
+            <span className="text-slate-400 text-[10px] font-bold select-none">%</span>
+            {showRank && rank && rank > 0 && (
+              <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary' : 'text-slate-300'}`}>
+                ({rank}{MESSAGES.ANALYSIS_RANK_SUFFIX})
+              </span>
+            )}
+          </div>
         </div>
       )}
 
@@ -116,7 +125,14 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({ criterion, value, inputUni
               onFocus={(e) => e.target.select()}
               placeholder="pt"
             />
-            <span className="text-slate-400 text-[10px] font-bold w-4 select-none uppercase tracking-tighter">pt</span>
+            <div className="flex flex-col items-start -space-y-0.5 min-w-[32px]">
+              <span className="text-slate-400 text-[10px] font-bold select-none uppercase tracking-tighter">pt</span>
+              {showRank && rank && rank > 0 && (
+                <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary' : 'text-slate-300'}`}>
+                  ({rank}{MESSAGES.ANALYSIS_RANK_SUFFIX})
+                </span>
+              )}
+            </div>
           </div>
           {isInvalid && (
             <span className="text-[9px] text-danger font-bold uppercase tracking-tight animate-in fade-in slide-in-from-top-1 duration-150">

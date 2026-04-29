@@ -17,6 +17,7 @@ export const ScoringTab = () => {
   const { tournamentScores, updateScore, updateComment, importScores } = useScoringStore();
 
   const [inputMode, setInputMode] = useState<'percentage' | 'points'>('points');
+  const [showRank, setShowRank] = useState(true); // 順位表示の切り替え
   const [commentModalData, setCommentModalData] = useState<{ playerId: string } | null>(null);
 
   const activeT = activeTournamentId ? tournaments[activeTournamentId] : null;
@@ -72,7 +73,9 @@ export const ScoringTab = () => {
                   </th>
                 ))}
                 <th className="px-3 py-2 text-center border-l-2 border-slate-200 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_TOTAL}</th>
-                <th className="px-3 py-2 text-center bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_RANK}</th>
+                {showRank && (
+                  <th className="px-3 py-2 text-center border-l border-primary/20 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_RANK}</th>
+                )}
                 <th className="px-3 py-2 text-center border-l-2 border-slate-200 bg-slate-50 text-slate-500 font-bold">{MESSAGES.SCORING_TABLE_DETAIL_BTN}</th>
               </tr>
             </thead>
@@ -91,6 +94,8 @@ export const ScoringTab = () => {
                         inputUnit={activeT.inputUnit}
                         mode={inputMode}
                         value={row.scores[c.id]}
+                        rank={row.criterionRanks?.[c.id]}
+                        showRank={showRank}
                         onChange={(val) => updateScore(activeT.id, row.player.id, c.id, val)}
                       />
                     </td>
@@ -101,15 +106,17 @@ export const ScoringTab = () => {
                       {row.total}<span className="text-[10px] text-primary/60 font-semibold ml-0.5 uppercase">pt</span>
                     </div>
                   </td>
-                  <td className="px-3 py-1.5 text-center align-middle bg-primary-light/10 border-l border-primary/5">
-                    {(() => {
-                      const r = row.rank;
-                      if (r === 1) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-300 rounded-full font-bold text-yellow-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                      if (r === 2) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-300 rounded-full font-bold text-slate-600 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                      if (r === 3) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full font-bold text-orange-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                      return <div className="inline-block px-3 py-1 bg-white border border-slate-200 rounded-full font-bold text-slate-500 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                    })()}
-                  </td>
+                  {showRank && (
+                    <td className="px-3 py-1.5 text-center align-middle bg-primary-light/10 border-l border-primary/20">
+                      {(() => {
+                        const r = row.rank;
+                        if (r === 1) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-300 rounded-full font-bold text-yellow-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                        if (r === 2) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-300 rounded-full font-bold text-slate-600 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                        if (r === 3) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full font-bold text-orange-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                        return <div className="font-bold text-slate-400 text-sm tabular-nums">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                      })()}
+                    </td>
+                  )}
                   <td className="px-3 py-1.5 text-center border-l-2 border-slate-200 align-middle bg-slate-50/20">
                     <button
                       onClick={() => setCommentModalData({ playerId: row.player.id })}
@@ -143,6 +150,19 @@ export const ScoringTab = () => {
               value={inputMode}
               onChange={(val) => setInputMode(val as 'percentage' | 'points')}
             />
+          </div>
+
+          <div className="flex items-center gap-3 py-1">
+            <input
+              id="rank-toggle"
+              type="checkbox"
+              className="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary/20 cursor-pointer"
+              checked={showRank}
+              onChange={(e) => setShowRank(e.target.checked)}
+            />
+            <label htmlFor="rank-toggle" className="text-sm font-bold text-slate-700 cursor-pointer select-none">
+              順位を表示する
+            </label>
           </div>
 
           <div className="pt-4 border-t border-slate-100 space-y-3">

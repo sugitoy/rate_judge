@@ -26,3 +26,13 @@ export interface PlayerScore {
   scores: Record<string, number | undefined>; // 項目IDをキーとした得点データ
   comment?: string;
 }
+
+export interface ScoreTableDataRow {
+  entryNo: number;
+  player: Player;
+  scores: Record<string, number | undefined>;
+  criterionRanks?: Record<string, number>; // 項目ごとの順位
+  comment: string;
+  total: number;
+  rank: number;
+}
