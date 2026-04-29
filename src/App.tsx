@@ -37,8 +37,20 @@ export default function App() {
   }, []);
 
   const handleAddTournament = () => {
+    setActiveTournament('');
     setActiveTab('config');
     setTriggerCreateNew(prev => prev + 1);
+  };
+
+  /** 設定タブボタンのクリックハンドラー
+   * - 登録済み大会がない場合のみ新規作成モードをトリガーする
+   * - 登録済み大会がある場合は選択中の大会を編集モードで開く
+   */
+  const handleOpenConfig = () => {
+    setActiveTab('config');
+    if (tournamentList.length === 0) {
+      setTriggerCreateNew(prev => prev + 1);
+    }
   };
 
   const handleGlobalClear = () => {
@@ -69,6 +81,10 @@ export default function App() {
           value={activeTournamentId || ''}
           onChange={(e) => { setActiveTournament(e.target.value); if (fullWidth) setMenuOpen(false); }}
         >
+          {/* 未選択状態（新規作成中など）のプレースホルダー */}
+          {!activeTournamentId && (
+            <option value='' disabled>（未選択）</option>
+          )}
           {tournamentList.map(t => (
             <option key={t.id} value={t.id}>{t.name} ({t.division})</option>
           ))}
@@ -103,7 +119,7 @@ export default function App() {
             <nav className="flex gap-2">
               <button
                 className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all ${activeTab === 'config' ? 'bg-primary-light text-primary' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-950'}`}
-                onClick={() => setActiveTab('config')}
+                onClick={handleOpenConfig}
               >
                 <Settings size={18} /> {MESSAGES.TAB_CONFIG}
               </button>
@@ -148,7 +164,7 @@ export default function App() {
             <nav className="flex justify-center gap-2 border-b border-slate-100 pb-4">
               <button
                 className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-all ${activeTab === 'config' ? 'bg-primary-light text-primary' : 'text-slate-500 hover:bg-slate-50'}`}
-                onClick={() => handleTabChange('config')}
+                onClick={() => { handleOpenConfig(); setMenuOpen(false); }}
               >
                 <Settings size={18} /> {MESSAGES.TAB_CONFIG}
               </button>

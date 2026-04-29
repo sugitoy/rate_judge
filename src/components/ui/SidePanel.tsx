@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { ChevronRight, ChevronLeft, Layout } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 import { cn } from '../../utils/cn';

@@ -27,7 +27,10 @@ export const ConfigurationTab = ({ triggerCreateNew }: { triggerCreateNew?: numb
   const activeT = activeTournamentId ? tournaments[activeTournamentId] : null;
 
   const [localT, setLocalT] = useState<TournamentConfig>(activeT || createEmptyTournament());
-  const [isCreatingNew, setIsCreatingNew] = useState(!activeT);
+  // activeTournamentIdが有効な大会を指している場合は編集モード、それ以外は新規作成モードで初期化する
+  const [isCreatingNew, setIsCreatingNew] = useState(
+    !activeTournamentId || !tournaments[activeTournamentId]
+  );
 
   // Sync state when activeT changes (from header dropdown)
   useEffect(() => {
