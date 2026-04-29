@@ -6,6 +6,8 @@ import { AnalysisTab } from './components/features/analysis/AnalysisTab';
 import { useTournamentStore } from './store/useTournamentStore';
 import { useScoringStore } from './store/useScoringStore';
 import { MESSAGES } from './constants/messages';
+import { useUIStore } from './store/useUIStore';
+import { cn } from './utils/cn';
 import './App.css';
 
 export default function App() {
@@ -24,6 +26,8 @@ export default function App() {
   const {
     clearAllScores
   } = useScoringStore();
+
+  const { isSidePanelOpen } = useUIStore();
 
   // メニュー外クリックで閉じる
   useEffect(() => {
@@ -198,7 +202,10 @@ export default function App() {
         )}
       </header>
 
-      <main className="flex-1 w-full py-6">
+      <main className={cn(
+        "flex-1 w-full py-6 transition-all duration-300",
+        isSidePanelOpen ? "lg:pr-80" : "lg:pr-16"
+      )}>
         <div className="px-4 lg:px-8 mx-auto max-w-[1600px]">
           {activeTab === 'config' && (
             <ConfigurationTab 

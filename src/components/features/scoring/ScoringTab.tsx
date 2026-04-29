@@ -196,7 +196,7 @@ export const ScoringTab = () => {
       </div>
 
       {/* B) サイドコンテンツ（コントロール） */}
-      <SidePanel title="採点コントロール" className="order-1 lg:order-2">
+      <SidePanel className="order-1 lg:order-2">
         <div className="flex flex-col gap-6">
           <div className="space-y-3">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.SCORING_TOGGLE_MODE}</span>
@@ -244,6 +244,21 @@ export const ScoringTab = () => {
             </label>
           </div>
 
+          <div className="pt-4 border-t border-slate-100">
+            <PlayerFilter 
+              players={tableData.map(d => ({
+                id: d.player.id,
+                name: d.player.name,
+                rank: d.rank,
+                entryNo: d.entryNo
+              }))}
+              selectedIds={selectedPlayerIds}
+              onToggle={togglePlayerSelection}
+              onSelectAll={() => setSelectedPlayerIds(activeT.players.map(p => p.id))}
+              onDeselectAll={() => setSelectedPlayerIds([])}
+            />
+          </div>
+
           <div className="pt-4 border-t border-slate-100 space-y-3">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">データ入出力</span>
             <div className="grid grid-cols-1 gap-2">
@@ -258,21 +273,6 @@ export const ScoringTab = () => {
                 <Upload size={18} /> {MESSAGES.CSV_EXPORT_SCORES}
               </button>
             </div>
-          </div>
-
-          <div className="pt-4 border-t border-slate-100">
-            <PlayerFilter 
-              players={tableData.map(d => ({
-                id: d.player.id,
-                name: d.player.name,
-                rank: d.rank,
-                entryNo: d.entryNo
-              }))}
-              selectedIds={selectedPlayerIds}
-              onToggle={togglePlayerSelection}
-              onSelectAll={() => setSelectedPlayerIds(activeT.players.map(p => p.id))}
-              onDeselectAll={() => setSelectedPlayerIds([])}
-            />
           </div>
         </div>
       </SidePanel>

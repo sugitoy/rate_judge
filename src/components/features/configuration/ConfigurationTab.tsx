@@ -180,7 +180,7 @@ export const ConfigurationTab = ({
       </div>
 
       {/* C) サイドコンテンツ（操作・アクション） */}
-      <SidePanel title="アクション">
+      <SidePanel>
         <div className="flex flex-col gap-4">
           <button 
             onClick={handleSaveInfo} 

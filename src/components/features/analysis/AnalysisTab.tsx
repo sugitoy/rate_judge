@@ -85,8 +85,8 @@ export const AnalysisTab = () => {
         )}
       </div>
 
-      {/* E) サイドコンテンツ（フィルタ） */}
-      <SidePanel title="分析コントロール" className="order-1 lg:order-2">
+      {/* B) サイドコンテンツ（表示対象フィルタ） */}
+      <SidePanel className="order-1 lg:order-2">
         <div className="flex flex-col gap-6">
           <div className="space-y-3">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.SCORING_TOGGLE_MODE}</span>
