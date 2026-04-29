@@ -114,9 +114,9 @@ export const MESSAGES = {
   PLAYER_FILTER_TITLE: '表示対象選手',
   PLAYER_FILTER_SYNC_NOTE: '※全タブで同期されます',
   SCORING_EMPTY_SELECTION: '表示対象が選択されていません。右メニューで選手を選択してください。',
-  
+
   // Sorting
-  PLAYER_SORT_TITLE: '選手の並び順',
+  PLAYER_SORT_TITLE: '並び順',
   PLAYER_SORT_KEY_ENTRY: 'エントリーNo順',
   PLAYER_SORT_KEY_TOTAL: '合計点順',
   PLAYER_SORT_ORDER_ASC: '昇順',
