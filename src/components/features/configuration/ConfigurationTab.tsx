@@ -20,7 +20,13 @@ const createEmptyTournament = (): TournamentConfig => ({
   players: []
 });
 
-export const ConfigurationTab = ({ triggerCreateNew }: { triggerCreateNew?: number }) => {
+export const ConfigurationTab = ({ 
+  triggerCreateNew,
+  onTriggerConsumed
+}: { 
+  triggerCreateNew?: number,
+  onTriggerConsumed?: () => void
+}) => {
   const { tournaments, activeTournamentId, addTournament, updateTournament, deleteTournament, setActiveTournament } = useTournamentStore();
   const { deleteTournamentScores } = useScoringStore();
   
@@ -51,8 +57,10 @@ export const ConfigurationTab = ({ triggerCreateNew }: { triggerCreateNew?: numb
       setIsCreatingNew(true);
       setActiveTournament('');
       setLocalT(createEmptyTournament());
+      // トリガーを消費したことを親に通知
+      onTriggerConsumed?.();
     }
-  }, [triggerCreateNew, setActiveTournament]);
+  }, [triggerCreateNew, setActiveTournament, onTriggerConsumed]);
 
   const handleSaveInfo = () => {
     if (!localT.name.trim()) {

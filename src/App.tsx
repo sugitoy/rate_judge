@@ -200,7 +200,12 @@ export default function App() {
 
       <main className="flex-1 w-full py-6">
         <div className="px-4 lg:px-8 mx-auto max-w-[1600px]">
-          {activeTab === 'config' && <ConfigurationTab triggerCreateNew={triggerCreateNew} />}
+          {activeTab === 'config' && (
+            <ConfigurationTab 
+              triggerCreateNew={triggerCreateNew} 
+              onTriggerConsumed={() => setTriggerCreateNew(0)}
+            />
+          )}
           {activeTab === 'score' && <ScoringTab />}
           {activeTab === 'analysis' && <AnalysisTab />}
         </div>
