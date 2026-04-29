@@ -13,6 +13,7 @@ interface DetailModalProps {
   comment: string;
   inputMode: 'percentage' | 'points';
   toggleInputMode: (mode: 'percentage' | 'points') => void;
+  onSaveScore: (criterionId: string, val: number) => void;
   onSaveComment: (val: string) => void;
   onClose: () => void;
   onPrevPlayer?: (currentComment: string) => void; // 追加

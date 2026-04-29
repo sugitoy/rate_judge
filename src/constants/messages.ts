@@ -108,5 +108,10 @@ export const MESSAGES = {
   ANALYSIS_TOTAL_DIST_TITLE: '全体得点分布 (内訳の積み上げ)',
   ANALYSIS_SORT_NOTE: '※エントリーNo順',
   ANALYSIS_MAX_POINT: '満点: ',
-  ANALYSIS_EMPTY_SELECTION: '表示対象が選択されていません。上部で比較対象を選択してください。'
+  ANALYSIS_EMPTY_SELECTION: '表示対象が選択されていません。右メニューで選手を選択してください。',
+
+  // Shared
+  PLAYER_FILTER_TITLE: '表示対象選手',
+  PLAYER_FILTER_SYNC_NOTE: '※全タブで同期されます',
+  SCORING_EMPTY_SELECTION: '表示対象が選択されていません。右メニューで選手を選択してください。'
 };

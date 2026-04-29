@@ -11,6 +11,9 @@ import { ScoreCell } from './ScoreCell';
 import { DetailModal } from './DetailModal';
 import { ToggleSwitch } from '../../ui/ToggleSwitch';
 import { SidePanel } from '../../ui/SidePanel';
+import { useUIStore } from '../../../store/useUIStore';
+import { PlayerFilter } from '../shared/PlayerFilter';
+import { useEffect } from 'react';
 
 export const ScoringTab = () => {
   const { tournaments, activeTournamentId } = useTournamentStore();
@@ -24,6 +27,24 @@ export const ScoringTab = () => {
   const currentScores = activeTournamentId ? tournamentScores[activeTournamentId] || {} : {};
 
   const { tableData } = useScoringData(activeT, currentScores);
+  const { 
+    selectedPlayerIds, 
+    togglePlayerSelection, 
+    setSelectedPlayerIds,
+    initializedTournamentId,
+    setInitializedTournamentId
+  } = useUIStore();
+
+  // 初期表示または大会切り替え時に全選手を選択状態にする
+  useEffect(() => {
+    if (!activeT || activeT.players.length === 0) return;
+    
+    // 大会が切り替わった場合のみ初期化（全選択）
+    if (initializedTournamentId !== activeT.id) {
+      setSelectedPlayerIds(activeT.players.map(p => p.id));
+      setInitializedTournamentId(activeT.id);
+    }
+  }, [activeT, initializedTournamentId, setSelectedPlayerIds, setInitializedTournamentId]);
 
   if (!activeT || activeT.players.length === 0 || activeT.criteria.length === 0) {
     return (
@@ -102,7 +123,19 @@ export const ScoringTab = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
-              {tableData.map((row) => (
+              {(() => {
+                const filtered = tableData.filter(row => selectedPlayerIds.includes(row.player.id));
+                if (filtered.length === 0) {
+                  const colSpan = 4 + activeT.criteria.length + (showRank ? 1 : 0);
+                  return (
+                    <tr>
+                      <td colSpan={colSpan} className="px-6 py-20 text-center text-slate-400 bg-slate-50/30 italic">
+                        {MESSAGES.SCORING_EMPTY_SELECTION}
+                      </td>
+                    </tr>
+                  );
+                }
+                return filtered.map((row) => (
                 <tr key={row.player.id} className="hover:bg-slate-50/80 transition-colors group">
                   <td className="px-3 py-1.5 text-center font-bold text-slate-400 sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-200">{row.entryNo}</td>
                   <td className="px-3 py-1.5 sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[1px_0_0_#e2e8f0] border-r border-slate-200 align-middle">
@@ -152,7 +185,8 @@ export const ScoringTab = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
+                ));
+              })()}
             </tbody>
           </table>
         </div>
@@ -200,6 +234,21 @@ export const ScoringTab = () => {
                 <Upload size={18} /> {MESSAGES.CSV_EXPORT_SCORES}
               </button>
             </div>
+          </div>
+
+          <div className="pt-4 border-t border-slate-100">
+            <PlayerFilter 
+              players={tableData.map(d => ({
+                id: d.player.id,
+                name: d.player.name,
+                rank: d.rank,
+                entryNo: d.entryNo
+              }))}
+              selectedIds={selectedPlayerIds}
+              onToggle={togglePlayerSelection}
+              onSelectAll={() => setSelectedPlayerIds(activeT.players.map(p => p.id))}
+              onDeselectAll={() => setSelectedPlayerIds([])}
+            />
           </div>
         </div>
       </SidePanel>

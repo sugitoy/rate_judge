@@ -1,6 +1,6 @@
-// src/hooks/useAnalysisData.ts
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import type { TournamentConfig, PlayerScore } from '../types';
+import { useUIStore } from '../store/useUIStore';
 
 function getMean(arr: number[]) {
   if (!arr.length) return 0;
@@ -23,16 +23,24 @@ export const useAnalysisData = (
   activeT: TournamentConfig | null | undefined,
   currentScores: Record<string, PlayerScore>
 ) => {
-  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+  const { 
+    selectedPlayerIds: selectedPlayers, 
+    togglePlayerSelection: togglePlayer, 
+    setSelectedPlayerIds,
+    initializedTournamentId,
+    setInitializedTournamentId
+  } = useUIStore();
 
-  // 初期表示で全選手を選択状態にする
+  // 初期表示または大会切り替え時に全選手を選択状態にする
   useEffect(() => {
-    if (activeT && activeT.players.length > 0) {
-      setSelectedPlayers(activeT.players.map(p => p.id));
-    } else {
-      setSelectedPlayers([]);
+    if (!activeT || activeT.players.length === 0) return;
+    
+    // 大会が切り替わった場合のみ初期化（全選択）
+    if (initializedTournamentId !== activeT.id) {
+      setSelectedPlayerIds(activeT.players.map(p => p.id));
+      setInitializedTournamentId(activeT.id);
     }
-  }, [activeT]);
+  }, [activeT, initializedTournamentId, setSelectedPlayerIds, setInitializedTournamentId]);
 
   // 1. 各選手のTotalとRank事前計算
   const playersInfo = useMemo(() => {
@@ -132,20 +140,12 @@ export const useAnalysisData = (
     return { totalStat, critStats };
   }, [activeT, playersInfo, currentScores]);
 
-  const togglePlayer = (pId: string) => {
-    if (selectedPlayers.includes(pId)) {
-      setSelectedPlayers(prev => prev.filter(id => id !== pId));
-    } else {
-      setSelectedPlayers(prev => [...prev, pId]);
-    }
-  };
-
   const selectAll = () => {
-    if (activeT) setSelectedPlayers(activeT.players.map(p => p.id));
+    if (activeT) setSelectedPlayerIds(activeT.players.map(p => p.id));
   };
   
   const deselectAll = () => {
-    setSelectedPlayers([]);
+    setSelectedPlayerIds([]);
   };
 
   return {

@@ -5,7 +5,7 @@ import { useScoringStore } from '../../../store/useScoringStore';
 import { useAnalysisData } from '../../../hooks/useAnalysisData';
 import { MESSAGES } from '../../../constants/messages';
 import { AnalysisStats } from './AnalysisStats';
-import { AnalysisFilter } from './AnalysisFilter';
+import { PlayerFilter } from '../shared/PlayerFilter';
 import { AnalysisOverallDistChart, AnalysisCritDistCharts } from './AnalysisDistCharts';
 import { AnalysisRadarChart } from './AnalysisRadarChart';
 import { SidePanel } from '../../ui/SidePanel';
@@ -80,12 +80,12 @@ export const AnalysisTab = () => {
 
       {/* E) サイドコンテンツ（フィルタ） */}
       <SidePanel title="表示対象フィルタ" className="order-1 lg:order-2">
-        <AnalysisFilter 
-          playersInfo={playersInfo}
-          selectedPlayers={selectedPlayers}
-          togglePlayer={togglePlayer}
-          selectAll={selectAll}
-          deselectAll={deselectAll}
+        <PlayerFilter 
+          players={playersInfo}
+          selectedIds={selectedPlayers}
+          onToggle={togglePlayer}
+          onSelectAll={selectAll}
+          onDeselectAll={deselectAll}
         />
       </SidePanel>
     </div>
