@@ -135,7 +135,7 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
                 </div>
                 <button 
                   onClick={() => removeCriteria(c.id)} 
-                  className="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-danger hover:bg-danger-bg rounded-lg transition-all opacity-0 group-hover/item:opacity-100"
+                  className="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-danger hover:bg-danger-bg rounded-lg transition-all"
                 >
                   <Trash2 size={18} />
                 </button>

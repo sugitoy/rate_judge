@@ -107,7 +107,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                 <td className="text-center py-1">
                   <button 
                     onClick={() => removePlayer(p.id)} 
-                    className="w-8 h-8 flex items-center justify-center mx-auto text-slate-300 hover:text-danger hover:bg-danger-bg rounded-lg transition-all opacity-0 group-hover/row:opacity-100"
+                    className="w-8 h-8 flex items-center justify-center mx-auto text-slate-300 hover:text-danger hover:bg-danger-bg rounded-lg transition-all"
                   >
                     <Trash2 size={16} />
                   </button>

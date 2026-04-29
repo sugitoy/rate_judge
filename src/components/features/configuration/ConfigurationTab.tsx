@@ -34,13 +34,16 @@ export const ConfigurationTab = ({ triggerCreateNew }: { triggerCreateNew?: numb
 
   // Sync state when activeT changes (from header dropdown)
   useEffect(() => {
-    if (activeT && !isCreatingNew) {
+    if (activeT) {
+      // 既存の大会が選択された場合は、編集モードに切り替えてデータを同期する
       setLocalT(activeT);
-    } else if (!activeT) {
+      setIsCreatingNew(false);
+    } else {
+      // 大会が未選択の場合は、新規作成モードにする
       setLocalT(createEmptyTournament());
       setIsCreatingNew(true);
     }
-  }, [activeT, isCreatingNew]);
+  }, [activeT]);
 
   // ヘッダーからの新規作成トリガー
   useEffect(() => {
@@ -180,7 +183,7 @@ export const ConfigurationTab = ({ triggerCreateNew }: { triggerCreateNew?: numb
           
           {isCreatingNew && Object.keys(tournaments).length > 0 && (
             <button 
-              className="btn btn-outline border-slate-200 text-slate-500 w-full py-3" 
+              className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all" 
               onClick={() => {
                 const keys = Object.keys(tournaments);
                 if (keys.length > 0) {
