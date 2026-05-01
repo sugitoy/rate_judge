@@ -8,16 +8,25 @@ export interface TierDefinition {
 }
 
 export const TIERS: TierDefinition[] = [
-  { id: 'S+', label: 'S+', percentage: 95, color: '#E5E4E2', bgClass: 'bg-[#E5E4E2]/20', textClass: 'text-[#8E8E8E]' }, // Platinum
-  { id: 'S', label: 'S', percentage: 90, color: '#FFD1DC', bgClass: 'bg-[#FFD1DC]/30', textClass: 'text-[#D48192]' }, // Light Pink
-  { id: 'A+', label: 'A+', percentage: 85, color: '#FFB6C1', bgClass: 'bg-[#FFB6C1]/30', textClass: 'text-[#C7707D]' }, // Pink
-  { id: 'A', label: 'A', percentage: 80, color: '#FFB6C1', bgClass: 'bg-[#FFB6C1]/20', textClass: 'text-[#C7707D]' }, // Pink (lighter)
-  { id: 'B', label: 'B', percentage: 75, color: '#FF6B6B', bgClass: 'bg-[#FF6B6B]/20', textClass: 'text-[#E63946]' }, // Red
-  { id: 'C', label: 'C', percentage: 70, color: '#FF922B', bgClass: 'bg-[#FF922B]/20', textClass: 'text-[#D9480F]' }, // Orange
-  { id: 'D', label: 'D', percentage: 65, color: '#FCC419', bgClass: 'bg-[#FCC419]/20', textClass: 'text-[#947600]' }, // Yellow
-  { id: 'E', label: 'E', percentage: 60, color: '#94D82D', bgClass: 'bg-[#94D82D]/20', textClass: 'text-[#5C940D]' }, // Yellow Green
-  { id: 'F', label: 'F', percentage: 55, color: '#339AF0', bgClass: 'bg-[#339AF0]/20', textClass: 'text-[#1971C2]' }, // Light Blue
-  { id: 'G', label: 'G', percentage: 50, color: '#ADB5BD', bgClass: 'bg-[#ADB5BD]/20', textClass: 'text-[#495057]' }, // Grey
+  { id: 'S+', label: 'S+', percentage: 95, color: '#A855F7', bgClass: 'bg-[#A855F7]/20', textClass: 'text-[#A855F7]' }, // Purple 500
+  { id: 'S', label: 'S', percentage: 90, color: '#EF4444', bgClass: 'bg-[#EF4444]/20', textClass: 'text-[#EF4444]' }, // Red 500
+  { id: 'A+', label: 'A+', percentage: 85, color: '#F97316', bgClass: 'bg-[#F97316]/20', textClass: 'text-[#F97316]' }, // Orange 500
+  { id: 'A', label: 'A', percentage: 80, color: '#F59E0B', bgClass: 'bg-[#F59E0B]/20', textClass: 'text-[#F59E0B]' }, // Amber 500
+  { id: 'B', label: 'B', percentage: 75, color: '#FBBF24', bgClass: 'bg-[#FBBF24]/20', textClass: 'text-[#FBBF24]' }, // Yellow 400
+  { id: 'C', label: 'C', percentage: 70, color: '#84CC16', bgClass: 'bg-[#84CC16]/20', textClass: 'text-[#84CC16]' }, // Lime 500
+  { id: 'D', label: 'D', percentage: 65, color: '#10B981', bgClass: 'bg-[#10B981]/20', textClass: 'text-[#10B981]' }, // Green 500
+  { id: 'E', label: 'E', percentage: 60, color: '#06B6D4', bgClass: 'bg-[#06B6D4]/20', textClass: 'text-[#06B6D4]' }, // Cyan 500
+  { id: 'F', label: 'F', percentage: 55, color: '#3B82F6', bgClass: 'bg-[#3B82F6]/20', textClass: 'text-[#3B82F6]' }, // Blue 500
+  { id: 'G', label: 'G', percentage: 50, color: '#64748B', bgClass: 'bg-[#64748B]/20', textClass: 'text-[#64748B]' }, // Slate 500
 ];
 
 export const getTierById = (id: string) => TIERS.find(t => t.id === id);
+
+/**
+ * 与えられた割合（%）に最も近い Tier を返す
+ */
+export const getClosestTier = (percentage: number): TierDefinition => {
+  return TIERS.reduce((prev, curr) => {
+    return (Math.abs(curr.percentage - percentage) < Math.abs(prev.percentage - percentage) ? curr : prev);
+  });
+};

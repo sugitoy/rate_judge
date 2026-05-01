@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { Criteria } from '../../../types';
 import { trimZero, isValidUnit, calculateAutoCorrect } from '../../../utils/scoreFormatter';
 import { MESSAGES } from '../../../constants/messages';
-import { TIERS, getTierById } from '../../../constants/tiers';
+import { TIERS, getTierById, getClosestTier } from '../../../constants/tiers';
 
 import { useUIStore } from '../../../store/useUIStore';
 
@@ -57,10 +57,15 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
     const num = parseFloat(newVal);
     if (!isNaN(num)) {
       if (criterion.maxScore > 0) {
-        setPctStr((num / criterion.maxScore * 100).toString());
+        const pct = (num / criterion.maxScore * 100);
+        setPctStr(pct.toString());
+        // 自動Tier選択
+        const closestTier = getClosestTier(pct);
+        onTierChange?.(closestTier.id);
       }
       onChange(num);
     } else {
+      onTierChange?.(undefined);
       onChange(0);
     }
   };
@@ -77,8 +82,12 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
     if (!isNaN(num)) {
       const calcAbs = calculateAutoCorrect(num, criterion.maxScore, inputUnit);
       setAbsStr(calcAbs.toString());
+      // 自動Tier選択 (入力された%に基づきTier判定)
+      const closestTier = getClosestTier(num);
+      onTierChange?.(closestTier.id);
       onChange(calcAbs);
     } else {
+      onTierChange?.(undefined);
       onChange(0);
     }
   };

@@ -65,11 +65,11 @@ export default function App() {
           {/* 左側: タイトル + 大会情報 + 主要タブ */}
           <div className="flex items-center gap-8 min-w-0 flex-1">
             <div className="flex items-center gap-4 shrink-0">
-              <h1 
+              <h1
                 className="text-xl font-bold text-primary tracking-tight whitespace-nowrap cursor-pointer hover:opacity-80 transition-all"
                 onClick={() => handleTabChange('config')}
               >
-                {MESSAGES.APP_TITLE}
+                {MESSAGES.APP_TITLE}{import.meta.env.DEV && " (テスト環境)"}
               </h1>
               {activeT && (
                 <div className="hidden sm:flex items-center gap-3 border-l border-slate-200 pl-4 overflow-hidden">
@@ -82,7 +82,7 @@ export default function App() {
                 </div>
               )}
             </div>
-            
+
             <nav className="hidden lg:flex gap-1">
               <button
                 className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all ${activeTab === 'score' ? 'bg-primary-light text-primary' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-950'}`}
@@ -153,8 +153,8 @@ export default function App() {
       )}>
         <div className="px-4 lg:px-8 mx-auto max-w-[1600px]">
           {activeTab === 'config' && (
-            <ConfigurationTab 
-              triggerCreateNew={triggerCreateNew} 
+            <ConfigurationTab
+              triggerCreateNew={triggerCreateNew}
               onTriggerConsumed={() => setTriggerCreateNew(0)}
             />
           )}

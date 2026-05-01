@@ -2,6 +2,7 @@
 import Papa from 'papaparse';
 import type { Criteria, Player, PlayerScore, TournamentConfig } from '../types';
 import { MESSAGES } from '../constants/messages';
+import { getClosestTier } from '../constants/tiers';
 
 /**
  * 構成情報CSVから大会設定と審査項目を抽出 (横持ち形式対応)
@@ -152,10 +153,19 @@ export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<R
 
           if (pMatched) {
             const pScoreData: Record<string, number> = {};
+            const pSelectedTiers: Record<string, string> = {};
+            
             criteriaIndices.forEach(ci => {
               const val = Number(row[ci.idx]);
               if (!isNaN(val)) {
                 pScoreData[ci.cId] = val;
+                
+                // スコアから最も近いTierを自動算出
+                const crit = activeT.criteria.find(c => c.id === ci.cId);
+                if (crit && crit.maxScore > 0) {
+                  const pct = (val / crit.maxScore) * 100;
+                  pSelectedTiers[ci.cId] = getClosestTier(pct).id;
+                }
               }
             });
             
@@ -165,6 +175,7 @@ export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<R
             newScoresData[pMatched.id] = {
               playerId: pMatched.id,
               scores: pScoreData,
+              selectedTiers: pSelectedTiers,
               ...(deductionVal !== undefined && !isNaN(deductionVal) ? { deduction: deductionVal } : {}),
               comment: cmt
             };
