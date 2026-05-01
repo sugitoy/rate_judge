@@ -139,8 +139,8 @@ export const MESSAGES = {
 
   // --- Sorting & Filtering ---
   PLAYER_SORT_TITLE: '並び順',
-  PLAYER_SORT_KEY_ENTRY: 'エントリーNo順',
-  PLAYER_SORT_KEY_TOTAL: '合計点順',
+  PLAYER_SORT_KEY_ENTRY: 'エントリーNo',
+  PLAYER_SORT_KEY_TOTAL: '合計点',
 
   PLAYER_FILTER_TITLE: '表示対象選手',
   PLAYER_FILTER_SYNC_NOTE: '※全タブで同期されます',

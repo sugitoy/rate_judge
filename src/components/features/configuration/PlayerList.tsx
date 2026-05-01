@@ -23,12 +23,12 @@ export const PlayerList: React.FC<PlayerListProps> = ({
   const addPlayer = () => {
     setLocalT(prev => ({
       ...prev,
-      players: [...prev.players, { 
-        id: crypto.randomUUID(), 
-        entryNumber: prev.players.length + 1, 
-        name: '', 
-        affiliation: '', 
-        props: '' 
+      players: [...prev.players, {
+        id: crypto.randomUUID(),
+        entryNumber: prev.players.length + 1,
+        name: '',
+        affiliation: '',
+        props: ''
       }]
     }));
   };
@@ -73,8 +73,8 @@ export const PlayerList: React.FC<PlayerListProps> = ({
         </div>
       </div>
 
-      <div className="border border-slate-200 rounded-xl overflow-hidden shadow-inner bg-slate-50/30">
-        <table className="w-full text-sm">
+      <div className="border border-slate-200 rounded-xl overflow-x-auto shadow-inner bg-slate-50/30">
+        <table className="w-full text-sm min-w-[900px]">
           <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
             <tr>
               <th className="py-2 w-14 text-center uppercase tracking-tighter text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_NO}</th>
@@ -99,13 +99,12 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                 </td>
                 <td className="py-1 pr-2 pl-2">
                   <div className="flex flex-col gap-0.5">
-                    <input 
-                      type="text" 
-                      className={`form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all ${
-                        p.name.length > 100 || (p.name.trim() === '' && p.name !== '') ? 'border-danger text-danger bg-danger-bg/5' : ''
-                      }`} 
-                      value={p.name} 
-                      onChange={e => updatePlayer(p.id, 'name', e.target.value)} 
+                    <input
+                      type="text"
+                      className={`form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all ${p.name.length > 100 || (p.name.trim() === '' && p.name !== '') ? 'border-danger text-danger bg-danger-bg/5' : ''
+                        }`}
+                      value={p.name}
+                      onChange={e => updatePlayer(p.id, 'name', e.target.value)}
                       onBlur={e => updatePlayer(p.id, 'name', e.target.value.trim())}
                       onFocus={(e) => e.target.select()}
                       placeholder={MESSAGES.CONFIG_PLAYER_TH_NAME}
@@ -117,13 +116,12 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                 </td>
                 <td className="py-1 pr-2">
                   <div className="flex flex-col gap-0.5">
-                    <input 
-                      type="text" 
-                      className={`form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all ${
-                        (p.affiliation || '').length > 100 ? 'border-danger text-danger bg-danger-bg/5' : ''
-                      }`} 
-                      value={p.affiliation || ''} 
-                      onChange={e => updatePlayer(p.id, 'affiliation', e.target.value)} 
+                    <input
+                      type="text"
+                      className={`form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all ${(p.affiliation || '').length > 100 ? 'border-danger text-danger bg-danger-bg/5' : ''
+                        }`}
+                      value={p.affiliation || ''}
+                      onChange={e => updatePlayer(p.id, 'affiliation', e.target.value)}
                       onBlur={e => updatePlayer(p.id, 'affiliation', (e.target.value || '').trim())}
                       onFocus={(e) => e.target.select()}
                       placeholder={MESSAGES.CONFIG_PLAYER_TH_AFFIL}
@@ -135,13 +133,12 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                 </td>
                 <td className="py-1 pr-2">
                   <div className="flex flex-col gap-0.5">
-                    <input 
-                      type="text" 
-                      className={`form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all ${
-                        (p.props || '').length > 100 ? 'border-danger text-danger bg-danger-bg/5' : ''
-                      }`} 
-                      value={p.props || ''} 
-                      onChange={e => updatePlayer(p.id, 'props', e.target.value)} 
+                    <input
+                      type="text"
+                      className={`form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all ${(p.props || '').length > 100 ? 'border-danger text-danger bg-danger-bg/5' : ''
+                        }`}
+                      value={p.props || ''}
+                      onChange={e => updatePlayer(p.id, 'props', e.target.value)}
                       onBlur={e => updatePlayer(p.id, 'props', (e.target.value || '').trim())}
                       onFocus={(e) => e.target.select()}
                       placeholder={MESSAGES.CONFIG_PLAYER_TH_PROP}
@@ -161,8 +158,8 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                   />
                 </td>
                 <td className="text-center py-1">
-                  <button 
-                    onClick={() => removePlayer(p.id)} 
+                  <button
+                    onClick={() => removePlayer(p.id)}
                     className="w-8 h-8 flex items-center justify-center mx-auto text-slate-300 hover:text-danger hover:bg-danger-bg rounded-lg transition-all"
                   >
                     <Trash2 size={16} />
@@ -180,10 +177,10 @@ export const PlayerList: React.FC<PlayerListProps> = ({
           </tbody>
         </table>
       </div>
-      
+
       <div className="mt-6">
-        <button 
-          onClick={addPlayer} 
+        <button
+          onClick={addPlayer}
           className="btn bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-primary hover:border-primary w-full flex items-center justify-center gap-2 py-3 dashed-border transition-all"
           style={{ borderStyle: 'dashed' }}
         >

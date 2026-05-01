@@ -100,7 +100,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
 
           {/* Player Info (Dropdown) & Result */}
           <div className="flex-1 min-w-0 flex items-center justify-between gap-6">
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 flex flex-col">
               <Select
                 value={player.id}
                 onChange={(val) => onSelectPlayer?.(val, valCmt)}
@@ -108,15 +108,9 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                   value: p.id,
                   label: `No.${p.entryNumber} ${p.name}`
                 }))}
-                className="w-full max-w-md [&>button]:border-none [&>button]:hover:bg-slate-50 [&>button]:px-0 [&>button]:text-2xl [&>button]:font-bold [&>button]:shadow-none [&>button]:rounded-none"
+                className="w-full max-w-md [&>button]:border-slate-200 [&>button]:hover:border-primary/40 [&>button]:hover:bg-slate-50/80 [&>button]:px-4 [&>button]:py-2 [&>button]:text-2xl [&>button]:font-bold [&>button]:shadow-sm [&>button]:rounded-xl [&>button]:transition-all [&>button>svg]:w-5 [&>button>svg]:h-5 [&>button>svg]:text-primary [&>button>svg]:opacity-100"
               />
               <div className="flex items-center gap-4 text-xs font-bold mt-1">
-                {hasDeduction && deduction > 0 && (
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 bg-danger-bg/20 text-danger rounded">
-                    <span className="text-[10px] text-danger/50 uppercase tracking-wider">{MESSAGES.ANALYSIS_DEDUCTION_LABEL}</span>
-                    <span className="tabular-nums">-{formatScore(deduction)}</span>
-                  </div>
-                )}
               </div>
             </div>
 
