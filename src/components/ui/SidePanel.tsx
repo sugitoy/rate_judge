@@ -16,7 +16,7 @@ export const SidePanel = ({ children, className }: SidePanelProps) => {
     <aside
       className={cn(
         "fixed top-16 right-0 bottom-0 z-40 bg-white border-l border-slate-200 transition-all duration-300 ease-in-out flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)]",
-        isSidePanelOpen ? "w-full lg:w-80" : "w-0 lg:w-16",
+        isSidePanelOpen ? "w-[calc(100%-3rem)] lg:w-80" : "w-0 lg:w-16",
         className
       )}
     >
