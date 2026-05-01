@@ -105,6 +105,12 @@ export const ScoringTab = () => {
   const handleImportCSV = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (!window.confirm(MESSAGES.SCORING_IMPORT_CONFIRM)) {
+      e.target.value = '';
+      return;
+    }
+
     try {
       const newScoresData = await parseScoresCSV(file, activeT);
       if (Object.keys(newScoresData).length > 0) {
@@ -113,8 +119,8 @@ export const ScoringTab = () => {
       } else {
         alert(MESSAGES.SCORING_IMPORT_ERR);
       }
-    } catch {
-      alert(MESSAGES.SCORING_IMPORT_ERR);
+    } catch (err: any) {
+      alert(`${MESSAGES.SCORING_IMPORT_ERR}${err.message ? `\n(${err.message})` : ''}`);
     } finally {
       e.target.value = '';
     }
@@ -151,11 +157,10 @@ export const ScoringTab = () => {
             <thead className="bg-slate-50 dark:bg-slate-900">
               <tr className="border-b-2 border-slate-200 dark:border-slate-600 select-none">
                 <th
-                  className={`px-3 py-2 w-12 text-center font-bold sticky left-0 z-20 border-r transition-all cursor-pointer ${
-                    sortKey === 'entryNo' 
-                      ? 'text-primary dark:text-cyan-400 bg-primary-light/30 dark:bg-cyan-500/15 border-slate-300 dark:border-cyan-500/40' 
+                  className={`px-3 py-2 w-12 text-center font-bold sticky left-0 z-20 border-r transition-all cursor-pointer ${sortKey === 'entryNo'
+                      ? 'text-primary dark:text-cyan-400 bg-primary-light/30 dark:bg-cyan-500/15 border-slate-300 dark:border-cyan-500/40'
                       : 'text-slate-400 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:border-cyan-400'
-                  }`}
+                    }`}
                   onClick={() => handleHeaderClick('entryNo')}
                 >
                   <div className="flex items-center justify-center">
@@ -168,11 +173,10 @@ export const ScoringTab = () => {
                 {activeT.criteria.map(c => (
                   <th
                     key={c.id}
-                    className={`px-1 py-2 text-center border-r transition-all cursor-pointer ${isCompactMode ? 'w-24' : 'min-w-[130px]'} ${
-                      sortKey === c.id
+                    className={`px-1 py-2 text-center border-r transition-all cursor-pointer ${isCompactMode ? 'w-24' : 'min-w-[130px]'} ${sortKey === c.id
                         ? 'bg-primary-light/30 dark:bg-cyan-500/15 border-slate-300 dark:border-cyan-500/40'
                         : 'border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:border-cyan-400/50'
-                    }`}
+                      }`}
                     onClick={() => handleHeaderClick(c.id)}
                   >
                     <div className="flex flex-col items-center">
@@ -188,11 +192,10 @@ export const ScoringTab = () => {
                 {/* 小計列（有効かつ非省略時のみ） */}
                 {hasDeduction && !isCompactMode && (
                   <th
-                    className={`px-3 py-2 text-center border-l transition-all cursor-pointer font-bold ${
-                      sortKey === 'subtotal'
+                    className={`px-3 py-2 text-center border-l transition-all cursor-pointer font-bold ${sortKey === 'subtotal'
                         ? 'text-primary dark:text-cyan-400 bg-primary-light/30 dark:bg-cyan-500/15 border-slate-300 dark:border-cyan-500/40'
                         : 'text-slate-500 dark:text-slate-200 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:border-cyan-400'
-                    }`}
+                      }`}
                     onClick={() => handleHeaderClick('subtotal')}
                   >
                     <div className="flex items-center justify-center">
@@ -205,11 +208,10 @@ export const ScoringTab = () => {
                 {/* 減点列（有効かつ非省略時のみ） */}
                 {hasDeduction && !isCompactMode && (
                   <th
-                    className={`px-1 py-2 text-center border-l border-r transition-all cursor-pointer w-20 ${
-                      sortKey === 'deduction'
+                    className={`px-1 py-2 text-center border-l border-r transition-all cursor-pointer w-20 ${sortKey === 'deduction'
                         ? 'bg-danger-bg/40 dark:bg-danger/25 border-danger/40 dark:border-danger-light'
                         : 'border-danger/20 dark:border-danger/40 bg-danger-bg/20 dark:bg-danger-dark/40 hover:bg-danger-bg/30 dark:hover:bg-danger/30 dark:hover:border-danger-light'
-                    }`}
+                      }`}
                     onClick={() => handleHeaderClick('deduction')}
                   >
                     <div className="flex flex-col items-center">
@@ -222,12 +224,11 @@ export const ScoringTab = () => {
                   </th>
                 )}
 
-                <th 
-                  className={`px-3 py-2 text-center border-l-2 transition-all cursor-pointer font-bold w-28 ${
-                    sortKey === 'total'
+                <th
+                  className={`px-3 py-2 text-center border-l-2 transition-all cursor-pointer font-bold w-28 ${sortKey === 'total'
                       ? 'text-primary dark:text-cyan-400 bg-primary-light/40 dark:bg-cyan-500/25 border-slate-300 dark:border-cyan-400 shadow-[inset_0_0_10px_rgba(6,182,212,0.1)]'
                       : 'text-primary dark:text-cyan-400 bg-primary-light/50 dark:bg-cyan-900/40 border-slate-200 dark:border-slate-700 hover:bg-primary-light/70 dark:hover:bg-cyan-500/20 dark:hover:border-cyan-400'
-                  }`}
+                    }`}
                   onClick={() => handleHeaderClick('total')}
                 >
                   <div className="flex items-center justify-center">

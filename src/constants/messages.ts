@@ -88,7 +88,7 @@ export const MESSAGES = {
   SCORING_TOGGLE_ABS: 'pt',
   SCORING_TOGGLE_TIER: 'Tier',
   SCORING_TOGGLE_COMPACT: '省略表示',
-  SCORING_DATA_IO: 'データ入出力',
+  SCORING_DATA_IO: '採点データ入出力',
 
   // --- Scoring: Table ---
   SCORING_TH_PLAYER: '選手',
@@ -107,6 +107,7 @@ export const MESSAGES = {
   SCORING_ERR_RANGE: '範囲外エラー',
   SCORING_ERR_TIER_MISMATCH: 'Tier不一致',
   SCORING_IMPORT_SUCCESS: 'スコアのインポートが完了しました。',
+  SCORING_IMPORT_CONFIRM: 'CSVからスコアをインポートします。既存の入力済みデータは上書きされますが、よろしいですか？',
   SCORING_IMPORT_ERR: '一致する選手名・審査項目が見つかりませんでした。',
   SCORING_ERR_COMMENT_LENGTH: 'コメントは1000文字以内で入力してください。',
   SCORING_EMPTY_SELECTION: '表示対象が選択されていません。右メニューで選手を選択してください。',

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { TournamentConfig, PlayerScore, ScoreTableDataRow } from '../types';
+import type { TournamentConfig, PlayerScore } from '../types';
 import { useUIStore } from '../store/useUIStore';
 
 /**

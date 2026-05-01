@@ -2,10 +2,6 @@
 
 ## 2.1. 内部データ構造
 
-### 統計計算における母集団の定義
-- **計算対象**: 統計値（平均、中央値、分散、最大、最小）およびランキングの算出には、`isDisqualified: false`（有効）の選手のみを使用する。
-- **除外**: `isDisqualified: true`（失格）の選手は、すべての集計処理の直前でフィルタリングされ、母集団から完全に除外される。
-
 ### 審査項目 (Criteria)
 ```typescript
 interface Criteria {
@@ -46,12 +42,12 @@ interface PlayerScore {
   playerId: string;
   scores: Record<string, number | undefined>; // 項目IDをキーとした得点データ(未入力考慮)
   selectedTiers?: Record<string, string | undefined>; // 項目IDをキーとした選択中のTier
-  deduction?: number;                          // 減点値
+  deduction?: number;                          // 減点値（絶対値で保存、合計計算時に減算）
   comment?: string;                           // 自由記述コメント
 }
 ```
 
-### トーナメント状態 (TournamentState)
+### トーナメント状態 (TournamentStore State)
 ```typescript
 interface TournamentState {
   tournaments: Record<string, TournamentConfig>;
@@ -59,7 +55,7 @@ interface TournamentState {
 }
 ```
 
-### 採点状態 (ScoringState)
+### 採点状態 (ScoringStore State)
 ```typescript
 interface ScoringState {
   tournamentScores: Record<string, Record<string, PlayerScore>>;

@@ -14,15 +14,37 @@ export interface ScoreTableDataRow {
 }
 
 /**
+ * CSVの値を適切にエスケープする
+ * カンマ、改行、ダブルクォートが含まれる場合は全体をクォートし、
+ * 内部のダブルクォートは二重化する。null/undefinedは空文字にする。
+ */
+const escapeCSV = (val: string | number | null | undefined): string => {
+  if (val === null || val === undefined) return '';
+  const str = String(val);
+  if (/[,"\n\r]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+};
+
+/**
+ * ファイル名を安全な形式にサニタイズする
+ */
+const sanitizeFilename = (filename: string): string => {
+  return filename.replace(/[\\/:*?"<>|]/g, '_');
+};
+
+/**
  * 汎用的なCSVダウンロード処理
  */
-const downloadCSV = (filename: string, headers: string[], rows: (string | number)[][]) => {
-  const csvContent = "\uFEFF" + [headers, ...rows].map(e => e.join(",")).join("\n");
+const downloadCSV = (filename: string, headers: string[], rows: (string | number | null | undefined)[][]) => {
+  const sanitized = sanitizeFilename(filename);
+  const csvContent = "\uFEFF" + [headers, ...rows].map(e => e.map(escapeCSV).join(",")).join("\n");
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
-  link.setAttribute("download", filename);
+  link.setAttribute("download", sanitized);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -30,7 +52,7 @@ const downloadCSV = (filename: string, headers: string[], rows: (string | number
 
 /**
  * 採点タブのスコアをCSV形式でダウンロードする
- * 減点有効の場合は「減点」「小計」列を追加する
+ * 減点有効の場合は「減点」「小計」列を追加する。順位列を末尾に追加。
  */
 export const exportScoringToCSV = (
   tournamentName: string,
@@ -39,12 +61,12 @@ export const exportScoringToCSV = (
   hasDeduction = false
 ) => {
   const headers = hasDeduction
-    ? [MESSAGES.CSV_HEADER_S_ENTRY, MESSAGES.CSV_HEADER_P_NAME, ...criteria.map(c => c.name), MESSAGES.ANALYSIS_DEDUCTION_LABEL, MESSAGES.CSV_HEADER_S_SUBTOTAL, MESSAGES.CSV_HEADER_S_TOTAL, MESSAGES.CSV_HEADER_S_COMMENT]
-    : [MESSAGES.CSV_HEADER_S_ENTRY, MESSAGES.CSV_HEADER_P_NAME, ...criteria.map(c => c.name), MESSAGES.CSV_HEADER_S_TOTAL, MESSAGES.CSV_HEADER_S_COMMENT];
+    ? [MESSAGES.CSV_HEADER_S_ENTRY, MESSAGES.CSV_HEADER_P_NAME, ...criteria.map(c => c.name), MESSAGES.ANALYSIS_DEDUCTION_LABEL, MESSAGES.CSV_HEADER_S_SUBTOTAL, MESSAGES.CSV_HEADER_S_TOTAL, MESSAGES.SCORING_TABLE_HEAD_RANK, MESSAGES.CSV_HEADER_S_COMMENT]
+    : [MESSAGES.CSV_HEADER_S_ENTRY, MESSAGES.CSV_HEADER_P_NAME, ...criteria.map(c => c.name), MESSAGES.CSV_HEADER_S_TOTAL, MESSAGES.SCORING_TABLE_HEAD_RANK, MESSAGES.CSV_HEADER_S_COMMENT];
 
   const rows = tableData.map(row => {
     const scoreCols = criteria.map(c => row.scores[c.id] ?? '');
-    const commentCol = `"${(row.comment || '').replace(/"/g, '""')}"`;
+    const commentCol = row.comment || '';
 
     if (hasDeduction) {
       return [
@@ -54,6 +76,7 @@ export const exportScoringToCSV = (
         row.deduction,
         row.subtotal,
         row.total,
+        row.rank || '',
         commentCol
       ];
     }
@@ -62,10 +85,11 @@ export const exportScoringToCSV = (
       row.player.name,
       ...scoreCols,
       row.total,
+      row.rank || '',
       commentCol
     ];
   });
-  downloadCSV(`採点_${tournamentName}.csv`, headers, rows);
+  downloadCSV(`03_採点_${tournamentName}.csv`, headers, rows);
 };
 
 /**
@@ -79,7 +103,7 @@ export const exportConfigToCSV = (config: { name: string; division: string; inpu
     config.inputUnit,
     ...config.criteria.map(c => c.maxScore)
   ];
-  downloadCSV(`大会設定_${config.name}.csv`, headers, [row]);
+  downloadCSV(`01_大会設定_${config.name}.csv`, headers, [row]);
 };
 
 /**
@@ -93,5 +117,5 @@ export const exportPlayersToCSV = (tournamentName: string, players: Player[]) =>
     p.props || '',
     p.isDisqualified ? '1' : '0'
   ]);
-  downloadCSV(`選手リスト_${tournamentName}.csv`, headers, rows);
+  downloadCSV(`02_選手リスト_${tournamentName}.csv`, headers, rows);
 };

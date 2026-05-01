@@ -200,8 +200,8 @@ export const ConfigurationTab = ({
       const parsedConfig = await parseConfigCSV(file);
       setLocalT(prev => ({ ...prev, ...parsedConfig }));
       e.target.value = '';
-    } catch {
-      alert(MESSAGES.CONFIG_CSV_ERR_CONFIG);
+    } catch (err: any) {
+      alert(`${MESSAGES.CONFIG_CSV_ERR_CONFIG}${err.message ? `\n(${err.message})` : ''}`);
       e.target.value = '';
     }
   };
@@ -213,8 +213,8 @@ export const ConfigurationTab = ({
       const players = await parsePlayersCSV(file);
       setLocalT(prev => ({ ...prev, players }));
       e.target.value = '';
-    } catch {
-      alert(MESSAGES.CONFIG_CSV_ERR_PLAYER);
+    } catch (err: any) {
+      alert(`${MESSAGES.CONFIG_CSV_ERR_PLAYER}${err.message ? `\n(${err.message})` : ''}`);
       e.target.value = '';
     }
   };

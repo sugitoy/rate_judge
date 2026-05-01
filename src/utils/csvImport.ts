@@ -13,6 +13,10 @@ export const parseConfigCSV = (file: File): Promise<Partial<TournamentConfig>> =
     Papa.parse(file, {
       skipEmptyLines: true,
       complete: (results) => {
+        if (results.errors.length > 0) {
+          reject(new Error(results.errors[0].message));
+          return;
+        }
         const rows = results.data as string[][];
         if (rows.length < 2) {
           reject(new Error('INVALID_CONFIG'));
@@ -76,6 +80,10 @@ export const parsePlayersCSV = (file: File): Promise<Player[]> => {
     Papa.parse(file, {
       skipEmptyLines: true,
       complete: (results) => {
+        if (results.errors.length > 0) {
+          reject(new Error(results.errors[0].message));
+          return;
+        }
         const rows = results.data as string[][];
 
         if (rows.length === 0) {
@@ -91,7 +99,12 @@ export const parsePlayersCSV = (file: File): Promise<Player[]> => {
         const disqIdx = header.findIndex(h => h === MESSAGES.CSV_HEADER_P_DISQ);
 
         let startIndex = 0;
-        if (nameIdx !== -1) {
+        // 「氏名」が完全一致するか、または1行目のいずれかの列にヘッダー特有のキーワードが含まれる場合にヘッダーとみなす
+        const looksLikeHeader = nameIdx !== -1 || header.some(h => 
+          ['氏名', '名前', '選手', '所属', 'チーム', '道具', '使用道具', '道具名', '失格'].some(k => h.includes(k))
+        );
+
+        if (looksLikeHeader) {
           startIndex = 1;
         }
 
@@ -129,6 +142,10 @@ export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<R
     Papa.parse(file, {
       skipEmptyLines: true,
       complete: (results) => {
+        if (results.errors.length > 0) {
+          reject(new Error(results.errors[0].message));
+          return;
+        }
         const rows = results.data as string[][];
         if (rows.length < 2) {
           reject(new Error('INVALID_SCORES'));
