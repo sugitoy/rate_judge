@@ -16,7 +16,7 @@ export const SidePanel = ({ children, className }: SidePanelProps) => {
   return (
     <aside
       className={cn(
-        "fixed top-16 right-0 bottom-0 z-40 bg-white border-l border-slate-200 transition-all duration-300 ease-in-out flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)]",
+        "fixed top-16 right-0 bottom-0 z-40 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-600 transition-all duration-300 ease-in-out flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] dark:shadow-[-10px_0_30px_rgba(0,0,0,0.5)]",
         isSidePanelOpen ? "w-[calc(100%-3rem)] lg:w-80" : "w-0 lg:w-16",
         className
       )}
@@ -25,7 +25,7 @@ export const SidePanel = ({ children, className }: SidePanelProps) => {
       <button
         onClick={toggleSidePanel}
         className={cn(
-          "absolute top-4 -left-10 w-10 h-10 bg-white border border-slate-200 border-r-0 rounded-l-xl shadow-[-4px_0_10px_-2px_rgba(0,0,0,0.05)] flex items-center justify-center text-primary hover:text-primary-dark transition-all z-50",
+          "absolute top-4 -left-10 w-10 h-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 border-r-0 rounded-l-xl shadow-[-4px_0_10px_-2px_rgba(0,0,0,0.05)] dark:shadow-[-4px_0_15px_rgba(0,0,0,0.5)] flex items-center justify-center text-primary dark:text-cyan-400 hover:text-primary-dark dark:hover:text-cyan-300 transition-all z-50",
           !isSidePanelOpen && "lg:static lg:w-full lg:h-16 lg:rounded-none lg:border-none lg:shadow-none"
         )}
         title={isSidePanelOpen ? MESSAGES.SIDE_PANEL_CLOSE : MESSAGES.SIDE_PANEL_OPEN}

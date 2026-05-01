@@ -5,6 +5,7 @@ import {
 } from 'recharts';
 import { MESSAGES } from '../../../constants/messages';
 import type { TournamentConfig } from '../../../types';
+import { useUIStore } from '../../../store/useUIStore';
 
 
 const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
@@ -34,15 +35,18 @@ const SubtotalBarChart: React.FC<{
     return newD;
   });
 
+  const { theme } = useUIStore();
+  const isDark = theme === 'dark';
+
   return (
     <div className="w-full h-[320px]">
       <ResponsiveContainer>
         <BarChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 40 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-          <XAxis dataKey="label" angle={-45} textAnchor="end" height={40} tick={{ fontSize: 11, fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#334155' : '#f1f5f9'} />
+          <XAxis dataKey="label" angle={-45} textAnchor="end" height={40} tick={{ fontSize: 11, fill: isDark ? '#94a3b8' : '#64748b' }} interval={0} stroke={isDark ? '#334155' : '#e2e8f0'} />
           <YAxis
-            tick={{ fontSize: 12, fill: '#64748b' }}
-            stroke="#e2e8f0"
+            tick={{ fontSize: 12, fill: isDark ? '#94a3b8' : '#64748b' }}
+            stroke={isDark ? '#334155' : '#e2e8f0'}
             unit={(displayMode === 'percentage' || displayMode === 'tier') ? '%' : ''}
             tickFormatter={(val) => val.toFixed(1)}
             domain={([dataMin, dataMax]) => {
@@ -55,8 +59,17 @@ const SubtotalBarChart: React.FC<{
             }}
           />
           <Tooltip
-            cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
-            contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px', padding: '12px' }}
+            cursor={{ fill: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(59, 130, 246, 0.05)' }}
+            contentStyle={{ 
+              borderRadius: '12px', 
+              border: isDark ? '1px solid #334155' : '1px solid #e2e8f0', 
+              backgroundColor: isDark ? '#1e293b' : '#ffffff',
+              color: isDark ? '#f8fafc' : '#0f172a',
+              boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', 
+              fontSize: '12px', 
+              padding: '12px' 
+            }}
+            itemStyle={{ color: isDark ? '#f8fafc' : '#0f172a' }}
             formatter={(val) => makeFormatter(displayMode)(Number(val))}
           />
           <Legend verticalAlign="top" wrapperStyle={{ paddingBottom: '20px', fontSize: '13px', fontWeight: 500 }} />
@@ -96,22 +109,34 @@ const TotalBarChart: React.FC<{
     };
   });
 
+  const { theme } = useUIStore();
+  const isDark = theme === 'dark';
+
   return (
     <div className="w-full h-[320px]">
       <ResponsiveContainer>
         <BarChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 40 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-          <XAxis dataKey="label" angle={-45} textAnchor="end" height={40} tick={{ fontSize: 11, fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#334155' : '#f1f5f9'} />
+          <XAxis dataKey="label" angle={-45} textAnchor="end" height={40} tick={{ fontSize: 11, fill: isDark ? '#94a3b8' : '#64748b' }} interval={0} stroke={isDark ? '#334155' : '#e2e8f0'} />
           <YAxis
-            tick={{ fontSize: 12, fill: '#64748b' }}
-            stroke="#e2e8f0"
+            tick={{ fontSize: 12, fill: isDark ? '#94a3b8' : '#64748b' }}
+            stroke={isDark ? '#334155' : '#e2e8f0'}
             unit={(displayMode === 'percentage' || displayMode === 'tier') ? '%' : ''}
             tickFormatter={(val) => val.toFixed(1)}
             domain={[0, (displayMode === 'percentage' || displayMode === 'tier') ? 100 : totalMax]}
           />
           <Tooltip
-            cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
-            contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px', padding: '12px' }}
+            cursor={{ fill: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(59, 130, 246, 0.05)' }}
+            contentStyle={{ 
+              borderRadius: '12px', 
+              border: isDark ? '1px solid #334155' : '1px solid #e2e8f0', 
+              backgroundColor: isDark ? '#1e293b' : '#ffffff',
+              color: isDark ? '#f8fafc' : '#0f172a',
+              boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', 
+              fontSize: '12px', 
+              padding: '12px' 
+            }}
+            itemStyle={{ color: isDark ? '#f8fafc' : '#0f172a' }}
             formatter={(val) => makeFormatter(displayMode)(Number(val))}
           />
           <Legend
@@ -148,7 +173,7 @@ export const AnalysisTotalDistChart: React.FC<AnalysisTotalDistChartProps> = ({
 
   return (
     <div className="card shadow-sm w-full animate-in">
-      <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center justify-between">
+      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center justify-between">
         <span>{MESSAGES.ANALYSIS_TOTAL_DIST}</span>
       </h3>
       <TotalBarChart activeT={activeT} totalBarData={totalBarData} displayMode={displayMode} />
@@ -171,7 +196,7 @@ export const AnalysisSubtotalDistChart: React.FC<AnalysisSubtotalDistChartProps>
   hasDeduction,
 }) => (
   <div className="card shadow-sm w-full animate-in">
-    <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center justify-between">
+    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center justify-between">
       <span>{hasDeduction ? MESSAGES.ANALYSIS_SUBTOTAL_DIST : MESSAGES.ANALYSIS_TOTAL_DIST_TITLE}</span>
     </h3>
     <SubtotalBarChart activeT={activeT} subtotalBarData={subtotalBarData} displayMode={displayMode} />
@@ -193,18 +218,21 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
   displayMode,
 }) => (
   <>
-    {activeT.criteria.map((c, index) => (
-      <div key={c.id} className="card shadow-sm w-full animate-in">
-        <h3 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <span
-            className="w-3 h-3 rounded-sm flex-shrink-0"
-            style={{ background: COLORS[index % COLORS.length] }}
-          />
-          <span className="flex-1">{c.name}</span>
-          <span className="text-[10px] font-normal text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100">
-            {MESSAGES.ANALYSIS_MAX_POINT}{c.maxScore}pt
-          </span>
-        </h3>
+    {activeT.criteria.map((c, index) => {
+      const { theme } = useUIStore();
+      const isDark = theme === 'dark';
+      return (
+        <div key={c.id} className="card shadow-sm w-full animate-in">
+          <h3 className="text-base font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+            <span
+              className="w-3 h-3 rounded-sm flex-shrink-0"
+              style={{ background: COLORS[index % COLORS.length] }}
+            />
+            <span className="flex-1">{c.name}</span>
+            <span className="text-[10px] font-normal text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-100 dark:border-slate-700">
+              {MESSAGES.ANALYSIS_MAX_POINT}{c.maxScore}pt
+            </span>
+          </h3>
         <div className="w-full h-[320px]">
           <ResponsiveContainer>
             <BarChart
@@ -215,29 +243,37 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
                   [c.id]: c.maxScore > 0 ? (Number(d[c.id]) / c.maxScore) * 100 : 0
                 };
               })}
-              margin={{ top: 10, right: 10, left: -20, bottom: 30 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-              <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
-              <YAxis
-                tick={{ fontSize: 10, fill: '#64748b' }}
-                stroke="#e2e8f0"
-                unit={(displayMode === 'percentage' || displayMode === 'tier') ? '%' : ''}
-                tickFormatter={(val) => val.toFixed(1)}
-                domain={([dataMin, dataMax]) => {
-                  const isPct = displayMode === 'percentage' || displayMode === 'tier';
-                  const padding = 2;
-                  const limit = isPct ? 100 : c.maxScore;
-                  const min = Math.max(0, Math.floor(Number(dataMin) - padding));
-                  const max = Math.min(limit, Math.ceil(Number(dataMax) + padding));
-                  return [min, max];
-                }}
-              />
-              <Tooltip
-                cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
-                contentStyle={{ borderRadius: '10px', fontSize: '11px', padding: '8px', border: '1px solid #e2e8f0' }}
-                formatter={(val) => makeFormatter(displayMode)(Number(val))}
-              />
+                margin={{ top: 10, right: 10, left: -20, bottom: 30 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#334155' : '#f1f5f9'} />
+                <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: isDark ? '#94a3b8' : '#64748b' }} interval={0} stroke={isDark ? '#334155' : '#e2e8f0'} />
+                <YAxis
+                  tick={{ fontSize: 10, fill: isDark ? '#94a3b8' : '#64748b' }}
+                  stroke={isDark ? '#334155' : '#e2e8f0'}
+                  unit={(displayMode === 'percentage' || displayMode === 'tier') ? '%' : ''}
+                  tickFormatter={(val) => val.toFixed(1)}
+                  domain={([dataMin, dataMax]) => {
+                    const isPct = displayMode === 'percentage' || displayMode === 'tier';
+                    const padding = 2;
+                    const limit = isPct ? 100 : c.maxScore;
+                    const min = Math.max(0, Math.floor(Number(dataMin) - padding));
+                    const max = Math.min(limit, Math.ceil(Number(dataMax) + padding));
+                    return [min, max];
+                  }}
+                />
+                <Tooltip
+                  cursor={{ fill: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(59, 130, 246, 0.05)' }}
+                  contentStyle={{ 
+                    borderRadius: '10px', 
+                    fontSize: '11px', 
+                    padding: '8px', 
+                    border: isDark ? '1px solid #334155' : '1px solid #e2e8f0',
+                    backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                    color: isDark ? '#f8fafc' : '#0f172a',
+                  }}
+                  itemStyle={{ color: isDark ? '#f8fafc' : '#0f172a' }}
+                  formatter={(val) => makeFormatter(displayMode)(Number(val))}
+                />
               <Bar
                 dataKey={c.id}
                 name={(displayMode === 'percentage' || displayMode === 'tier') ? `${c.name} (%)` : `${c.name} (pt)`}
@@ -248,7 +284,8 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
           </ResponsiveContainer>
         </div>
       </div>
-    ))}
+      );
+    })}
   </>
 );
 
@@ -267,10 +304,12 @@ export const AnalysisDeductionDistChart: React.FC<AnalysisDeductionDistChartProp
   displayMode,
 }) => {
   const totalMax = activeT.criteria.reduce((s, c) => s + c.maxScore, 0);
+  const { theme } = useUIStore();
+  const isDark = theme === 'dark';
 
   return (
-    <div className="card shadow-sm w-full animate-in border-danger/10">
-      <h3 className="text-base font-bold text-danger mb-4 flex items-center gap-2">
+    <div className="card shadow-sm w-full animate-in border-danger/10 dark:border-danger/30">
+      <h3 className="text-base font-bold text-danger dark:text-danger-light mb-4 flex items-center gap-2">
         <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: DEDUCTION_COLOR }} />
         <span className="flex-1">{MESSAGES.ANALYSIS_DEDUCTION_LABEL}</span>
       </h3>
@@ -285,17 +324,25 @@ export const AnalysisDeductionDistChart: React.FC<AnalysisDeductionDistChartProp
             }))}
             margin={{ top: 10, right: 10, left: -20, bottom: 30 }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-            <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#334155' : '#f1f5f9'} />
+            <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: isDark ? '#94a3b8' : '#64748b' }} interval={0} stroke={isDark ? '#334155' : '#e2e8f0'} />
             <YAxis
-              tick={{ fontSize: 10, fill: '#64748b' }}
-              stroke="#e2e8f0"
+              tick={{ fontSize: 10, fill: isDark ? '#94a3b8' : '#64748b' }}
+              stroke={isDark ? '#334155' : '#e2e8f0'}
               unit={displayMode === 'percentage' ? '%' : ''}
               tickFormatter={(val) => val.toFixed(1)}
             />
             <Tooltip
-              cursor={{ fill: 'rgba(239, 68, 68, 0.05)' }}
-              contentStyle={{ borderRadius: '10px', fontSize: '11px', padding: '8px', border: '1px solid #fca5a5' }}
+              cursor={{ fill: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)' }}
+              contentStyle={{ 
+                borderRadius: '10px', 
+                fontSize: '11px', 
+                padding: '8px', 
+                border: isDark ? '1px solid #ef4444' : '1px solid #fca5a5',
+                backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                color: isDark ? '#f8fafc' : '#0f172a',
+              }}
+              itemStyle={{ color: isDark ? '#f8fafc' : '#0f172a' }}
               formatter={(val) => makeFormatter(displayMode)(Number(val))}
             />
             <Bar

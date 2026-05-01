@@ -5,6 +5,8 @@ import {
 } from 'recharts';
 import { MESSAGES } from '../../../constants/messages';
 
+import { useUIStore } from '../../../store/useUIStore';
+
 interface AnalysisRadarChartProps {
   radarData: any[];
   radarPlayers: any[];
@@ -18,6 +20,9 @@ export const AnalysisRadarChart: React.FC<AnalysisRadarChartProps> = ({
   radarPlayers,
   selectedPlayersCount
 }) => {
+  const { theme } = useUIStore();
+  const isDark = theme === 'dark';
+
   // 全選手の全項目の値から、最小値と最大値を算出してドメインを決定する
   const allValues: number[] = [];
   radarData.forEach(d => {
@@ -31,30 +36,39 @@ export const AnalysisRadarChart: React.FC<AnalysisRadarChartProps> = ({
 
   return (
     <div className="card shadow-sm w-full animate-in">
-      <h3 className="text-lg font-bold text-slate-900 mb-2">{MESSAGES.ANALYSIS_RADAR_TITLE}</h3>
+      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">{MESSAGES.ANALYSIS_RADAR_TITLE}</h3>
       {selectedPlayersCount > 5 && (
-        <div className="bg-warning-bg text-warning border border-warning/20 px-3 py-2 rounded-lg text-xs font-bold mb-4 flex items-center gap-2">
+        <div className="bg-warning-bg dark:bg-warning-dark/20 text-warning dark:text-warning-light border border-warning/20 dark:border-warning-dark/40 px-3 py-2 rounded-lg text-xs font-bold mb-4 flex items-center gap-2">
           <span className="shrink-0 bg-warning text-white rounded-full w-4 h-4 flex items-center justify-center">!</span>
           {MESSAGES.ANALYSIS_RADAR_LIMIT_REACHED}
         </div>
       )}
-      <p className="text-slate-500 text-xs mb-6 italic">{MESSAGES.ANALYSIS_RADAR_HINT}</p>
+      <p className="text-slate-500 dark:text-slate-400 text-xs mb-6 italic">{MESSAGES.ANALYSIS_RADAR_HINT}</p>
       
       <div className="w-full h-[400px]">
         <ResponsiveContainer>
           <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-            <PolarGrid stroke="#e2e8f0" />
-            <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 600 }} />
+            <PolarGrid stroke={isDark ? '#334155' : '#e2e8f0'} />
+            <PolarAngleAxis dataKey="subject" tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11, fontWeight: 600 }} />
             <PolarRadiusAxis 
               angle={30} 
               domain={[minVal, maxVal]} 
-              tick={{ fill: '#94a3b8', fontSize: 10 }} 
-              stroke="#f1f5f9" 
+              tick={{ fill: isDark ? '#64748b' : '#94a3b8', fontSize: 10 }} 
+              stroke={isDark ? '#1e293b' : '#f1f5f9'} 
               tickFormatter={(val) => val.toFixed(1)}
             />
             <Tooltip 
               formatter={(value: any) => [`${Number(value).toFixed(1)}%`, MESSAGES.ANALYSIS_SCORE_RATIO]} 
-              contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px', padding: '10px' }}
+              contentStyle={{ 
+                borderRadius: '12px', 
+                border: isDark ? '1px solid #334155' : '1px solid #e2e8f0', 
+                backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                color: isDark ? '#f8fafc' : '#0f172a',
+                boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', 
+                fontSize: '12px', 
+                padding: '10px' 
+              }}
+              itemStyle={{ color: isDark ? '#f8fafc' : '#0f172a' }}
             />
             <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '12px', fontWeight: 500 }} />
             {radarPlayers.map((p, index) => (

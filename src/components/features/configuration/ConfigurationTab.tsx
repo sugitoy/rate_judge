@@ -239,14 +239,14 @@ export const ConfigurationTab = ({
     <div className="flex flex-col lg:flex-row gap-8 animate-in tabular-nums pb-12">
       <div className="flex-1 flex flex-col gap-8 min-w-0">
         {!activeT && !isCreatingNew && (
-          <div className="bg-primary-light text-primary border border-primary/20 p-4 rounded-xl flex items-center justify-between shadow-sm">
+          <div className="bg-primary-light dark:bg-primary-dark/20 text-primary dark:text-primary-light border border-primary/20 dark:border-primary-dark/40 p-4 rounded-xl flex items-center justify-between shadow-sm">
             <span className="font-medium">{MESSAGES.CONFIG_EMPTY_LIST}</span>
           </div>
         )}
 
         {isCreatingNew && (
-          <div className="bg-warning-bg text-warning border border-warning/20 p-4 rounded-xl font-bold text-sm shadow-sm flex items-center gap-2">
-            <span className="bg-warning text-white rounded-full w-5 h-5 flex items-center justify-center shrink-0">!</span>
+          <div className="bg-warning-bg dark:bg-warning-dark/20 text-warning dark:text-warning-light border border-warning/20 dark:border-warning-dark/40 p-4 rounded-xl font-bold text-sm shadow-sm flex items-center gap-2">
+            <span className="bg-warning dark:bg-warning-dark text-white rounded-full w-5 h-5 flex items-center justify-center shrink-0">!</span>
             {MESSAGES.CONFIG_EDITING_NEW}
           </div>
         )}
@@ -272,7 +272,7 @@ export const ConfigurationTab = ({
         <div className="flex flex-col h-full gap-8">
           {/* A) 大会選択・追加 */}
           <div className="flex flex-col gap-3">
-            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-1">
+            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-1">
               {MESSAGES.HEADER_TOURNAMENT_SELECT}
             </label>
             <div className="flex flex-col gap-2">
@@ -287,7 +287,7 @@ export const ConfigurationTab = ({
               />
               <button
                 onClick={handleAddNew}
-                className="btn border border-primary/20 text-primary hover:bg-primary-light flex items-center justify-center gap-2 py-2 text-sm"
+                className="btn border border-primary/20 dark:border-primary-dark/40 text-primary dark:text-primary-light hover:bg-primary-light dark:hover:bg-primary-dark/20 flex items-center justify-center gap-2 py-2 text-sm"
               >
                 <Plus size={16} /> {MESSAGES.CONFIG_ADD_TOURNAMENT}
               </button>
@@ -296,7 +296,7 @@ export const ConfigurationTab = ({
 
           {/* B) 操作アクション */}
           <div className="flex flex-col gap-4">
-            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-1">
+            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-1">
               {MESSAGES.CONFIG_ACTION_LABEL}
             </label>
             <button
@@ -308,7 +308,7 @@ export const ConfigurationTab = ({
 
             {isCreatingNew && tournamentList.length > 0 && (
               <button
-                className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
+                className="btn bg-danger-bg dark:bg-danger-dark/20 font-bold text-danger dark:text-danger-light border border-danger/10 dark:border-danger-dark/30 hover:bg-danger hover:text-white dark:hover:bg-danger-dark dark:hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
                 onClick={() => {
                   if (tournamentList.length > 0) {
                     setIsCreatingNew(false);
@@ -326,11 +326,11 @@ export const ConfigurationTab = ({
               <div className="flex flex-col gap-2">
                 <button
                   onClick={handleDeleteTournament}
-                  className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
+                  className="btn bg-danger-bg dark:bg-danger-dark/20 font-bold text-danger dark:text-danger-light border border-danger/10 dark:border-danger-dark/30 hover:bg-danger dark:hover:bg-danger-dark hover:text-white dark:hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
                 >
                   <Trash2 size={18} /> {MESSAGES.CONFIG_DELETE_BTN}
                 </button>
-                <p className="text-[10px] text-slate-400 text-center px-2">
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center px-2">
                   {MESSAGES.CONFIG_DELETE_NOTE}
                 </p>
               </div>
@@ -341,11 +341,11 @@ export const ConfigurationTab = ({
           <div className="mt-auto pt-12">
             <button
               onClick={handleGlobalClear}
-              className="w-full py-2 px-4 text-xs font-medium text-slate-400 hover:text-danger hover:bg-danger-bg rounded-lg border border-transparent hover:border-danger/10 transition-all flex items-center justify-center gap-2"
+              className="w-full py-2 px-4 text-xs font-medium text-slate-400 dark:text-slate-500 hover:text-danger dark:hover:text-danger-light hover:bg-danger-bg dark:hover:bg-danger-dark/20 rounded-lg border border-transparent hover:border-danger/10 dark:hover:border-danger-dark/30 transition-all flex items-center justify-center gap-2"
             >
               <Trash2 size={14} /> {MESSAGES.HEADER_CLEAR_DATA}
             </button>
-            <p className="text-[9px] text-slate-400 text-center mt-2 px-4 leading-relaxed opacity-60">
+            <p className="text-[9px] text-slate-400 dark:text-slate-500 text-center mt-2 px-4 leading-relaxed opacity-60">
               {MESSAGES.CONFIG_CLEAR_ALL_NOTE}
             </p>
           </div>

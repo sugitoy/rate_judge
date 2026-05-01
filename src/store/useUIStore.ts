@@ -19,6 +19,8 @@ interface UIState {
   setIsConfigDirty: (dirty: boolean) => void;
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -32,6 +34,7 @@ export const useUIStore = create<UIState>()(
       sortOrder: 'asc',
       isConfigDirty: false,
       isEditing: false,
+      theme: 'light',
       toggleSidePanel: () => set((state) => ({ isSidePanelOpen: !state.isSidePanelOpen })),
       setSidePanel: (isOpen: boolean) => set({ isSidePanelOpen: isOpen }),
       setSelectedPlayerIds: (ids: string[]) => set({ selectedPlayerIds: ids }),
@@ -45,6 +48,7 @@ export const useUIStore = create<UIState>()(
       setSortConfig: (key: string, order: 'asc' | 'desc') => set({ sortKey: key, sortOrder: order }),
       setIsConfigDirty: (dirty: boolean) => set({ isConfigDirty: dirty }),
       setIsEditing: (isEditing: boolean) => set({ isEditing }),
+      setTheme: (theme: 'light' | 'dark') => set({ theme }),
     }),
     {
       name: 'rate-judge-ui-storage',

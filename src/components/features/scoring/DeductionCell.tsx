@@ -62,8 +62,8 @@ export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus =
             type="text"
             inputMode="decimal"
             className={`form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums transition-all ${isInvalidUnit
-                ? 'border-danger text-danger bg-danger-bg focus:ring-danger/20'
-                : 'border-danger/30 text-danger bg-danger-bg/5 focus:border-danger focus:ring-danger/20'
+                ? 'border-danger text-danger dark:text-danger-light bg-danger-bg dark:bg-danger-dark/20 focus:ring-danger/20'
+                : 'border-danger/30 dark:border-danger/20 text-danger dark:text-danger-light bg-danger-bg/5 dark:bg-danger-dark/10 focus:border-danger dark:focus:border-danger-light focus:ring-danger/20'
               }`}
             value={inputStr}
             onChange={handleChange}
@@ -74,7 +74,7 @@ export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus =
             onBlur={() => setIsEditing(false)}
             placeholder="0"
           />
-          <span className="text-danger/50 text-xs font-bold w-4 select-none">pt</span>
+          <span className="text-danger/50 dark:text-danger/40 text-xs font-bold w-4 select-none">pt</span>
         </div>
         {isInvalidUnit && (
           <span className="text-[10px] text-danger font-bold uppercase tracking-tight">
@@ -95,8 +95,8 @@ export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus =
           type="text"
           inputMode="decimal"
           className={`form-input py-0.5 px-1 text-right text-sm w-12 font-bold tabular-nums transition-all ${isInvalidUnit
-              ? 'border-danger text-danger bg-danger-bg focus:ring-danger/20'
-              : 'border-danger/30 text-danger focus:border-danger focus:ring-danger/20'
+              ? 'border-danger text-danger dark:text-danger-light bg-danger-bg dark:bg-danger-dark/20 focus:ring-danger/20'
+              : 'border-danger/30 dark:border-danger/20 text-danger dark:text-danger-light focus:border-danger dark:focus:border-danger-light focus:ring-danger/20'
             }`}
           value={inputStr}
           onChange={handleChange}
@@ -107,7 +107,7 @@ export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus =
           onBlur={() => setIsEditing(false)}
           placeholder="0"
         />
-        <span className="text-[10px] text-danger/50 font-bold uppercase tracking-tighter select-none">pt</span>
+        <span className="text-[10px] text-danger/50 dark:text-danger/40 font-bold uppercase tracking-tighter select-none">pt</span>
       </div>
       {isInvalidUnit && (
         <span className="text-[9px] text-danger font-bold uppercase tracking-tight leading-none">

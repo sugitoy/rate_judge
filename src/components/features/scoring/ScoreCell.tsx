@@ -141,8 +141,8 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 key={t.id}
                 onClick={() => handleTierSelect(t.id)}
                 className={`flex-1 h-8 rounded-md text-[10px] font-bold transition-all border-2 flex items-center justify-center min-w-0 ${selectedTier === t.id
-                  ? `${t.bgClass} ${t.textClass} border-primary shadow-sm scale-105 z-10`
-                  : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'
+                  ? `${t.bgClass} ${t.textClass} border-primary dark:border-primary-light shadow-sm scale-105 z-10`
+                  : 'bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-100 dark:border-slate-700 hover:border-slate-200 dark:hover:border-slate-600'
                   }`}
               >
                 {t.label}
@@ -151,8 +151,8 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
             <button
               onClick={() => handleTierSelect(undefined)}
               className={`flex-1 h-8 rounded-md text-[10px] font-bold transition-all border-2 flex items-center justify-center min-w-0 ${!selectedTier
-                ? 'bg-slate-100 text-slate-600 border-slate-300'
-                : 'bg-white text-slate-300 border-slate-100 hover:border-slate-200'
+                ? 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
+                : 'bg-white dark:bg-slate-800 text-slate-300 dark:text-slate-600 border-slate-100 dark:border-slate-700 hover:border-slate-200 dark:hover:border-slate-600'
                 }`}
             >
               -
@@ -165,7 +165,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 type="text"
                 inputMode="decimal"
                 disabled={mode === 'percentage'}
-                className={`form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums transition-all ${mode === 'percentage' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (hasError ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 text-primary focus:ring-primary/20')}`}
+                className={`form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums transition-all ${mode === 'percentage' ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-60' : (hasError ? 'border-danger text-danger dark:text-danger-light bg-danger-bg dark:bg-danger-dark/20 focus:border-danger' : 'border-slate-200 dark:border-slate-700 text-primary dark:text-cyan-400 focus:border-primary dark:focus:border-cyan-400 focus:ring-primary/20 dark:focus:ring-cyan-500/20')}`}
                 value={absStr}
                 onChange={handleAbsChange}
                 onFocus={(e) => {
@@ -175,14 +175,14 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 onBlur={() => setIsEditing(false)}
                 placeholder="pt"
               />
-              <span className="text-slate-400 text-xs font-bold w-4">pt</span>
+              <span className="text-slate-400 dark:text-slate-500 text-xs font-bold w-4">pt</span>
             </div>
             <div className="flex items-center gap-2 flex-1">
               <input
                 type="text"
                 inputMode="decimal"
                 disabled={mode === 'points'}
-                className={`form-input py-1.5 px-3 text-right text-sm flex-1 tabular-nums transition-all ${mode === 'points' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (hasError ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 focus:ring-primary/20')}`}
+                className={`form-input py-1.5 px-3 text-right text-sm flex-1 tabular-nums transition-all ${mode === 'points' ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-60' : (hasError ? 'border-danger text-danger dark:text-danger-light bg-danger-bg dark:bg-danger-dark/20 focus:border-danger' : 'border-slate-200 dark:border-slate-700 focus:border-primary dark:focus:border-cyan-400 focus:ring-primary/20 dark:focus:ring-cyan-500/20')}`}
                 value={pctStr}
                 onChange={handlePctChange}
                 onBlur={() => {
@@ -195,7 +195,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 }}
                 placeholder="%"
               />
-              <span className="text-slate-400 text-xs font-bold w-4">%</span>
+              <span className="text-slate-400 dark:text-slate-500 text-xs font-bold w-4">%</span>
             </div>
           </div>
         )}
@@ -230,8 +230,8 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
               type="text"
               inputMode="decimal"
               className={`form-input py-0.5 px-2 text-right text-sm tabular-nums focus:ring-primary/20 block transition-all ${showRank ? 'w-20' : 'w-16'} ${hasError
-                ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
-                : 'border-slate-200 focus:border-primary'
+                ? 'border-danger text-danger dark:text-danger-light bg-danger-bg dark:bg-danger-dark/20 focus:border-danger dark:focus:border-danger-light focus:ring-danger/20'
+                : 'border-slate-200 dark:border-slate-700 focus:border-primary dark:focus:border-cyan-400 dark:focus:ring-cyan-500/20'
                 }`}
               value={pctStr}
               onChange={handlePctChange}
@@ -247,9 +247,9 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
             />
           </div>
           <div className={`flex flex-col items-end -space-y-0.5 ${showRank ? 'min-w-[32px]' : 'min-w-[18px]'}`}>
-            <span className="text-slate-400 text-[10px] font-bold select-none">%</span>
+            <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold select-none">%</span>
             {showRank && rank && rank > 0 && (
-              <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary' : 'text-slate-300'}`}>
+              <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary dark:text-primary-light' : 'text-slate-300 dark:text-slate-600'}`}>
                 ({rank}{MESSAGES.ANALYSIS_RANK_SUFFIX})
               </span>
             )}
@@ -264,8 +264,8 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
               type="text"
               inputMode="decimal"
               className={`form-input py-0.5 px-2 text-right text-sm font-bold tabular-nums transition-all focus:ring-primary/20 ${showRank ? 'w-20' : 'w-16'} ${hasError
-                ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
-                : 'border-slate-200 text-primary focus:border-primary'
+                ? 'border-danger text-danger dark:text-danger-light bg-danger-bg dark:bg-danger-dark/20 focus:border-danger dark:focus:border-danger-light focus:ring-danger/20'
+                : 'border-slate-200 dark:border-slate-700 text-primary dark:text-cyan-400 focus:border-primary dark:focus:border-cyan-400 dark:focus:ring-cyan-500/20'
                 }`}
               value={absStr}
               onChange={handleAbsChange}
@@ -277,9 +277,9 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
               placeholder="pt"
             />
             <div className={`flex flex-col items-end -space-y-0.5 ${showRank ? 'min-w-[32px]' : 'min-w-[18px]'}`}>
-              <span className="text-slate-400 text-[10px] font-bold select-none uppercase tracking-tighter">pt</span>
+              <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold select-none uppercase tracking-tighter">pt</span>
               {showRank && rank && rank > 0 && (
-                <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary' : 'text-slate-300'}`}>
+                <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary dark:text-primary-light' : 'text-slate-300 dark:text-slate-600'}`}>
                   ({rank}{MESSAGES.ANALYSIS_RANK_SUFFIX})
                 </span>
               )}
@@ -295,20 +295,20 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
               <select
                 className={`form-input py-0.5 px-2 text-center text-sm w-full font-bold appearance-none cursor-pointer transition-all ${hasError
                   ? 'border-danger ring-1 ring-danger/20'
-                  : 'border-slate-200 focus:border-primary focus:ring-primary/20'
-                  } ${tierDef ? tierDef.bgClass + ' ' + tierDef.textClass : 'text-slate-400'}`}
+                  : 'border-slate-200 dark:border-slate-700 focus:border-primary dark:focus:border-cyan-400 dark:focus:ring-cyan-500/20'
+                  } ${tierDef ? tierDef.bgClass + ' ' + tierDef.textClass : 'text-slate-400 dark:text-slate-500'}`}
                 value={selectedTier || ''}
                 onChange={handleTierChange}
               >
                 <option value="">-</option>
                 {TIERS.map(t => (
-                  <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.label}</option>
+                  <option key={t.id} value={t.id} className="text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800">{t.label}</option>
                 ))}
               </select>
             </div>
             {showRank && rank && rank > 0 && (
               <div className={`flex flex-col items-end -space-y-0.5 ${showRank ? 'min-w-[32px]' : ''}`}>
-                <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary' : 'text-slate-300'}`}>
+                <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary dark:text-primary-light' : 'text-slate-300 dark:text-slate-600'}`}>
                   ({rank}{MESSAGES.ANALYSIS_RANK_SUFFIX})
                 </span>
               </div>

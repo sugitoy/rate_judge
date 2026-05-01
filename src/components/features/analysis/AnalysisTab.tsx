@@ -108,8 +108,8 @@ export const AnalysisTab = () => {
             </div>
           </div>
         ) : (
-          <div className="card text-center p-10 bg-slate-50 border border-slate-200 border-dashed">
-            <p className="text-slate-500 font-medium">{MESSAGES.ANALYSIS_EMPTY_SELECTION}</p>
+          <div className="card text-center p-10 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 border-dashed">
+            <p className="text-slate-500 dark:text-slate-300 font-medium">{MESSAGES.ANALYSIS_EMPTY_SELECTION}</p>
           </div>
         )}
       </div>
@@ -130,7 +130,7 @@ export const AnalysisTab = () => {
             />
           </div>
 
-          <div className="space-y-3 pt-4 border-t border-slate-100">
+          <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.PLAYER_SORT_TITLE}</span>
             <div className="flex flex-col gap-2">
               <Select
@@ -152,7 +152,7 @@ export const AnalysisTab = () => {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-100">
+          <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
             <PlayerFilter
               players={playersInfo}
               selectedIds={selectedPlayers}
