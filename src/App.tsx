@@ -7,6 +7,7 @@ import { useTournamentStore } from './store/useTournamentStore';
 import { MESSAGES } from './constants/messages';
 import { useUIStore } from './store/useUIStore';
 import { cn } from './utils/cn';
+import { VERSION } from './constants/ver';
 import './App.css';
 
 export default function App() {
@@ -196,6 +197,13 @@ export default function App() {
                 <BarChart2 size={18} /> {MESSAGES.TAB_ANALYSIS}
               </button>
             </nav>
+
+            {/* バージョン情報 */}
+            <div className="mt-auto pt-4 text-right border-t border-slate-50 dark:border-slate-800/50">
+              <span className="text-[10px] font-bold tracking-wider text-slate-400 dark:text-slate-500 opacity-50">
+                {VERSION}
+              </span>
+            </div>
           </div>
         )}
       </header>
