@@ -128,6 +128,7 @@ export const useAnalysisData = (
           point[c.id] = currentScores[p.id]?.scores[c.id] || 0;
         });
         point['subtotal'] = p.subtotal;
+        point['deduction'] = p.deduction; // 減点グラフ用
         return point;
       });
   }, [activeT, playersInfo, currentScores, selectedPlayers]);

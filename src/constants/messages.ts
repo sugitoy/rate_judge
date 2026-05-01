@@ -113,7 +113,6 @@ export const MESSAGES = {
   ANALYSIS_TOTAL_DIST_TITLE: '全体得点分布 (内訳の積み上げ)',
   ANALYSIS_SUBTOTAL_DIST: '全体得点分布（減点を含まない）',
   ANALYSIS_TOTAL_DIST: '合計得点',
-  ANALYSIS_DIST_NOTE: '減点を考慮した合計得点',
   ANALYSIS_DEDUCTION_LABEL: '減点',
   ANALYSIS_TOTAL_PT: '合計得点 (pt)',
   ANALYSIS_TOTAL_PCT: '合計得点 (%)',

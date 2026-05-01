@@ -10,15 +10,6 @@ import type { TournamentConfig } from '../../../types';
 const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
 const DEDUCTION_COLOR = '#ef4444';
 
-interface AnalysisOverallDistChartProps {
-  activeT: TournamentConfig;
-  /** 小計グラフ用データ（審査項目の積み上げのみ、deductionなし） */
-  subtotalBarData: Record<string, string | number>[];
-  /** 合計グラフ用データ（減点のbaseValueオフセット付き）、減点無効時は空配列 */
-  totalBarData: Record<string, string | number>[];
-  displayMode: 'points' | 'percentage' | 'tier';
-}
-
 /** 共通のツールチップ・Y軸フォーマッタ */
 const makeFormatter = (displayMode: 'points' | 'percentage' | 'tier') =>
   (val: number) => (displayMode === 'percentage' || displayMode === 'tier') ? `${val.toFixed(1)}%` : `${val.toFixed(1)}pt`;
@@ -140,38 +131,54 @@ const TotalBarChart: React.FC<{
 };
 
 
-export const AnalysisOverallDistChart: React.FC<AnalysisOverallDistChartProps> = ({
+
+// --- 合計グラフ（減点考慮後の最終得点） ---
+interface AnalysisTotalDistChartProps {
+  activeT: TournamentConfig;
+  totalBarData: Record<string, string | number>[];
+  displayMode: 'points' | 'percentage' | 'tier';
+}
+
+export const AnalysisTotalDistChart: React.FC<AnalysisTotalDistChartProps> = ({
   activeT,
-  subtotalBarData,
   totalBarData,
-  displayMode
+  displayMode,
 }) => {
-  const hasDeduction = activeT.hasDeduction ?? false;
+  if (!totalBarData.length) return null;
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* 小計グラフ */}
-      <div className="card shadow-sm w-full animate-in">
-        <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center justify-between">
-          <span>{hasDeduction ? MESSAGES.ANALYSIS_SUBTOTAL_DIST : MESSAGES.ANALYSIS_TOTAL_DIST_TITLE}</span>
-        </h3>
-        <SubtotalBarChart activeT={activeT} subtotalBarData={subtotalBarData} displayMode={displayMode} />
-      </div>
-
-      {/* 合計グラフ（減点有効時のみ） */}
-      {hasDeduction && totalBarData.length > 0 && (
-        <div className="card shadow-sm w-full animate-in border-danger/10">
-          <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center justify-between">
-            <span>{MESSAGES.ANALYSIS_TOTAL_DIST}</span>
-          </h3>
-          <p className="text-[11px] text-slate-400 mb-5">{MESSAGES.ANALYSIS_DIST_NOTE}</p>
-          <TotalBarChart activeT={activeT} totalBarData={totalBarData} displayMode={displayMode} />
-        </div>
-      )}
+    <div className="card shadow-sm w-full animate-in">
+      <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center justify-between">
+        <span>{MESSAGES.ANALYSIS_TOTAL_DIST}</span>
+      </h3>
+      <TotalBarChart activeT={activeT} totalBarData={totalBarData} displayMode={displayMode} />
     </div>
   );
 };
 
+// --- 小計グラフ（審査項目の積み上げ） ---
+interface AnalysisSubtotalDistChartProps {
+  activeT: TournamentConfig;
+  subtotalBarData: Record<string, string | number>[];
+  displayMode: 'points' | 'percentage' | 'tier';
+  hasDeduction: boolean;
+}
+
+export const AnalysisSubtotalDistChart: React.FC<AnalysisSubtotalDistChartProps> = ({
+  activeT,
+  subtotalBarData,
+  displayMode,
+  hasDeduction,
+}) => (
+  <div className="card shadow-sm w-full animate-in">
+    <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center justify-between">
+      <span>{hasDeduction ? MESSAGES.ANALYSIS_SUBTOTAL_DIST : MESSAGES.ANALYSIS_TOTAL_DIST_TITLE}</span>
+    </h3>
+    <SubtotalBarChart activeT={activeT} subtotalBarData={subtotalBarData} displayMode={displayMode} />
+  </div>
+);
+
+// --- 審査項目別グラフ ---
 interface AnalysisCritDistChartsProps {
   activeT: TournamentConfig;
   subtotalBarData: Record<string, string | number>[];
@@ -183,112 +190,123 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
   activeT,
   subtotalBarData,
   selectedPlayersCount,
-  displayMode
+  displayMode,
+}) => (
+  <>
+    {activeT.criteria.map((c, index) => (
+      <div key={c.id} className="card shadow-sm w-full animate-in">
+        <h3 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+          <span
+            className="w-3 h-3 rounded-sm flex-shrink-0"
+            style={{ background: COLORS[index % COLORS.length] }}
+          />
+          <span className="flex-1">{c.name}</span>
+          <span className="text-[10px] font-normal text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100">
+            {MESSAGES.ANALYSIS_MAX_POINT}{c.maxScore}pt
+          </span>
+        </h3>
+        <div className="w-full h-[320px]">
+          <ResponsiveContainer>
+            <BarChart
+              data={subtotalBarData.map(d => {
+                if (displayMode === 'points') return d;
+                return {
+                  ...d,
+                  [c.id]: c.maxScore > 0 ? (Number(d[c.id]) / c.maxScore) * 100 : 0
+                };
+              })}
+              margin={{ top: 10, right: 10, left: -20, bottom: 30 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+              <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
+              <YAxis
+                tick={{ fontSize: 10, fill: '#64748b' }}
+                stroke="#e2e8f0"
+                unit={(displayMode === 'percentage' || displayMode === 'tier') ? '%' : ''}
+                tickFormatter={(val) => val.toFixed(1)}
+                domain={([dataMin, dataMax]) => {
+                  const isPct = displayMode === 'percentage' || displayMode === 'tier';
+                  const padding = 2;
+                  const limit = isPct ? 100 : c.maxScore;
+                  const min = Math.max(0, Math.floor(Number(dataMin) - padding));
+                  const max = Math.min(limit, Math.ceil(Number(dataMax) + padding));
+                  return [min, max];
+                }}
+              />
+              <Tooltip
+                cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
+                contentStyle={{ borderRadius: '10px', fontSize: '11px', padding: '8px', border: '1px solid #e2e8f0' }}
+                formatter={(val) => makeFormatter(displayMode)(Number(val))}
+              />
+              <Bar
+                dataKey={c.id}
+                name={(displayMode === 'percentage' || displayMode === 'tier') ? `${c.name} (%)` : `${c.name} (pt)`}
+                fill={COLORS[index % COLORS.length]}
+                radius={[4, 4, 0, 0] as [number, number, number, number]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    ))}
+  </>
+);
+
+// --- 減点グラフ ---
+interface AnalysisDeductionDistChartProps {
+  activeT: TournamentConfig;
+  subtotalBarData: Record<string, string | number>[];
+  selectedPlayersCount: number;
+  displayMode: 'points' | 'percentage' | 'tier';
+}
+
+export const AnalysisDeductionDistChart: React.FC<AnalysisDeductionDistChartProps> = ({
+  activeT,
+  subtotalBarData,
+  selectedPlayersCount,
+  displayMode,
 }) => {
   const totalMax = activeT.criteria.reduce((s, c) => s + c.maxScore, 0);
-  const hasDeduction = activeT.hasDeduction ?? false;
 
   return (
-    <>
-      {activeT.criteria.map((c, index) => (
-        <div key={c.id} className="card shadow-sm w-full animate-in">
-          <h3 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <span
-              className="w-3 h-3 rounded-sm flex-shrink-0"
-              style={{ background: COLORS[index % COLORS.length] }}
+    <div className="card shadow-sm w-full animate-in border-danger/10">
+      <h3 className="text-base font-bold text-danger mb-4 flex items-center gap-2">
+        <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: DEDUCTION_COLOR }} />
+        <span className="flex-1">{MESSAGES.ANALYSIS_DEDUCTION_LABEL}</span>
+      </h3>
+      <div className="w-full h-[320px]">
+        <ResponsiveContainer>
+          <BarChart
+            data={subtotalBarData.map(d => ({
+              ...d,
+              deduction: displayMode === 'percentage'
+                ? (totalMax > 0 ? (Number(d['deduction'] ?? 0) / totalMax) * 100 : 0)
+                : Number(d['deduction'] ?? 0)
+            }))}
+            margin={{ top: 10, right: 10, left: -20, bottom: 30 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+            <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
+            <YAxis
+              tick={{ fontSize: 10, fill: '#64748b' }}
+              stroke="#e2e8f0"
+              unit={displayMode === 'percentage' ? '%' : ''}
+              tickFormatter={(val) => val.toFixed(1)}
             />
-            <span className="flex-1">{c.name}</span>
-            <span className="text-[10px] font-normal text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100">
-              {MESSAGES.ANALYSIS_MAX_POINT}{c.maxScore}pt
-            </span>
-          </h3>
-          <div className="w-full h-[320px]">
-            <ResponsiveContainer>
-              <BarChart
-                data={subtotalBarData.map(d => {
-                  if (displayMode === 'points') return d;
-                  return {
-                    ...d,
-                    [c.id]: c.maxScore > 0 ? (Number(d[c.id]) / c.maxScore) * 100 : 0
-                  };
-                })}
-                margin={{ top: 10, right: 10, left: -20, bottom: 30 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
-                <YAxis
-                  tick={{ fontSize: 10, fill: '#64748b' }}
-                  stroke="#e2e8f0"
-                  unit={(displayMode === 'percentage' || displayMode === 'tier') ? '%' : ''}
-                  tickFormatter={(val) => val.toFixed(1)}
-                  domain={([dataMin, dataMax]) => {
-                    const isPct = displayMode === 'percentage' || displayMode === 'tier';
-                    const padding = 2;
-                    const limit = isPct ? 100 : c.maxScore;
-                    const min = Math.max(0, Math.floor(Number(dataMin) - padding));
-                    const max = Math.min(limit, Math.ceil(Number(dataMax) + padding));
-                    return [min, max];
-                  }}
-                />
-                <Tooltip
-                  cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
-                  contentStyle={{ borderRadius: '10px', fontSize: '11px', padding: '8px', border: '1px solid #e2e8f0' }}
-                  formatter={(val) => makeFormatter(displayMode)(Number(val))}
-                />
-                <Bar
-                  dataKey={c.id}
-                  name={(displayMode === 'percentage' || displayMode === 'tier') ? `${c.name} (%)` : `${c.name} (pt)`}
-                  fill={COLORS[index % COLORS.length]}
-                  radius={[4, 4, 0, 0] as [number, number, number, number]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      ))}
-
-      {/* 減点の個別グラフ（有効時のみ） */}
-      {hasDeduction && (
-        <div className="card shadow-sm w-full animate-in border-danger/10">
-          <h3 className="text-base font-bold text-danger mb-4 flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: DEDUCTION_COLOR }} />
-            <span className="flex-1">{MESSAGES.ANALYSIS_DEDUCTION_LABEL}</span>
-          </h3>
-          <div className="w-full h-[320px]">
-            <ResponsiveContainer>
-              <BarChart
-                data={subtotalBarData.map(d => ({
-                  ...d,
-                  deduction: displayMode === 'percentage'
-                    ? (totalMax > 0 ? (Number(d['deduction'] ?? 0) / totalMax) * 100 : 0)
-                    : Number(d['deduction'] ?? 0)
-                }))}
-                margin={{ top: 10, right: 10, left: -20, bottom: 30 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
-                <YAxis
-                  tick={{ fontSize: 10, fill: '#64748b' }}
-                  stroke="#e2e8f0"
-                  unit={displayMode === 'percentage' ? '%' : ''}
-                  tickFormatter={(val) => val.toFixed(1)}
-                />
-                <Tooltip
-                  cursor={{ fill: 'rgba(239, 68, 68, 0.05)' }}
-                  contentStyle={{ borderRadius: '10px', fontSize: '11px', padding: '8px', border: '1px solid #fca5a5' }}
-                  formatter={(val) => makeFormatter(displayMode)(Number(val))}
-                />
-                <Bar
-                  dataKey="deduction"
-                  name={(displayMode === 'percentage' || displayMode === 'tier') ? MESSAGES.ANALYSIS_DEDUCTION_PCT : MESSAGES.ANALYSIS_DEDUCTION_PT}
-                  fill={DEDUCTION_COLOR}
-                  radius={[4, 4, 0, 0] as [number, number, number, number]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
-    </>
+            <Tooltip
+              cursor={{ fill: 'rgba(239, 68, 68, 0.05)' }}
+              contentStyle={{ borderRadius: '10px', fontSize: '11px', padding: '8px', border: '1px solid #fca5a5' }}
+              formatter={(val) => makeFormatter(displayMode)(Number(val))}
+            />
+            <Bar
+              dataKey="deduction"
+              name={(displayMode === 'percentage' || displayMode === 'tier') ? MESSAGES.ANALYSIS_DEDUCTION_PCT : MESSAGES.ANALYSIS_DEDUCTION_PT}
+              fill={DEDUCTION_COLOR}
+              radius={[4, 4, 0, 0] as [number, number, number, number]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 };

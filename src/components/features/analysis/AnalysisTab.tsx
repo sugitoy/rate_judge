@@ -6,7 +6,7 @@ import { useAnalysisData } from '../../../hooks/useAnalysisData';
 import { MESSAGES } from '../../../constants/messages';
 import { AnalysisStats } from './AnalysisStats';
 import { PlayerFilter } from '../shared/PlayerFilter';
-import { AnalysisOverallDistChart, AnalysisCritDistCharts } from './AnalysisDistCharts';
+import { AnalysisTotalDistChart, AnalysisSubtotalDistChart, AnalysisCritDistCharts, AnalysisDeductionDistChart } from './AnalysisDistCharts';
 import { AnalysisRadarChart } from './AnalysisRadarChart';
 import { SidePanel } from '../../ui/SidePanel';
 import { ToggleSwitch } from '../../ui/ToggleSwitch';
@@ -62,16 +62,25 @@ export const AnalysisTab = () => {
         </div>
 
         {subtotalBarData.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            {/* B) 全体得点分布（小計・合計の2グラフ） */}
-            <AnalysisOverallDistChart
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            {/* B) 合計得点分布（減点考慮後、減点有効時のみ） */}
+            {activeT.hasDeduction && (
+              <AnalysisTotalDistChart
+                activeT={activeT}
+                totalBarData={totalBarData}
+                displayMode={displayMode}
+              />
+            )}
+
+            {/* C) 全体得点分布（小計：審査項目積み上げ） */}
+            <AnalysisSubtotalDistChart
               activeT={activeT}
               subtotalBarData={subtotalBarData}
-              totalBarData={totalBarData}
               displayMode={displayMode}
+              hasDeduction={activeT.hasDeduction ?? false}
             />
 
-            {/* C) 各項目別分布 (複数タイル) */}
+            {/* D) 各審査項目別分布（グリッド内で個別に展開） */}
             <AnalysisCritDistCharts
               activeT={activeT}
               subtotalBarData={subtotalBarData}
@@ -79,7 +88,17 @@ export const AnalysisTab = () => {
               displayMode={displayMode}
             />
 
-            {/* D) レーダーチャート (比較用) */}
+            {/* E) 減点分布（減点有効時のみ） */}
+            {activeT.hasDeduction && (
+              <AnalysisDeductionDistChart
+                activeT={activeT}
+                subtotalBarData={subtotalBarData}
+                selectedPlayersCount={selectedPlayers.length}
+                displayMode={displayMode}
+              />
+            )}
+
+            {/* F) レーダーチャート（全幅） */}
             <div className="md:col-span-2 max-w-2xl mx-auto w-full">
               <AnalysisRadarChart
                 radarData={radarData}
