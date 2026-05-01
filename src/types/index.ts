@@ -26,6 +26,7 @@ export interface TournamentConfig {
 export interface PlayerScore {
   playerId: string;
   scores: Record<string, number | undefined>; // 項目IDをキーとした得点データ
+  selectedTiers?: Record<string, string | undefined>; // 項目IDをキーとした選択中のTier
   deduction?: number; // 減点値（絶対値で保存、合計計算時に減算）
   comment?: string;
 }

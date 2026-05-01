@@ -17,17 +17,18 @@ interface AnalysisStatsProps {
   totalStat: StatData | null;
   critStats: StatData[];
   deductionStat?: StatData | null;
-  displayMode: 'points' | 'percentage';
+  displayMode: 'points' | 'percentage' | 'tier';
 }
 
 export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critStats, deductionStat, displayMode }) => {
   const fmtStats = (val: number, max: number) => {
     const ptStr = `${val.toFixed(1)}pt`;
-    if (max === 0) return displayMode === 'percentage' ? '0.0%' : ptStr;
+    const isPct = displayMode === 'percentage' || displayMode === 'tier';
+    if (max === 0) return isPct ? '0.0%' : ptStr;
     const pct = (val / max) * 100;
     const pctStr = `${pct.toFixed(1)}%`;
     
-    return displayMode === 'percentage' ? pctStr : ptStr;
+    return isPct ? pctStr : ptStr;
   };
 
   return (

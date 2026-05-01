@@ -100,11 +100,12 @@ export const AnalysisTab = () => {
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.SCORING_TOGGLE_MODE}</span>
             <ToggleSwitch
               options={[
+                { value: 'points', label: MESSAGES.SCORING_TOGGLE_ABS },
                 { value: 'percentage', label: MESSAGES.SCORING_TOGGLE_PCT },
-                { value: 'points', label: MESSAGES.SCORING_TOGGLE_ABS }
+                { value: 'tier', label: MESSAGES.SCORING_TOGGLE_TIER }
               ]}
               value={displayMode}
-              onChange={(val) => setDisplayMode(val as 'percentage' | 'points')}
+              onChange={(val) => setDisplayMode(val as 'percentage' | 'points' | 'tier')}
             />
           </div>
 

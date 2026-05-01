@@ -10,8 +10,8 @@ interface UIState {
   setSelectedPlayerIds: (ids: string[]) => void;
   togglePlayerSelection: (id: string) => void;
   setInitializedTournamentId: (id: string | null) => void;
-  displayMode: 'points' | 'percentage';
-  setDisplayMode: (mode: 'points' | 'percentage') => void;
+  displayMode: 'points' | 'percentage' | 'tier';
+  setDisplayMode: (mode: 'points' | 'percentage' | 'tier') => void;
   sortKey: string; // 'entryNo' | 'total' | criterionId
   sortOrder: 'asc' | 'desc';
   setSortConfig: (key: string, order: 'asc' | 'desc') => void;
@@ -38,7 +38,7 @@ export const useUIStore = create<UIState>()(
           : [...state.selectedPlayerIds, id],
       })),
       setInitializedTournamentId: (id: string | null) => set({ initializedTournamentId: id }),
-      setDisplayMode: (mode: 'points' | 'percentage') => set({ displayMode: mode }),
+      setDisplayMode: (mode: 'points' | 'percentage' | 'tier') => set({ displayMode: mode }),
       setSortConfig: (key: string, order: 'asc' | 'desc') => set({ sortKey: key, sortOrder: order }),
       setIsConfigDirty: (dirty: boolean) => set({ isConfigDirty: dirty }),
     }),

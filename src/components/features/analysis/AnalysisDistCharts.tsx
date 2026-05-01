@@ -16,12 +16,12 @@ interface AnalysisOverallDistChartProps {
   subtotalBarData: Record<string, string | number>[];
   /** 合計グラフ用データ（減点のbaseValueオフセット付き）、減点無効時は空配列 */
   totalBarData: Record<string, string | number>[];
-  displayMode: 'points' | 'percentage';
+  displayMode: 'points' | 'percentage' | 'tier';
 }
 
 /** 共通のツールチップ・Y軸フォーマッタ */
-const makeFormatter = (displayMode: 'points' | 'percentage') =>
-  (val: number) => displayMode === 'percentage' ? `${val.toFixed(1)}%` : `${val.toFixed(1)}pt`;
+const makeFormatter = (displayMode: 'points' | 'percentage' | 'tier') =>
+  (val: number) => (displayMode === 'percentage' || displayMode === 'tier') ? `${val.toFixed(1)}%` : `${val.toFixed(1)}pt`;
 
 /**
  * 全体得点分布（小計）グラフ
@@ -30,7 +30,7 @@ const makeFormatter = (displayMode: 'points' | 'percentage') =>
 const SubtotalBarChart: React.FC<{
   activeT: TournamentConfig;
   subtotalBarData: Record<string, string | number>[];
-  displayMode: 'points' | 'percentage';
+  displayMode: 'points' | 'percentage' | 'tier';
 }> = ({ activeT, subtotalBarData, displayMode }) => {
   const totalMax = activeT.criteria.reduce((s, c) => s + c.maxScore, 0);
 
@@ -52,11 +52,12 @@ const SubtotalBarChart: React.FC<{
           <YAxis
             tick={{ fontSize: 12, fill: '#64748b' }}
             stroke="#e2e8f0"
-            unit={displayMode === 'percentage' ? '%' : ''}
+            unit={(displayMode === 'percentage' || displayMode === 'tier') ? '%' : ''}
             tickFormatter={(val) => val.toFixed(1)}
             domain={([dataMin, dataMax]) => {
-              const padding = displayMode === 'percentage' ? 2 : 5;
-              const limit = displayMode === 'percentage' ? 100 : totalMax;
+              const isPct = displayMode === 'percentage' || displayMode === 'tier';
+              const padding = isPct ? 2 : 5;
+              const limit = isPct ? 100 : totalMax;
               const min = Math.max(0, Math.floor(Number(dataMin) - padding));
               const max = Math.min(limit, Math.ceil(Number(dataMax) + padding));
               return [min, max];
@@ -72,7 +73,7 @@ const SubtotalBarChart: React.FC<{
             <Bar
               key={c.id}
               dataKey={c.id}
-              name={displayMode === 'percentage' ? `${c.name} (%)` : c.name}
+              name={(displayMode === 'percentage' || displayMode === 'tier') ? `${c.name} (%)` : c.name}
               stackId="a"
               fill={COLORS[index % COLORS.length]}
               radius={index === activeT.criteria.length - 1 ? [4, 4, 0, 0] as [number, number, number, number] : [0, 0, 0, 0] as [number, number, number, number]}
@@ -91,14 +92,14 @@ const SubtotalBarChart: React.FC<{
 const TotalBarChart: React.FC<{
   activeT: TournamentConfig;
   totalBarData: Record<string, string | number>[];
-  displayMode: 'points' | 'percentage';
+  displayMode: 'points' | 'percentage' | 'tier';
 }> = ({ activeT, totalBarData, displayMode }) => {
   const totalMax = activeT.criteria.reduce((s, c) => s + c.maxScore, 0);
 
   const processedData = totalBarData.map(d => {
     return {
       label: d['label'],
-      total: displayMode === 'percentage'
+      total: (displayMode === 'percentage' || displayMode === 'tier')
         ? (totalMax > 0 ? (Number(d['total']) / totalMax) * 100 : 0)
         : Number(d['total']),
     };
@@ -113,9 +114,9 @@ const TotalBarChart: React.FC<{
           <YAxis
             tick={{ fontSize: 12, fill: '#64748b' }}
             stroke="#e2e8f0"
-            unit={displayMode === 'percentage' ? '%' : ''}
+            unit={(displayMode === 'percentage' || displayMode === 'tier') ? '%' : ''}
             tickFormatter={(val) => val.toFixed(1)}
-            domain={[0, displayMode === 'percentage' ? 100 : totalMax]}
+            domain={[0, (displayMode === 'percentage' || displayMode === 'tier') ? 100 : totalMax]}
           />
           <Tooltip
             cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
@@ -128,7 +129,7 @@ const TotalBarChart: React.FC<{
           />
           <Bar
             dataKey="total"
-            name={displayMode === 'percentage' ? '合計得点 (%)' : '合計得点 (pt)'}
+            name={(displayMode === 'percentage' || displayMode === 'tier') ? '合計得点 (%)' : '合計得点 (pt)'}
             fill="#3b82f6"
             radius={[4, 4, 0, 0] as [number, number, number, number]}
           />
@@ -181,7 +182,7 @@ interface AnalysisCritDistChartsProps {
   activeT: TournamentConfig;
   subtotalBarData: Record<string, string | number>[];
   selectedPlayersCount: number;
-  displayMode: 'points' | 'percentage';
+  displayMode: 'points' | 'percentage' | 'tier';
 }
 
 export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
@@ -224,11 +225,12 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
                 <YAxis
                   tick={{ fontSize: 10, fill: '#64748b' }}
                   stroke="#e2e8f0"
-                  unit={displayMode === 'percentage' ? '%' : ''}
+                  unit={(displayMode === 'percentage' || displayMode === 'tier') ? '%' : ''}
                   tickFormatter={(val) => val.toFixed(1)}
                   domain={([dataMin, dataMax]) => {
+                    const isPct = displayMode === 'percentage' || displayMode === 'tier';
                     const padding = 2;
-                    const limit = displayMode === 'percentage' ? 100 : c.maxScore;
+                    const limit = isPct ? 100 : c.maxScore;
                     const min = Math.max(0, Math.floor(Number(dataMin) - padding));
                     const max = Math.min(limit, Math.ceil(Number(dataMax) + padding));
                     return [min, max];
@@ -241,7 +243,7 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
                 />
                 <Bar
                   dataKey={c.id}
-                  name={displayMode === 'percentage' ? `${c.name} (%)` : `${c.name} (pt)`}
+                  name={(displayMode === 'percentage' || displayMode === 'tier') ? `${c.name} (%)` : `${c.name} (pt)`}
                   fill={COLORS[index % COLORS.length]}
                   radius={[4, 4, 0, 0] as [number, number, number, number]}
                 />
@@ -284,7 +286,7 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
                 />
                 <Bar
                   dataKey="deduction"
-                  name={displayMode === 'percentage' ? '減点 (%)' : '減点 (pt)'}
+                  name={(displayMode === 'percentage' || displayMode === 'tier') ? '減点 (%)' : '減点 (pt)'}
                   fill={DEDUCTION_COLOR}
                   radius={[4, 4, 0, 0] as [number, number, number, number]}
                 />

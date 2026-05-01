@@ -11,11 +11,13 @@ interface DetailModalProps {
   player: Player;
   activeT: TournamentConfig;
   scores: Record<string, number | undefined>;
+  selectedTiers?: Record<string, string | undefined>;
   deduction: number;
   comment: string;
-  inputMode: 'percentage' | 'points';
-  toggleInputMode: (mode: 'percentage' | 'points') => void;
+  inputMode: 'percentage' | 'points' | 'tier';
+  toggleInputMode: (mode: 'percentage' | 'points' | 'tier') => void;
   onSaveScore: (criterionId: string, val: number) => void;
+  onSaveTier: (criterionId: string, tier: string | undefined) => void;
   onSaveDeduction: (val: number) => void;
   onSaveComment: (val: string) => void;
   onClose: () => void;
@@ -29,11 +31,13 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   player,
   activeT,
   scores,
+  selectedTiers,
   deduction,
   comment,
   inputMode,
   toggleInputMode,
   onSaveScore,
+  onSaveTier,
   onSaveDeduction,
   onSaveComment,
   onClose,
@@ -91,11 +95,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               small
               className="mb-0 bg-slate-50 border-slate-200"
               options={[
+                { value: 'points', label: MESSAGES.SCORING_TOGGLE_ABS },
                 { value: 'percentage', label: MESSAGES.SCORING_TOGGLE_PCT },
-                { value: 'points', label: MESSAGES.SCORING_TOGGLE_ABS }
+                { value: 'tier', label: MESSAGES.SCORING_TOGGLE_TIER }
               ]}
               value={inputMode}
-              onChange={(val) => toggleInputMode(val as 'percentage' | 'points')}
+              onChange={(val) => toggleInputMode(val as 'percentage' | 'points' | 'tier')}
             />
           </div>
         </div>
@@ -120,7 +125,9 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                     inputUnit={activeT.inputUnit}
                     mode={inputMode}
                     value={scores[c.id]}
+                    selectedTier={selectedTiers?.[c.id]}
                     onChange={(val) => onSaveScore(c.id, val)}
+                    onTierChange={(tier) => onSaveTier(c.id, tier)}
                   />
                 </div>
               ))}

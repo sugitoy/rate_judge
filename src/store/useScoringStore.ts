@@ -6,6 +6,7 @@ import type { PlayerScore } from '../types';
 export interface ScoringState {
   tournamentScores: Record<string, Record<string, PlayerScore>>;
   updateScore: (tournamentId: string, playerId: string, criteriaId: string, absoluteScore: number) => void;
+  updateTier: (tournamentId: string, playerId: string, criteriaId: string, tier: string | undefined) => void;
   updateDeduction: (tournamentId: string, playerId: string, deduction: number) => void;
   updateComment: (tournamentId: string, playerId: string, comment: string) => void;
   importScores: (tournamentId: string, scores: Record<string, PlayerScore>) => void;
@@ -33,6 +34,28 @@ export const useScoringStore = create<ScoringState>()(
                   scores: {
                     ...pScore.scores,
                     [criteriaId]: absoluteScore,
+                  },
+                },
+              },
+            },
+          };
+        }),
+
+      updateTier: (tournamentId, playerId, criteriaId, tier) =>
+        set((state) => {
+          const tScores = state.tournamentScores[tournamentId] || {};
+          const pScore = tScores[playerId] || { playerId, scores: {}, comment: '' };
+
+          return {
+            tournamentScores: {
+              ...state.tournamentScores,
+              [tournamentId]: {
+                ...tScores,
+                [playerId]: {
+                  ...pScore,
+                  selectedTiers: {
+                    ...(pScore.selectedTiers || {}),
+                    [criteriaId]: tier,
                   },
                 },
               },

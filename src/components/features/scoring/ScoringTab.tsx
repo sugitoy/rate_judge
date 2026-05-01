@@ -19,7 +19,7 @@ import { useEffect } from 'react';
 
 export const ScoringTab = () => {
   const { tournaments, activeTournamentId } = useTournamentStore();
-  const { tournamentScores, updateScore, updateDeduction, updateComment, importScores } = useScoringStore();
+  const { tournamentScores, updateScore, updateTier, updateDeduction, updateComment, importScores } = useScoringStore();
 
   const [showRank, setShowRank] = useState(true); // 順位表示の切り替え
   const [commentModalData, setCommentModalData] = useState<{ playerId: string } | null>(null);
@@ -184,9 +184,11 @@ export const ScoringTab = () => {
                           inputUnit={activeT.inputUnit}
                           mode={displayMode}
                           value={row.scores[c.id]}
+                          selectedTier={currentScores[row.player.id]?.selectedTiers?.[c.id]}
                           rank={row.criterionRanks?.[c.id]}
                           showRank={showRank}
                           onChange={(val) => updateScore(activeT.id, row.player.id, c.id, val)}
+                          onTierChange={(tier) => updateTier(activeT.id, row.player.id, c.id, tier)}
                         />
                       </td>
                     ))}
@@ -241,11 +243,12 @@ export const ScoringTab = () => {
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.SCORING_TOGGLE_MODE}</span>
             <ToggleSwitch
               options={[
+                { value: 'points', label: MESSAGES.SCORING_TOGGLE_ABS },
                 { value: 'percentage', label: MESSAGES.SCORING_TOGGLE_PCT },
-                { value: 'points', label: MESSAGES.SCORING_TOGGLE_ABS }
+                { value: 'tier', label: MESSAGES.SCORING_TOGGLE_TIER }
               ]}
               value={displayMode}
-              onChange={(val) => setDisplayMode(val as 'percentage' | 'points')}
+              onChange={(val) => setDisplayMode(val as 'percentage' | 'points' | 'tier')}
             />
           </div>
 
@@ -323,11 +326,13 @@ export const ScoringTab = () => {
             player={rowData.player}
             activeT={activeT}
             scores={rowData.scores}
+            selectedTiers={currentScores[rowData.player.id]?.selectedTiers}
             deduction={rowData.deduction}
             comment={rowData.comment}
             inputMode={displayMode}
             toggleInputMode={(mode) => setDisplayMode(mode)}
             onSaveScore={(cId, val) => updateScore(activeT.id, rowData.player.id, cId, val)}
+            onSaveTier={(cId, tier) => updateTier(activeT.id, rowData.player.id, cId, tier)}
             onSaveDeduction={(val) => updateDeduction(activeT.id, rowData.player.id, val)}
             onSaveComment={(cmt) => updateComment(activeT.id, rowData.player.id, cmt)}
             onClose={() => setCommentModalData(null)}
