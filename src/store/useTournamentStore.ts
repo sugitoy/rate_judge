@@ -56,7 +56,22 @@ export const useTournamentStore = create<TournamentState>()(
     }),
     {
       name: 'tournament-storage',
-      version: 2,
+      version: 3,
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as TournamentState;
+        if (version < 3) {
+          // hasDeduction フィールドが存在しない旧データにデフォルト値 false を付与
+          const migratedTournaments: Record<string, TournamentConfig> = {};
+          for (const [id, t] of Object.entries(state.tournaments || {})) {
+            migratedTournaments[id] = {
+              ...t,
+              hasDeduction: (t as TournamentConfig & { hasDeduction?: boolean }).hasDeduction ?? false,
+            };
+          }
+          return { ...state, tournaments: migratedTournaments };
+        }
+        return state;
+      },
     }
   )
 );

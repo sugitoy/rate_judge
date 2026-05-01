@@ -16,6 +16,7 @@ const createEmptyTournament = (): TournamentConfig => ({
   name: '',
   division: '',
   inputUnit: 1,
+  hasDeduction: false,
   criteria: [],
   players: []
 });

@@ -8,6 +8,7 @@ import { useScoringData } from '../../../hooks/useScoringData';
 import { exportScoringToCSV } from '../../../utils/csvExport';
 import { parseScoresCSV } from '../../../utils/csvImport';
 import { ScoreCell } from './ScoreCell';
+import { DeductionCell } from './DeductionCell';
 import { DetailModal } from './DetailModal';
 import { ToggleSwitch } from '../../ui/ToggleSwitch';
 import { SidePanel } from '../../ui/SidePanel';
@@ -18,7 +19,7 @@ import { useEffect } from 'react';
 
 export const ScoringTab = () => {
   const { tournaments, activeTournamentId } = useTournamentStore();
-  const { tournamentScores, updateScore, updateComment, importScores } = useScoringStore();
+  const { tournamentScores, updateScore, updateDeduction, updateComment, importScores } = useScoringStore();
 
   const [showRank, setShowRank] = useState(true); // 順位表示の切り替え
   const [commentModalData, setCommentModalData] = useState<{ playerId: string } | null>(null);
@@ -38,6 +39,8 @@ export const ScoringTab = () => {
     sortKey,
     setSortConfig
   } = useUIStore();
+
+  const hasDeduction = activeT?.hasDeduction ?? false;
 
   // 初期表示または大会切り替え時に全選手を選択状態にする
   useEffect(() => {
@@ -59,7 +62,7 @@ export const ScoringTab = () => {
   }
 
   const handleExportCSV = () => {
-    exportScoringToCSV(activeT.name, activeT.criteria, tableData);
+    exportScoringToCSV(activeT.name, activeT.criteria, tableData, hasDeduction);
   };
 
   const handleImportCSV = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +110,7 @@ export const ScoringTab = () => {
       {/* A) メインコンテンツ（採点テーブル） */}
       <div className="flex-1 min-w-0 order-2 lg:order-1">
         <div className="card-table scroll-x-auto shadow-md border-slate-200">
-          <table className="min-w-full border-collapse" style={{ minWidth: '1000px' }}>
+          <table className="min-w-full border-collapse" style={{ minWidth: hasDeduction ? '1200px' : '1000px' }}>
             <thead className="bg-slate-50">
               <tr className="border-b-2 border-slate-200">
                 <th className="px-3 py-2 w-12 text-center font-bold text-slate-400 sticky left-0 z-20 bg-slate-50 border-r border-slate-200">{MESSAGES.CONFIG_PLAYER_TH_NO}</th>
@@ -119,18 +122,34 @@ export const ScoringTab = () => {
                     <div className="text-[11px] text-slate-400 font-normal mt-0.5 border-t border-slate-100 pt-0.5">MAX {c.maxScore}pt</div>
                   </th>
                 ))}
+
+                {/* 小計列（有効時のみ） */}
+                {hasDeduction && (
+                  <th className="px-3 py-2 text-center border-l border-slate-200 bg-slate-50 text-slate-500 font-bold">
+                    {MESSAGES.SCORING_TABLE_HEAD_SUBTOTAL}
+                  </th>
+                )}
+
+                {/* 減点列（有効時のみ） */}
+                {hasDeduction && (
+                  <th className="px-1 py-2 text-center border-l border-r border-danger/20 bg-danger-bg/20 w-20">
+                    <div className="font-bold text-danger leading-tight text-xs">{MESSAGES.SCORING_TABLE_HEAD_DEDUCTION}</div>
+                    <div className="text-[10px] text-danger/50 font-normal mt-0.5 border-t border-danger/10 pt-0.5">pt</div>
+                  </th>
+                )}
+
                 <th className="px-3 py-2 text-center border-l-2 border-slate-200 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_TOTAL}</th>
                 {showRank && (
                   <th className="px-3 py-2 text-center border-l border-primary/20 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_RANK}</th>
                 )}
-                <th className="px-3 py-2 text-center border-l-2 border-slate-200 bg-slate-50 text-slate-500 font-bold">{MESSAGES.SCORING_TABLE_DETAIL_BTN}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
               {(() => {
                 const filtered = tableData.filter(row => selectedPlayerIds.includes(row.player.id));
                 if (filtered.length === 0) {
-                  const colSpan = 4 + activeT.criteria.length + (showRank ? 1 : 0);
+                  const extraCols = hasDeduction ? 2 : 0;
+                  const colSpan = 4 + activeT.criteria.length + extraCols + (showRank ? 1 : 0);
                   return (
                     <tr>
                       <td colSpan={colSpan} className="px-6 py-20 text-center text-slate-400 bg-slate-50/30 italic">
@@ -143,7 +162,19 @@ export const ScoringTab = () => {
                   <tr key={row.player.id} className="hover:bg-slate-50/80 transition-colors group">
                     <td className="px-3 py-1.5 text-center font-bold text-slate-400 sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-200">{row.entryNo}</td>
                     <td className="px-3 py-1.5 sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[1px_0_0_#e2e8f0] border-r border-slate-200 align-middle">
-                      <div className="font-bold text-slate-900 tabular-nums">{row.player.name}</div>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="font-bold text-slate-900 tabular-nums truncate">{row.player.name}</div>
+                        <button
+                          onClick={() => setCommentModalData({ playerId: row.player.id })}
+                          className={`w-7 h-7 shrink-0 rounded-lg transition-all flex items-center justify-center border outline-none focus:ring-2 focus:ring-primary/30 ${row.comment
+                              ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white shadow-sm'
+                              : 'bg-white text-slate-400 border-slate-200 hover:text-primary hover:border-primary hover:bg-slate-50'
+                            }`}
+                          title={MESSAGES.SCORING_TABLE_DETAIL_BTN}
+                        >
+                          <Maximize2 size={14} strokeWidth={2.5} className={row.comment ? 'text-primary' : 'text-slate-400'} />
+                        </button>
+                      </div>
                     </td>
 
                     {activeT.criteria.map(c => (
@@ -159,6 +190,25 @@ export const ScoringTab = () => {
                         />
                       </td>
                     ))}
+
+                    {/* 小計セル（有効時のみ） */}
+                    {hasDeduction && (
+                      <td className="px-3 py-1.5 text-center border-l border-slate-200 align-middle bg-slate-50/50">
+                        <div className="font-bold text-sm text-slate-500 tabular-nums tracking-tight">
+                          {row.subtotal}<span className="text-[10px] text-slate-400 font-semibold ml-0.5 uppercase">pt</span>
+                        </div>
+                      </td>
+                    )}
+
+                    {/* 減点セル（有効時のみ） */}
+                    {hasDeduction && (
+                      <td className="px-0.5 py-1 border-l border-r border-danger/20 align-middle bg-danger-bg/10 group-hover:bg-danger-bg/20">
+                        <DeductionCell
+                          value={row.deduction}
+                          onChange={(val) => updateDeduction(activeT.id, row.player.id, val)}
+                        />
+                      </td>
+                    )}
 
                     <td className="px-3 py-1.5 text-center border-l flex-none align-middle bg-primary-light/10">
                       <div className="font-bold text-xl leading-none text-primary tabular-nums tracking-tight">
@@ -176,17 +226,6 @@ export const ScoringTab = () => {
                         })()}
                       </td>
                     )}
-                    <td className="px-3 py-1.5 text-center border-l-2 border-slate-200 align-middle bg-slate-50/20">
-                      <button
-                        onClick={() => setCommentModalData({ playerId: row.player.id })}
-                        className={`w-8 h-8 rounded-xl transition-all flex items-center justify-center mx-auto border outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 ${row.comment
-                            ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white shadow-sm'
-                            : 'bg-white text-slate-400 border-slate-200 hover:text-primary hover:border-primary hover:bg-slate-50'
-                          }`}
-                      >
-                        <Maximize2 size={18} strokeWidth={2.5} className={row.comment ? 'text-primary' : 'text-slate-400'} />
-                      </button>
-                    </td>
                   </tr>
                 ));
               })()}
@@ -284,10 +323,12 @@ export const ScoringTab = () => {
             player={rowData.player}
             activeT={activeT}
             scores={rowData.scores}
+            deduction={rowData.deduction}
             comment={rowData.comment}
             inputMode={displayMode}
             toggleInputMode={(mode) => setDisplayMode(mode)}
             onSaveScore={(cId, val) => updateScore(activeT.id, rowData.player.id, cId, val)}
+            onSaveDeduction={(val) => updateDeduction(activeT.id, rowData.player.id, val)}
             onSaveComment={(cmt) => updateComment(activeT.id, rowData.player.id, cmt)}
             onClose={() => setCommentModalData(null)}
             onPrevPlayer={handlePrevPlayer}

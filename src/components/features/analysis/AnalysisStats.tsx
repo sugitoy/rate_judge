@@ -16,10 +16,11 @@ interface StatData {
 interface AnalysisStatsProps {
   totalStat: StatData | null;
   critStats: StatData[];
+  deductionStat?: StatData | null;
   displayMode: 'points' | 'percentage';
 }
 
-export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critStats, displayMode }) => {
+export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critStats, deductionStat, displayMode }) => {
   const fmtStats = (val: number, max: number) => {
     const ptStr = `${val.toFixed(1)}pt`;
     if (max === 0) return displayMode === 'percentage' ? '0.0%' : ptStr;
@@ -69,6 +70,19 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critSta
                 <td className="py-3 px-4 text-right text-slate-400 text-xs whitespace-nowrap">{st.variance.toFixed(1)}</td>
               </tr>
             ))}
+            {/* 減点統計行（有効時のみ） */}
+            {deductionStat && (
+              <tr className="bg-danger-bg/30 border-t-2 border-danger/10 hover:bg-danger-bg/50 transition-colors">
+                <td className="py-3 px-4 whitespace-nowrap font-bold text-danger">
+                  {deductionStat.name}
+                </td>
+                <td className="py-3 px-4 text-right text-danger/80 whitespace-nowrap">{fmtStats(deductionStat.mean, deductionStat.maxScore)}</td>
+                <td className="py-3 px-4 text-right text-danger/80 whitespace-nowrap">{fmtStats(deductionStat.median, deductionStat.maxScore)}</td>
+                <td className="py-3 px-4 text-right text-danger font-bold whitespace-nowrap">{fmtStats(deductionStat.max, deductionStat.maxScore)}</td>
+                <td className="py-3 px-4 text-right text-danger/60 whitespace-nowrap">{fmtStats(deductionStat.min, deductionStat.maxScore)}</td>
+                <td className="py-3 px-4 text-right text-slate-400 text-xs whitespace-nowrap">{deductionStat.variance.toFixed(1)}</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

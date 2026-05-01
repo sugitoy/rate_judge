@@ -99,6 +99,28 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
               ]}
             />
           </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">減点</label>
+            <label
+              htmlFor="deduction-toggle"
+              className="flex items-center gap-3 cursor-pointer group w-fit"
+            >
+              <input
+                id="deduction-toggle"
+                type="checkbox"
+                className="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary/20 cursor-pointer"
+                checked={localT.hasDeduction ?? false}
+                onChange={(e) => setLocalT({ ...localT, hasDeduction: e.target.checked })}
+              />
+              <div>
+                <span className="text-sm font-bold text-slate-700 group-hover:text-primary transition-colors select-none">
+                  {MESSAGES.CONFIG_DEDUCTION_LABEL}
+                </span>
+                <p className="text-[11px] text-slate-400 mt-0.5">{MESSAGES.CONFIG_DEDUCTION_HINT}</p>
+              </div>
+            </label>
+          </div>
         </div>
 
         {/* Right: Criteria Settings */}

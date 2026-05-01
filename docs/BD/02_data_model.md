@@ -29,6 +29,7 @@ interface TournamentConfig {
   name: string;
   division: string;
   inputUnit: number;      // 0.1, 0.5, 1 等の採点単位
+  hasDeduction: boolean;  // 減点機能の有無 (デフォルト: false)
   criteria: Criteria[];
 }
 ```
@@ -38,6 +39,7 @@ interface TournamentConfig {
 interface PlayerScore {
   playerId: string;
   scores: Record<string, number | undefined>; // 項目IDをキーとした得点データ(未入力考慮)
+  deduction?: number;                          // 減点値（絶対値で保存、合計計算時に減算）
   comment?: string;                           // 自由記述コメント
 }
 ```
@@ -50,6 +52,8 @@ interface TournamentData {
   scores: PlayerScore[];
 }
 ```
+
+
 
 ## 2.2. 外部インターフェース (CSV)
 
@@ -73,9 +77,10 @@ interface TournamentData {
 ### 2.2.3. 採点データのインポート・エクスポート
 「採点」タブで使用する、採点結果の一覧をインポート・エクスポートするための形式です。
 
-| エントリーNo | 氏名 | 技術点 | 構成点 | 合計得点(pt) | コメント |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | 選手A | 18.5 | 15.0 | 33.5 | 素晴らしい演技でした |
-| 2 | 選手B | 12.0 | 14.5 | 26.5 | ドロップが惜しい |
+| エントリーNo | 氏名 | 技術点 | 構成点 | 減点 | 小計 | 合計得点(pt) | コメント |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | 選手A | 18.5 | 15.0 | 1.0 | 33.5 | 32.5 | 素晴らしい演技でした |
+| 2 | 選手B | 12.0 | 14.5 | 0.0 | 26.5 | 26.5 | ドロップが惜しい |
 
 ※審査項目の列（上記例では「技術点」「構成点」）は、大会設定で定義された項目名に基づいて可変となります。
+※「減点」列および「小計」列は、大会設定で減点が有効な場合のみ出力されます。減点が無効な場合は「合計得点(pt)」のみを出力します。

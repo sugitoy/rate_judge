@@ -4,20 +4,23 @@ import { PenLine, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react'
 import { MESSAGES } from '../../../constants/messages';
 import type { TournamentConfig, Player } from '../../../types';
 import { ScoreCell } from './ScoreCell';
+import { DeductionCell } from './DeductionCell';
 import { ToggleSwitch } from '../../ui/ToggleSwitch';
 
 interface DetailModalProps {
   player: Player;
   activeT: TournamentConfig;
   scores: Record<string, number | undefined>;
+  deduction: number;
   comment: string;
   inputMode: 'percentage' | 'points';
   toggleInputMode: (mode: 'percentage' | 'points') => void;
   onSaveScore: (criterionId: string, val: number) => void;
+  onSaveDeduction: (val: number) => void;
   onSaveComment: (val: string) => void;
   onClose: () => void;
-  onPrevPlayer?: (currentComment: string) => void; // 追加
-  onNextPlayer?: (currentComment: string) => void; // 追加
+  onPrevPlayer?: (currentComment: string) => void;
+  onNextPlayer?: (currentComment: string) => void;
   hasPrev?: boolean;
   hasNext?: boolean;
 }
@@ -26,10 +29,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   player,
   activeT,
   scores,
+  deduction,
   comment,
   inputMode,
   toggleInputMode,
   onSaveScore,
+  onSaveDeduction,
   onSaveComment,
   onClose,
   onPrevPlayer,
@@ -43,6 +48,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   React.useEffect(() => {
     setValCmt(comment);
   }, [player.id, comment]);
+
+  const hasDeduction = activeT.hasDeduction ?? false;
 
   return (
     <div 
@@ -117,6 +124,21 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                   />
                 </div>
               ))}
+
+              {/* 減点入力行（有効時のみ） */}
+              {hasDeduction && (
+                <div className="flex justify-between items-center gap-6 py-2 border-t border-danger/10 col-span-full mt-2">
+                  <span className="font-bold text-danger whitespace-nowrap">
+                    {MESSAGES.SCORING_TABLE_HEAD_DEDUCTION}
+                    <span className="text-[10px] font-normal text-danger/50 ml-2">絶対値で入力</span>
+                  </span>
+                  <DeductionCell
+                    value={deduction}
+                    showMinus={true}
+                    onChange={onSaveDeduction}
+                  />
+                </div>
+              )}
             </div>
           </section>
 

@@ -48,22 +48,31 @@ export const useScoringData = (
     const data = activeT.players.map((p) => {
       const pScore = currentScores[p.id]?.scores || {};
       const cmt = currentScores[p.id]?.comment || '';
-      let total = 0;
+      const deduction = activeT.hasDeduction
+        ? (currentScores[p.id]?.deduction ?? 0)
+        : 0;
+
+      let subtotal = 0;
       activeT.criteria.forEach(c => {
-        total += pScore[c.id] || 0;
+        subtotal += pScore[c.id] || 0;
       });
+
+      const total = Number((subtotal - deduction).toFixed(2));
+
       return { 
         entryNo: p.entryNumber, 
         player: p, 
-        scores: pScore, 
+        scores: pScore,
+        deduction,
         comment: cmt, 
-        total: Number(total.toFixed(2)),
+        subtotal: Number(subtotal.toFixed(2)),
+        total,
         rank: 0,
         criterionRanks: {} as Record<string, number>
       };
     });
 
-    // 合計順位の計算
+    // 合計順位の計算（total ベース）
     const totalRankMap = calculateRanks(data.map(d => ({ id: d.player.id, score: d.total })));
 
     // 項目別順位の計算

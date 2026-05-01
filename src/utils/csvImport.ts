@@ -115,6 +115,7 @@ export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<R
           idx: header.findIndex(h => h === c.name)
         })).filter(ci => ci.idx !== -1);
 
+        const deductionIdx = header.findIndex(h => h === '減点');
         const commentIdx = header.findIndex(h => h.includes('コメント'));
         const newScoresData: Record<string, PlayerScore> = {};
 
@@ -147,10 +148,12 @@ export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<R
             });
             
             const cmt = commentIdx !== -1 ? row[commentIdx]?.trim() : '';
+            const deductionVal = deductionIdx !== -1 ? Number(row[deductionIdx]) : undefined;
 
             newScoresData[pMatched.id] = {
               playerId: pMatched.id,
               scores: pScoreData,
+              ...(deductionVal !== undefined && !isNaN(deductionVal) ? { deduction: deductionVal } : {}),
               comment: cmt
             };
           }

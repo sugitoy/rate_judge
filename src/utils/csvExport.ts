@@ -5,6 +5,8 @@ export interface ScoreTableDataRow {
   entryNo: number;
   player: Player;
   scores: Record<string, number | undefined>;
+  deduction: number;
+  subtotal: number;
   total: number;
   rank: number;
   comment: string;
@@ -27,21 +29,39 @@ const downloadCSV = (filename: string, headers: string[], rows: (string | number
 
 /**
  * 採点タブのスコアをCSV形式でダウンロードする
+ * 減点有効の場合は「減点」「小計」列を追加する
  */
 export const exportScoringToCSV = (
   tournamentName: string,
   criteria: Criteria[],
-  tableData: ScoreTableDataRow[]
+  tableData: ScoreTableDataRow[],
+  hasDeduction = false
 ) => {
-  const headers = ['エントリーNo', '氏名', ...criteria.map(c => c.name), '合計得点(pt)', 'コメント'];
+  const headers = hasDeduction
+    ? ['エントリーNo', '氏名', ...criteria.map(c => c.name), '減点', '小計', '合計得点(pt)', 'コメント']
+    : ['エントリーNo', '氏名', ...criteria.map(c => c.name), '合計得点(pt)', 'コメント'];
+
   const rows = tableData.map(row => {
     const scoreCols = criteria.map(c => row.scores[c.id] ?? '');
+    const commentCol = `"${(row.comment || '').replace(/"/g, '""')}"`;
+
+    if (hasDeduction) {
+      return [
+        row.entryNo,
+        row.player.name,
+        ...scoreCols,
+        row.deduction,
+        row.subtotal,
+        row.total,
+        commentCol
+      ];
+    }
     return [
       row.entryNo,
       row.player.name,
       ...scoreCols,
       row.total,
-      `"${(row.comment || '').replace(/"/g, '""')}"`
+      commentCol
     ];
   });
   downloadCSV(`採点_${tournamentName}.csv`, headers, rows);

@@ -47,16 +47,29 @@ export const useAnalysisData = (
     }
   }, [activeT, initializedTournamentId, setSelectedPlayerIds, setInitializedTournamentId]);
 
-  // 1. 各選手のTotalとRank事前計算
+  // 1. 各選手のsubtotal/deduction/total/Rank事前計算
   const playersInfo = useMemo(() => {
     if (!activeT) return [];
 
     let info = activeT.players.map((p) => {
-      let total = 0;
+      let subtotal = 0;
       activeT.criteria.forEach(c => {
-        total += currentScores[p.id]?.scores[c.id] || 0;
+        subtotal += currentScores[p.id]?.scores[c.id] || 0;
       });
-      return { id: p.id, name: p.name, total: Number(total.toFixed(2)), entryNo: p.entryNumber, rank: 0 };
+      const deduction = activeT.hasDeduction
+        ? (currentScores[p.id]?.deduction ?? 0)
+        : 0;
+      const total = Number((subtotal - deduction).toFixed(2));
+
+      return {
+        id: p.id,
+        name: p.name,
+        subtotal: Number(subtotal.toFixed(2)),
+        deduction,
+        total,
+        entryNo: p.entryNumber,
+        rank: 0
+      };
     });
 
     const sortedByScore = [...info].sort((a, b) => b.total - a.total);
@@ -93,13 +106,36 @@ export const useAnalysisData = (
   }, [activeT, currentScores, sortKey, sortOrder]);
 
 
-  // 2. グラフ用分布データ (エントリーNo順 + フィルター適用)
-  const distBarData = useMemo(() => {
+  // 2. 小計グラフ用データ（審査項目の積み上げのみ、減点なし）
+  const subtotalBarData = useMemo(() => {
     if (!activeT) return [];
     return playersInfo
       .filter(p => selectedPlayers.includes(p.id))
       .map(p => {
-        const point: any = { id: p.id, label: `${p.entryNo}. ${p.name}` };
+        const point: Record<string, string | number> = {
+          id: p.id,
+          label: `${p.entryNo}. ${p.name}`
+        };
+        activeT.criteria.forEach(c => {
+          point[c.id] = currentScores[p.id]?.scores[c.id] || 0;
+        });
+        point['subtotal'] = p.subtotal;
+        return point;
+      });
+  }, [activeT, playersInfo, currentScores, selectedPlayers]);
+
+  // 3. 合計グラフ用データ（減点を baseValue としてオフセット付き積み上げ）
+  // 減点有効時のみ使用される
+  const totalBarData = useMemo(() => {
+    if (!activeT || !activeT.hasDeduction) return [];
+    return playersInfo
+      .filter(p => selectedPlayers.includes(p.id))
+      .map(p => {
+        const point: Record<string, string | number> = {
+          id: p.id,
+          label: `${p.entryNo}. ${p.name}`,
+          deduction: p.deduction, // マイナスオフセット用
+        };
         activeT.criteria.forEach(c => {
           point[c.id] = currentScores[p.id]?.scores[c.id] || 0;
         });
@@ -116,7 +152,7 @@ export const useAnalysisData = (
   const radarData = useMemo(() => {
     if (!activeT || radarPlayers.length === 0) return [];
     return activeT.criteria.map(c => {
-      const point: any = { subject: c.name, fullMark: 100 };
+      const point: Record<string, string | number> = { subject: c.name, fullMark: 100 };
       radarPlayers.forEach(p => {
         const absScore = currentScores[p.id]?.scores[c.id] || 0;
         const normalized = c.maxScore > 0 ? (absScore / c.maxScore) * 100 : 0;
@@ -127,9 +163,9 @@ export const useAnalysisData = (
   }, [activeT, radarPlayers, currentScores]);
 
 
-  // 3. 統計データ
+  // 4. 統計データ
   const statsData = useMemo(() => {
-    if (!activeT || activeT.players.length === 0) return { totalStat: null, critStats: [] };
+    if (!activeT || activeT.players.length === 0) return { totalStat: null, critStats: [], deductionStat: null };
 
     const totalMax = activeT.criteria.reduce((s, c) => s + c.maxScore, 0);
     const totalArr = playersInfo.map(p => p.total);
@@ -161,7 +197,24 @@ export const useAnalysisData = (
       };
     });
 
-    return { totalStat, critStats };
+    // 減点統計（有効時のみ）
+    let deductionStat = null;
+    if (activeT.hasDeduction) {
+      const deductionArr = activeT.players.map(p => currentScores[p.id]?.deduction ?? 0);
+      const deductionMean = getMean(deductionArr);
+      deductionStat = {
+        id: 'deduction',
+        name: '減点',
+        maxScore: totalMax, // %表示時の分母として使用
+        mean: deductionMean,
+        median: getMedian(deductionArr),
+        max: Math.max(...deductionArr),
+        min: Math.min(...deductionArr),
+        variance: getVariance(deductionArr, deductionMean)
+      };
+    }
+
+    return { totalStat, critStats, deductionStat };
   }, [activeT, playersInfo, currentScores]);
 
   const selectAll = () => {
@@ -175,7 +228,8 @@ export const useAnalysisData = (
   return {
     selectedPlayers,
     playersInfo,
-    distBarData,
+    subtotalBarData,
+    totalBarData,
     radarPlayers,
     radarData,
     statsData,

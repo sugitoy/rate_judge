@@ -22,7 +22,8 @@ export const AnalysisTab = () => {
   const {
     selectedPlayers,
     playersInfo,
-    distBarData,
+    subtotalBarData,
+    totalBarData,
     radarPlayers,
     radarData,
     statsData,
@@ -43,7 +44,7 @@ export const AnalysisTab = () => {
     );
   }
 
-  const { totalStat, critStats } = statsData;
+  const { totalStat, critStats, deductionStat } = statsData;
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 animate-in pb-12 tabular-nums">
@@ -51,21 +52,27 @@ export const AnalysisTab = () => {
       <div className="flex-1 min-w-0 order-2 lg:order-1 flex flex-col gap-8">
 
         {/* A) 統計分析 (Analytics) */}
-        <AnalysisStats totalStat={totalStat!} critStats={critStats} displayMode={displayMode} />
+        <AnalysisStats
+          totalStat={totalStat!}
+          critStats={critStats}
+          deductionStat={deductionStat}
+          displayMode={displayMode}
+        />
 
-        {distBarData.length > 0 ? (
+        {subtotalBarData.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            {/* B) 全体得点分布 */}
+            {/* B) 全体得点分布（小計・合計の2グラフ） */}
             <AnalysisOverallDistChart
               activeT={activeT}
-              distBarData={distBarData}
+              subtotalBarData={subtotalBarData}
+              totalBarData={totalBarData}
               displayMode={displayMode}
             />
 
             {/* C) 各項目別分布 (複数タイル) */}
             <AnalysisCritDistCharts
               activeT={activeT}
-              distBarData={distBarData}
+              subtotalBarData={subtotalBarData}
               selectedPlayersCount={selectedPlayers.length}
               displayMode={displayMode}
             />
