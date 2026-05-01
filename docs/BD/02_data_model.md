@@ -1,6 +1,7 @@
 # 02. データモデル
 
 ## 2.1. 内部データ構造
+本プロジェクトでは、型安全性とメンテナンス性の向上のため、`src/types/index.ts` にて定義された TypeScript インターフェースを正とします。以下の設計情報はそれに基づいています。
 
 ### 審査項目 (Criteria)
 ```typescript
@@ -19,6 +20,7 @@ interface Player {
   name: string;
   affiliation?: string; // 所属
   props?: string;       // 使用道具
+  isDisqualified?: boolean; // 失格フラグ
 }
 ```
 
@@ -31,6 +33,7 @@ interface TournamentConfig {
   inputUnit: number;      // 0.1, 0.5, 1 等の採点単位
   hasDeduction: boolean;  // 減点機能の有無 (デフォルト: false)
   criteria: Criteria[];
+  players: Player[];      // 選手リスト
 }
 ```
 
@@ -45,12 +48,18 @@ interface PlayerScore {
 }
 ```
 
-### 大会全体データ (TournamentData)
+### トーナメント状態 (TournamentStore State)
 ```typescript
-interface TournamentData {
-  config: TournamentConfig;
-  players: Player[];
-  scores: PlayerScore[];
+interface TournamentState {
+  tournaments: Record<string, TournamentConfig>;
+  activeTournamentId: string | null;
+}
+```
+
+### 採点状態 (ScoringStore State)
+```typescript
+interface ScoringState {
+  tournamentScores: Record<string, Record<string, PlayerScore>>;
 }
 ```
 

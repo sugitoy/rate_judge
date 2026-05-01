@@ -44,6 +44,31 @@ export default function App() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // マイグレーションバックアップのチェックとダウンロード
+  useEffect(() => {
+    const backupData = localStorage.getItem('rate_judge_migration_backup');
+    if (backupData) {
+      setTimeout(() => {
+        const shouldDownload = window.confirm(MESSAGES.MIGRATION_BACKUP_PROMPT);
+        if (shouldDownload) {
+          try {
+            const blob = new Blob([backupData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `rate_judge_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          } catch (e) {
+            console.error('Failed to download backup', e);
+          }
+        }
+        localStorage.removeItem('rate_judge_migration_backup');
+      }, 500);
+    }
+  }, []);
 
   /** 設定タブボタンのクリックハンドラー
    * - 登録済み大会がない場合のみ新規作成モードをトリガーする

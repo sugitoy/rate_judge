@@ -27,7 +27,7 @@ export const ScoringTab = () => {
   const activeT = activeTournamentId ? tournaments[activeTournamentId] : null;
   const currentScores = activeTournamentId ? tournamentScores[activeTournamentId] || {} : {};
 
-  const { tableData } = useScoringData(activeT, currentScores);
+  const { tableData, exportData } = useScoringData(activeT, currentScores);
   const {
     selectedPlayerIds,
     togglePlayerSelection,
@@ -99,7 +99,7 @@ export const ScoringTab = () => {
   }
 
   const handleExportCSV = () => {
-    exportScoringToCSV(activeT.name, activeT.criteria, tableData, hasDeduction);
+    exportScoringToCSV(activeT.name, activeT.criteria, exportData, hasDeduction);
   };
 
   const handleImportCSV = async (e: React.ChangeEvent<HTMLInputElement>) => {

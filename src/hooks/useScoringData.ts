@@ -41,13 +41,11 @@ export const useScoringData = (
 ) => {
   const { sortKey, sortOrder } = useUIStore();
 
-  const tableData = useMemo<ScoreTableDataRow[]>(() => {
-    if (!activeT) return [];
+  const { tableData, exportData } = useMemo(() => {
+    if (!activeT) return { tableData: [], exportData: [] };
 
-    // 基礎データの作成
-    const eligiblePlayers = activeT.players.filter(p => !p.isDisqualified);
-
-    const data = eligiblePlayers.map((p) => {
+    // 1. 全選手の基礎データを作成
+    const allData = activeT.players.map((p) => {
       const pScore = currentScores[p.id]?.scores || {};
       const cmt = currentScores[p.id]?.comment || '';
       const deduction = activeT.hasDeduction
@@ -74,18 +72,25 @@ export const useScoringData = (
       };
     });
 
+    // 2. 順位計算の対象となる有効な選手のみを抽出
+    const eligibleData = allData.filter(d => !d.player.isDisqualified);
+
     // 合計順位の計算（total ベース）
-    const totalRankMap = calculateRanks(data.map(d => ({ id: d.player.id, score: d.total })));
+    const totalRankMap = calculateRanks(eligibleData.map(d => ({ id: d.player.id, score: d.total })));
 
     // 項目別順位の計算
     const criterionRankMaps: Record<string, Map<string, number>> = {};
     activeT.criteria.forEach(c => {
       criterionRankMaps[c.id] = calculateRanks(
-        data.map(d => ({ id: d.player.id, score: d.scores[c.id] || 0 }))
+        eligibleData.map(d => ({ id: d.player.id, score: d.scores[c.id] || 0 }))
       );
     });
 
-    const result = data.map(item => {
+    // 3. 順位を各データに適用
+    const resultWithRanks = allData.map(item => {
+      if (item.player.isDisqualified) {
+        return item; // 失格者は順位なし(0のまま)
+      }
       const cRanks: Record<string, number> = {};
       activeT.criteria.forEach(c => {
         cRanks[c.id] = criterionRankMaps[c.id].get(item.player.id) || 0;
@@ -97,8 +102,12 @@ export const useScoringData = (
       };
     });
 
-    // ソート処理の適用
-    const sortedData = [...result].sort((a, b) => {
+    // 4. エクスポート用データ（全選手をエントリーNo順で返す）
+    const exportData = [...resultWithRanks].sort((a, b) => a.entryNo - b.entryNo);
+
+    // 5. 表示用データ（失格者を除外し、ソート設定を適用）
+    const eligibleResult = resultWithRanks.filter(d => !d.player.isDisqualified);
+    const sortedTableData = [...eligibleResult].sort((a, b) => {
       let valA: number, valB: number;
       if (sortKey === 'entryNo') {
         valA = a.entryNo;
@@ -122,8 +131,8 @@ export const useScoringData = (
       return valB - valA;
     });
 
-    return sortedData;
+    return { tableData: sortedTableData, exportData };
   }, [activeT, currentScores, sortKey, sortOrder]);
 
-  return { tableData };
+  return { tableData, exportData };
 };

@@ -170,5 +170,8 @@ export const MESSAGES = {
   CSV_HEADER_S_ENTRY: 'エントリーNo',
   CSV_HEADER_S_SUBTOTAL: '小計',
   CSV_HEADER_S_TOTAL: '合計得点(pt)',
-  CSV_HEADER_S_COMMENT: 'コメント'
+  CSV_HEADER_S_COMMENT: 'コメント',
+
+  // --- Migration ---
+  MIGRATION_BACKUP_PROMPT: 'データ形式がアップデートされました。\n安全のため、旧バージョンのデータバックアップ（JSON形式）をダウンロードしますか？\n（※後からでも「設定」の各大会のエクスポートから最新形式のデータをダウンロード可能です）'
 };

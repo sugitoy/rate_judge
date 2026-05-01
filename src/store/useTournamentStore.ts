@@ -60,6 +60,13 @@ export const useTournamentStore = create<TournamentState>()(
       migrate: (persistedState: unknown, version: number) => {
         const state = persistedState as TournamentState;
         if (version < 3) {
+          // 旧データのバックアップを一時保存
+          try {
+            localStorage.setItem('rate_judge_migration_backup', JSON.stringify(state));
+          } catch (e) {
+            console.error('Failed to save migration backup', e);
+          }
+
           // hasDeduction フィールドが存在しない旧データにデフォルト値 false を付与
           const migratedTournaments: Record<string, TournamentConfig> = {};
           for (const [id, t] of Object.entries(state.tournaments || {})) {
