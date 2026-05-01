@@ -46,7 +46,7 @@ export const SidePanel = ({ children, className }: SidePanelProps) => {
       {/* バージョン情報 */}
       {isSidePanelOpen && (
         <div className="flex-none px-4 py-2 text-right bg-white dark:bg-slate-900 border-t border-slate-50 dark:border-slate-800/50">
-          <span className="text-[10px] font-bold tracking-wider text-slate-400 dark:text-slate-500 opacity-50 select-none">
+          <span className="text-[15px] font-bold tracking-wider text-slate-400 dark:text-slate-500 opacity-50 select-none">
             {VERSION}
           </span>
         </div>
