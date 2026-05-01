@@ -226,7 +226,7 @@ export const ConfigurationTab = ({
                   setActiveTournament(val);
                 }}
                 options={tournamentList.map(t => ({ value: t.id, label: `${t.name} (${t.division})` }))}
-                placeholder="（未選択）"
+                placeholder={MESSAGES.COMMON_UNSELECTED}
               />
               <button
                 onClick={handleAddNew}
@@ -240,7 +240,7 @@ export const ConfigurationTab = ({
           {/* B) 操作アクション */}
           <div className="flex flex-col gap-4">
             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-1">
-              アクション
+              {MESSAGES.CONFIG_ACTION_LABEL}
             </label>
             <button
               onClick={handleSaveInfo}
@@ -274,7 +274,7 @@ export const ConfigurationTab = ({
                   <Trash2 size={18} /> {MESSAGES.CONFIG_DELETE_BTN}
                 </button>
                 <p className="text-[10px] text-slate-400 text-center px-2">
-                  ※大会を削除すると、関連する全選手の採点データも完全に消去されます。
+                  {MESSAGES.CONFIG_DELETE_NOTE}
                 </p>
               </div>
             )}
@@ -289,7 +289,7 @@ export const ConfigurationTab = ({
               <Trash2 size={14} /> {MESSAGES.HEADER_CLEAR_DATA}
             </button>
             <p className="text-[9px] text-slate-400 text-center mt-2 px-4 leading-relaxed opacity-60">
-              全大会および採点データを初期化します。<br />この操作は取り消せません。
+              {MESSAGES.CONFIG_CLEAR_ALL_NOTE}
             </p>
           </div>
         </div>

@@ -84,7 +84,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               onClick={() => onPrevPlayer?.(valCmt)}
               disabled={!hasPrev}
               className="p-1.5 rounded-full hover:bg-slate-100 disabled:opacity-20 disabled:cursor-not-allowed transition-colors text-slate-600"
-              title="前の選手"
+              title={MESSAGES.SCORING_PREV_PLAYER}
             >
               <ChevronLeft size={24} strokeWidth={2.5} />
             </button>
@@ -92,7 +92,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               onClick={() => onNextPlayer?.(valCmt)}
               disabled={!hasNext}
               className="p-1.5 rounded-full hover:bg-slate-100 disabled:opacity-20 disabled:cursor-not-allowed transition-colors text-slate-600"
-              title="次の選手"
+              title={MESSAGES.SCORING_NEXT_PLAYER}
             >
               <ChevronRight size={24} strokeWidth={2.5} />
             </button>
@@ -113,7 +113,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               <div className="flex items-center gap-4 text-xs font-bold mt-1">
                 {hasDeduction && deduction > 0 && (
                   <div className="flex items-center gap-1.5 px-2 py-0.5 bg-danger-bg/20 text-danger rounded">
-                    <span className="text-[10px] text-danger/50 uppercase tracking-wider">減点</span>
+                    <span className="text-[10px] text-danger/50 uppercase tracking-wider">{MESSAGES.ANALYSIS_DEDUCTION_LABEL}</span>
                     <span className="tabular-nums">-{formatScore(deduction)}</span>
                   </div>
                 )}
@@ -190,7 +190,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                     <div className="font-bold text-danger text-sm leading-tight mb-0.5">
                       {MESSAGES.SCORING_TABLE_HEAD_DEDUCTION}
                     </div>
-                    <div className="text-[10px] font-bold text-danger/50 uppercase tracking-wider">絶対値入力</div>
+                    <div className="text-[10px] font-bold text-danger/50 uppercase tracking-wider">{MESSAGES.SCORING_ABS_INPUT}</div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <DeductionCell

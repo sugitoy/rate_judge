@@ -53,7 +53,7 @@ export const AnalysisRadarChart: React.FC<AnalysisRadarChartProps> = ({
               tickFormatter={(val) => val.toFixed(1)}
             />
             <Tooltip 
-              formatter={(value: any) => [`${Number(value).toFixed(1)}%`, 'スコア割合']} 
+              formatter={(value: any) => [`${Number(value).toFixed(1)}%`, MESSAGES.ANALYSIS_SCORE_RATIO]} 
               contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px', padding: '10px' }}
             />
             <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '12px', fontWeight: 500 }} />

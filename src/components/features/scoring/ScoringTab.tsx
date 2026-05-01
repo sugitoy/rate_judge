@@ -377,7 +377,7 @@ export const ScoringTab = () => {
           </div>
 
           <div className="pt-4 border-t border-slate-100 space-y-3">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">データ入出力</span>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.SCORING_DATA_IO}</span>
             <div className="grid grid-cols-1 gap-2">
               <label className="btn btn-outline btn-action w-full flex items-center justify-center gap-2 cursor-pointer py-3">
                 <Download size={18} /> {MESSAGES.CSV_IMPORT_SCORES}

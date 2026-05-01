@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 import { cn } from '../../utils/cn';
+import { MESSAGES } from '../../constants/messages';
 
 interface SidePanelProps {
   children: ReactNode;
@@ -27,7 +28,7 @@ export const SidePanel = ({ children, className }: SidePanelProps) => {
           "absolute top-4 -left-10 w-10 h-10 bg-white border border-slate-200 border-r-0 rounded-l-xl shadow-[-4px_0_10px_-2px_rgba(0,0,0,0.05)] flex items-center justify-center text-primary hover:text-primary-dark transition-all z-50",
           !isSidePanelOpen && "lg:static lg:w-full lg:h-16 lg:rounded-none lg:border-none lg:shadow-none"
         )}
-        title={isSidePanelOpen ? "メニューを閉じる" : "メニューを開く"}
+        title={isSidePanelOpen ? MESSAGES.SIDE_PANEL_CLOSE : MESSAGES.SIDE_PANEL_OPEN}
       >
         {isSidePanelOpen ? <ChevronRight size={24} strokeWidth={2.5} /> : <ChevronLeft size={24} strokeWidth={2.5} className="rotate-180 lg:rotate-0" />}
       </button>

@@ -113,7 +113,7 @@ export default function App() {
           <button
             className="lg:hidden flex items-center justify-center p-2 rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-950 transition-all"
             onClick={() => setMenuOpen(prev => !prev)}
-            aria-label={menuOpen ? 'メニューを閉じる' : 'メニューを開く'}
+            aria-label={menuOpen ? MESSAGES.SIDE_PANEL_CLOSE : MESSAGES.SIDE_PANEL_OPEN}
           >
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>

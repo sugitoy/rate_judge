@@ -57,7 +57,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6 border-b border-slate-100 pb-6">
         <div>
           <h3 className="text-xl font-bold text-slate-900 leading-none mb-1">{MESSAGES.CONFIG_PLAYER_TITLE}</h3>
-          <p className="text-xs text-slate-400">登壇順と基本情報の管理</p>
+          <p className="text-xs text-slate-400">{MESSAGES.CONFIG_PLAYER_DESC}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button onClick={downloadPlayerSample} className="text-primary hover:text-primary-hover text-[10px] uppercase font-bold px-3 py-1.5 rounded bg-primary-light/50 transition-colors mr-2">

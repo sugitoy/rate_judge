@@ -44,7 +44,7 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8 border-b border-slate-100 pb-6">
         <div>
           <h3 className="text-xl font-bold text-slate-900 leading-none mb-1">{MESSAGES.CONFIG_BASIC_TITLE}</h3>
-          <p className="text-xs text-slate-400">{MESSAGES.CONFIG_NAME_LABEL}・審査項目等の管理</p>
+          <p className="text-xs text-slate-400">{MESSAGES.CONFIG_NAME_LABEL}{MESSAGES.CONFIG_BASIC_DESC}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button onClick={downloadConfigSample} className="text-primary hover:text-primary-hover text-[10px] uppercase font-bold px-3 py-1.5 rounded bg-primary-light/50 transition-colors mr-2">
@@ -101,7 +101,7 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">減点</label>
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{MESSAGES.ANALYSIS_DEDUCTION_LABEL}</label>
             <label
               htmlFor="deduction-toggle"
               className="flex items-center gap-3 cursor-pointer group w-fit"

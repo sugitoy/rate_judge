@@ -1,5 +1,6 @@
 // src/utils/csvExport.ts
 import type { Criteria, Player } from '../types';
+import { MESSAGES } from '../constants/messages';
 
 export interface ScoreTableDataRow {
   entryNo: number;
@@ -38,8 +39,8 @@ export const exportScoringToCSV = (
   hasDeduction = false
 ) => {
   const headers = hasDeduction
-    ? ['エントリーNo', '氏名', ...criteria.map(c => c.name), '減点', '小計', '合計得点(pt)', 'コメント']
-    : ['エントリーNo', '氏名', ...criteria.map(c => c.name), '合計得点(pt)', 'コメント'];
+    ? [MESSAGES.CSV_HEADER_S_ENTRY, MESSAGES.CSV_HEADER_P_NAME, ...criteria.map(c => c.name), MESSAGES.ANALYSIS_DEDUCTION_LABEL, MESSAGES.CSV_HEADER_S_SUBTOTAL, MESSAGES.CSV_HEADER_S_TOTAL, MESSAGES.CSV_HEADER_S_COMMENT]
+    : [MESSAGES.CSV_HEADER_S_ENTRY, MESSAGES.CSV_HEADER_P_NAME, ...criteria.map(c => c.name), MESSAGES.CSV_HEADER_S_TOTAL, MESSAGES.CSV_HEADER_S_COMMENT];
 
   const rows = tableData.map(row => {
     const scoreCols = criteria.map(c => row.scores[c.id] ?? '');
@@ -71,7 +72,7 @@ export const exportScoringToCSV = (
  * 大会情報設定をCSV形式でダウンロードする
  */
 export const exportConfigToCSV = (config: { name: string; division: string; inputUnit: number; criteria: Criteria[] }) => {
-  const headers = ['大会名', '部門', '入力単位', ...config.criteria.map(c => `審査項目:${c.name}`)];
+  const headers = [MESSAGES.CSV_HEADER_T_NAME, MESSAGES.CSV_HEADER_T_DIV, MESSAGES.CSV_HEADER_T_UNIT, ...config.criteria.map(c => `${MESSAGES.CSV_HEADER_CRITERIA_PREFIX}${c.name}`)];
   const row = [
     config.name,
     config.division,
@@ -85,7 +86,7 @@ export const exportConfigToCSV = (config: { name: string; division: string; inpu
  * 選手リストをCSV形式でダウンロードする
  */
 export const exportPlayersToCSV = (tournamentName: string, players: Player[]) => {
-  const headers = ['氏名', '所属', '使用道具', '失格'];
+  const headers = [MESSAGES.CSV_HEADER_P_NAME, MESSAGES.CSV_HEADER_P_AFFIL, MESSAGES.CSV_HEADER_P_PROP, MESSAGES.CSV_HEADER_P_DISQ];
   const rows = players.map(p => [
     p.name,
     p.affiliation || '',

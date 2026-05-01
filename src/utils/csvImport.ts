@@ -1,6 +1,7 @@
 // src/utils/csvImport.ts
 import Papa from 'papaparse';
 import type { Criteria, Player, PlayerScore, TournamentConfig } from '../types';
+import { MESSAGES } from '../constants/messages';
 
 /**
  * 構成情報CSVから大会設定と審査項目を抽出 (横持ち形式対応)
@@ -26,13 +27,13 @@ export const parseConfigCSV = (file: File): Promise<Partial<TournamentConfig>> =
           const val = data[idx];
           if (!val) return;
 
-          if (h === '大会名') configData.name = val;
-          else if (h === '部門') configData.division = val;
-          else if (h === '入力単位') configData.inputUnit = Number(val) || 1;
-          else if (h.startsWith('審査項目:')) {
+          if (h === MESSAGES.CSV_HEADER_T_NAME) configData.name = val;
+          else if (h === MESSAGES.CSV_HEADER_T_DIV) configData.division = val;
+          else if (h === MESSAGES.CSV_HEADER_T_UNIT) configData.inputUnit = Number(val) || 1;
+          else if (h.startsWith(MESSAGES.CSV_HEADER_CRITERIA_PREFIX)) {
             newCriteria.push({
               id: crypto.randomUUID(),
-              name: h.replace('審査項目:', '').trim(),
+              name: h.replace(MESSAGES.CSV_HEADER_CRITERIA_PREFIX, '').trim(),
               maxScore: Number(val) || 0
             });
           }
@@ -68,10 +69,10 @@ export const parsePlayersCSV = (file: File): Promise<Player[]> => {
 
         const newPlayers: Player[] = [];
         const header = rows[0].map(h => h.trim());
-        const nameIdx = header.findIndex(h => h.includes('氏名') || h.includes('名前'));
-        const affilIdx = header.findIndex(h => h.includes('所属'));
-        const propIdx = header.findIndex(h => h.includes('道具'));
-        const disqIdx = header.findIndex(h => h.includes('失格'));
+        const nameIdx = header.findIndex(h => h === MESSAGES.CSV_HEADER_P_NAME);
+        const affilIdx = header.findIndex(h => h === MESSAGES.CSV_HEADER_P_AFFIL);
+        const propIdx = header.findIndex(h => h === MESSAGES.CSV_HEADER_P_PROP);
+        const disqIdx = header.findIndex(h => h === MESSAGES.CSV_HEADER_P_DISQ);
 
         let startIndex = 0;
         if (nameIdx !== -1) {
@@ -119,15 +120,15 @@ export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<R
         }
         
         const header = rows[0].map(h => h.trim());
-        const entryNoIdx = header.findIndex(h => h === 'エントリーNo' || h === 'No');
+        const entryNoIdx = header.findIndex(h => h === MESSAGES.CSV_HEADER_S_ENTRY);
         
         const criteriaIndices = activeT.criteria.map(c => ({
           cId: c.id,
           idx: header.findIndex(h => h === c.name)
         })).filter(ci => ci.idx !== -1);
 
-        const deductionIdx = header.findIndex(h => h === '減点');
-        const commentIdx = header.findIndex(h => h.includes('コメント'));
+        const deductionIdx = header.findIndex(h => h === MESSAGES.ANALYSIS_DEDUCTION_LABEL);
+        const commentIdx = header.findIndex(h => h === MESSAGES.CSV_HEADER_S_COMMENT);
         const newScoresData: Record<string, PlayerScore> = {};
 
         for (let i = 1; i < rows.length; i++) {
@@ -142,7 +143,7 @@ export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<R
           
           // 2. 名前でバックアップ検索 (エントリーNoで見つからない場合)
           if (!pMatched) {
-            const nameIdx = header.findIndex(h => h.includes('氏名') || h.includes('名前'));
+            const nameIdx = header.findIndex(h => h === MESSAGES.CSV_HEADER_P_NAME);
             if (nameIdx !== -1) {
               const rawName = row[nameIdx]?.trim();
               pMatched = activeT.players.find(p => p.name === rawName);

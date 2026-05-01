@@ -129,7 +129,7 @@ const TotalBarChart: React.FC<{
           />
           <Bar
             dataKey="total"
-            name={(displayMode === 'percentage' || displayMode === 'tier') ? '合計得点 (%)' : '合計得点 (pt)'}
+            name={(displayMode === 'percentage' || displayMode === 'tier') ? MESSAGES.ANALYSIS_TOTAL_PCT : MESSAGES.ANALYSIS_TOTAL_PT}
             fill="#3b82f6"
             radius={[4, 4, 0, 0] as [number, number, number, number]}
           />
@@ -153,7 +153,7 @@ export const AnalysisOverallDistChart: React.FC<AnalysisOverallDistChartProps> =
       {/* 小計グラフ */}
       <div className="card shadow-sm w-full animate-in">
         <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center justify-between">
-          <span>{hasDeduction ? '全体得点分布（小計）' : MESSAGES.ANALYSIS_TOTAL_DIST_TITLE}</span>
+          <span>{hasDeduction ? MESSAGES.ANALYSIS_SUBTOTAL_DIST : MESSAGES.ANALYSIS_TOTAL_DIST_TITLE}</span>
         </h3>
         <SubtotalBarChart activeT={activeT} subtotalBarData={subtotalBarData} displayMode={displayMode} />
       </div>
@@ -162,9 +162,9 @@ export const AnalysisOverallDistChart: React.FC<AnalysisOverallDistChartProps> =
       {hasDeduction && totalBarData.length > 0 && (
         <div className="card shadow-sm w-full animate-in border-danger/10">
           <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center justify-between">
-            <span>全体得点分布（合計）</span>
+            <span>{MESSAGES.ANALYSIS_TOTAL_DIST}</span>
           </h3>
-          <p className="text-[11px] text-slate-400 mb-5">バーの始点が −減点値、頂点が合計得点を示します</p>
+          <p className="text-[11px] text-slate-400 mb-5">{MESSAGES.ANALYSIS_DIST_NOTE}</p>
           <TotalBarChart activeT={activeT} totalBarData={totalBarData} displayMode={displayMode} />
         </div>
       )}
@@ -252,7 +252,7 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
         <div className="card shadow-sm w-full animate-in border-danger/10">
           <h3 className="text-base font-bold text-danger mb-4 flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: DEDUCTION_COLOR }} />
-            <span className="flex-1">減点</span>
+            <span className="flex-1">{MESSAGES.ANALYSIS_DEDUCTION_LABEL}</span>
           </h3>
           <div className="w-full h-[320px]">
             <ResponsiveContainer>
@@ -280,7 +280,7 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
                 />
                 <Bar
                   dataKey="deduction"
-                  name={(displayMode === 'percentage' || displayMode === 'tier') ? '減点 (%)' : '減点 (pt)'}
+                  name={(displayMode === 'percentage' || displayMode === 'tier') ? MESSAGES.ANALYSIS_DEDUCTION_PCT : MESSAGES.ANALYSIS_DEDUCTION_PT}
                   fill={DEDUCTION_COLOR}
                   radius={[4, 4, 0, 0] as [number, number, number, number]}
                 />
