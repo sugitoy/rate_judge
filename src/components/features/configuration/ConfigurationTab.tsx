@@ -10,6 +10,22 @@ import { BasicConfig } from './BasicConfig';
 import { PlayerList } from './PlayerList';
 import { SidePanel } from '../../ui/SidePanel';
 import { Select } from '../../ui/Select';
+import { useUIStore } from '../../../store/useUIStore';
+
+const EMPTY_T_TEMPLATE = {
+  name: '',
+  division: '',
+  inputUnit: 1,
+  hasDeduction: false,
+  criteria: [],
+  players: []
+};
+
+const isTournamentEqual = (a: any, b: any) => {
+  const { id: idA, ...restA } = a;
+  const { id: idB, ...restB } = b;
+  return JSON.stringify(restA) === JSON.stringify(restB);
+};
 
 const createEmptyTournament = (): TournamentConfig => ({
   id: Date.now().toString(),
@@ -30,6 +46,7 @@ export const ConfigurationTab = ({
 }) => {
   const { tournaments, activeTournamentId, addTournament, updateTournament, deleteTournament, setActiveTournament, clearTournaments } = useTournamentStore();
   const { deleteTournamentScores, clearAllScores } = useScoringStore();
+  const { isConfigDirty, setIsConfigDirty } = useUIStore();
 
   const activeT = activeTournamentId ? tournaments[activeTournamentId] : null;
   const tournamentList = Object.values(tournaments);
@@ -50,6 +67,13 @@ export const ConfigurationTab = ({
     }
   }, [activeT]);
 
+  // 変更検知
+  useEffect(() => {
+    const baseT = activeT || { id: localT.id, ...EMPTY_T_TEMPLATE };
+    const dirty = !isTournamentEqual(localT, baseT);
+    setIsConfigDirty(dirty);
+  }, [localT, activeT, setIsConfigDirty]);
+
   // ヘッダーからの新規作成トリガー
   useEffect(() => {
     if (triggerCreateNew && triggerCreateNew > 0) {
@@ -59,6 +83,7 @@ export const ConfigurationTab = ({
   }, [triggerCreateNew]);
 
   const handleAddNew = () => {
+    if (isConfigDirty && !window.confirm(MESSAGES.CONFIG_UNSAVED_CONFIRM)) return;
     setIsCreatingNew(true);
     setActiveTournament('');
     setLocalT(createEmptyTournament());
@@ -196,7 +221,10 @@ export const ConfigurationTab = ({
             <div className="flex flex-col gap-2">
               <Select
                 value={activeTournamentId || ''}
-                onChange={(val) => setActiveTournament(val)}
+                onChange={(val) => {
+                  if (isConfigDirty && !window.confirm(MESSAGES.CONFIG_UNSAVED_CONFIRM)) return;
+                  setActiveTournament(val);
+                }}
                 options={tournamentList.map(t => ({ value: t.id, label: `${t.name} (${t.division})` }))}
                 placeholder="（未選択）"
               />

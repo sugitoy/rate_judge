@@ -67,6 +67,7 @@ export const MESSAGES = {
   CONFIG_CSV_ERR_CONFIG: 'CSVに「大会名」が含まれていません。フォーマットを確認してください。',
   CONFIG_CSV_ERR_PLAYER: '選手CSVに有効な行がありません。',
   CONFIG_DELETE_CONFIRM: '現在の大会情報を削除しますか？',
+  CONFIG_UNSAVED_CONFIRM: '設定が保存されていません。移動してもよろしいですか？',
 
   // Scoring Tab
   TAB_SCORING: '採点',

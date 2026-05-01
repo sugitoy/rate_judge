@@ -22,7 +22,7 @@ export default function App() {
 
   const activeT = activeTournamentId ? tournaments[activeTournamentId] : null;
 
-  const { isSidePanelOpen } = useUIStore();
+  const { isSidePanelOpen, isConfigDirty } = useUIStore();
 
   // メニュー外クリックで閉じる
   useEffect(() => {
@@ -48,6 +48,9 @@ export default function App() {
   };
 
   const handleTabChange = (tab: 'config' | 'score' | 'analysis') => {
+    if (activeTab === 'config' && tab !== 'config' && isConfigDirty) {
+      if (!window.confirm(MESSAGES.CONFIG_UNSAVED_CONFIRM)) return;
+    }
     setActiveTab(tab);
     setMenuOpen(false);
   };
@@ -64,7 +67,7 @@ export default function App() {
             <div className="flex items-center gap-4 shrink-0">
               <h1 
                 className="text-xl font-bold text-primary tracking-tight whitespace-nowrap cursor-pointer hover:opacity-80 transition-all"
-                onClick={() => setActiveTab('config')}
+                onClick={() => handleTabChange('config')}
               >
                 {MESSAGES.APP_TITLE}
               </h1>
@@ -83,13 +86,13 @@ export default function App() {
             <nav className="hidden lg:flex gap-1">
               <button
                 className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all ${activeTab === 'score' ? 'bg-primary-light text-primary' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-950'}`}
-                onClick={() => setActiveTab('score')}
+                onClick={() => handleTabChange('score')}
               >
                 <Edit3 size={18} /> {MESSAGES.TAB_SCORING}
               </button>
               <button
                 className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all ${activeTab === 'analysis' ? 'bg-primary-light text-primary' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-950'}`}
-                onClick={() => setActiveTab('analysis')}
+                onClick={() => handleTabChange('analysis')}
               >
                 <BarChart2 size={18} /> {MESSAGES.TAB_ANALYSIS}
               </button>

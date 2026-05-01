@@ -15,6 +15,8 @@ interface UIState {
   sortKey: string; // 'entryNo' | 'total' | criterionId
   sortOrder: 'asc' | 'desc';
   setSortConfig: (key: string, order: 'asc' | 'desc') => void;
+  isConfigDirty: boolean;
+  setIsConfigDirty: (dirty: boolean) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -26,6 +28,7 @@ export const useUIStore = create<UIState>()(
       displayMode: 'points',
       sortKey: 'entryNo',
       sortOrder: 'asc',
+      isConfigDirty: false,
       toggleSidePanel: () => set((state) => ({ isSidePanelOpen: !state.isSidePanelOpen })),
       setSidePanel: (isOpen: boolean) => set({ isSidePanelOpen: isOpen }),
       setSelectedPlayerIds: (ids: string[]) => set({ selectedPlayerIds: ids }),
@@ -37,9 +40,14 @@ export const useUIStore = create<UIState>()(
       setInitializedTournamentId: (id: string | null) => set({ initializedTournamentId: id }),
       setDisplayMode: (mode: 'points' | 'percentage') => set({ displayMode: mode }),
       setSortConfig: (key: string, order: 'asc' | 'desc') => set({ sortKey: key, sortOrder: order }),
+      setIsConfigDirty: (dirty: boolean) => set({ isConfigDirty: dirty }),
     }),
     {
       name: 'rate-judge-ui-storage',
+      partialize: (state) => {
+        const { isConfigDirty, ...rest } = state;
+        return rest;
+      },
     }
   )
 );
