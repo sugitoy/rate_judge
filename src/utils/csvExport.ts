@@ -85,11 +85,12 @@ export const exportConfigToCSV = (config: { name: string; division: string; inpu
  * 選手リストをCSV形式でダウンロードする
  */
 export const exportPlayersToCSV = (tournamentName: string, players: Player[]) => {
-  const headers = ['氏名', '所属', '使用道具'];
+  const headers = ['氏名', '所属', '使用道具', '失格'];
   const rows = players.map(p => [
     p.name,
     p.affiliation || '',
-    p.props || ''
+    p.props || '',
+    p.isDisqualified ? '1' : '0'
   ]);
   downloadCSV(`選手リスト_${tournamentName}.csv`, headers, rows);
 };

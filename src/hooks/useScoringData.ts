@@ -45,7 +45,9 @@ export const useScoringData = (
     if (!activeT) return [];
 
     // 基礎データの作成
-    const data = activeT.players.map((p) => {
+    const eligiblePlayers = activeT.players.filter(p => !p.isDisqualified);
+
+    const data = eligiblePlayers.map((p) => {
       const pScore = currentScores[p.id]?.scores || {};
       const cmt = currentScores[p.id]?.comment || '';
       const deduction = activeT.hasDeduction

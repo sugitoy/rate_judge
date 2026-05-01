@@ -67,21 +67,32 @@ export const parsePlayersCSV = (file: File): Promise<Player[]> => {
         }
 
         const newPlayers: Player[] = [];
+        const header = rows[0].map(h => h.trim());
+        const nameIdx = header.findIndex(h => h.includes('氏名') || h.includes('名前'));
+        const affilIdx = header.findIndex(h => h.includes('所属'));
+        const propIdx = header.findIndex(h => h.includes('道具'));
+        const disqIdx = header.findIndex(h => h.includes('失格'));
+
         let startIndex = 0;
-        // ヘッダーがあるか判定 (1列目が「氏名」または「名前」)
-        if (rows[0] && (rows[0][0].includes('氏名') || rows[0][0].includes('名前'))) {
+        if (nameIdx !== -1) {
           startIndex = 1;
         }
 
         for (let i = startIndex; i < rows.length; i++) {
           const row = rows[i];
-          if (row.length >= 1 && row[0].trim()) {
+          const nameVal = nameIdx !== -1 ? row[nameIdx]?.trim() : row[0]?.trim();
+          if (nameVal) {
+            const isDisqualified = disqIdx !== -1 
+              ? (row[disqIdx]?.trim() === '1' || row[disqIdx]?.toLowerCase() === 'true' || row[disqIdx]?.toLowerCase() === 't')
+              : false;
+
             newPlayers.push({
               id: crypto.randomUUID(),
               entryNumber: newPlayers.length + 1,
-              name: row[0].trim(),
-              affiliation: row[1]?.trim() || '',
-              props: row[2]?.trim() || '',
+              name: nameVal,
+              affiliation: affilIdx !== -1 ? row[affilIdx]?.trim() : row[1]?.trim() || '',
+              props: propIdx !== -1 ? row[propIdx]?.trim() : row[2]?.trim() || '',
+              isDisqualified
             });
           }
         }

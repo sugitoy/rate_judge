@@ -1,7 +1,7 @@
 // src/components/features/analysis/AnalysisDistCharts.tsx
 import React from 'react';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { MESSAGES } from '../../../constants/messages';
 import type { TournamentConfig } from '../../../types';

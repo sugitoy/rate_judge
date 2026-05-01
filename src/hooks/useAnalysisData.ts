@@ -51,7 +51,9 @@ export const useAnalysisData = (
   const playersInfo = useMemo(() => {
     if (!activeT) return [];
 
-    let info = activeT.players.map((p) => {
+    const eligiblePlayers = activeT.players.filter(p => !p.isDisqualified);
+
+    let info = eligiblePlayers.map((p) => {
       let subtotal = 0;
       activeT.criteria.forEach(c => {
         subtotal += currentScores[p.id]?.scores[c.id] || 0;
@@ -183,7 +185,8 @@ export const useAnalysisData = (
     };
 
     const critStats = activeT.criteria.map(c => {
-      const arr = activeT.players.map(p => currentScores[p.id]?.scores[c.id] || 0);
+      const eligiblePlayers = activeT.players.filter(p => !p.isDisqualified);
+      const arr = eligiblePlayers.map(p => currentScores[p.id]?.scores[c.id] || 0);
       const mean = getMean(arr);
       return {
         id: c.id,
@@ -200,7 +203,8 @@ export const useAnalysisData = (
     // 減点統計（有効時のみ）
     let deductionStat = null;
     if (activeT.hasDeduction) {
-      const deductionArr = activeT.players.map(p => currentScores[p.id]?.deduction ?? 0);
+      const eligiblePlayers = activeT.players.filter(p => !p.isDisqualified);
+      const deductionArr = eligiblePlayers.map(p => currentScores[p.id]?.deduction ?? 0);
       const deductionMean = getMean(deductionArr);
       deductionStat = {
         id: 'deduction',

@@ -33,7 +33,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
     }));
   };
 
-  const updatePlayer = (id: string, field: keyof Player, value: string | number) => {
+  const updatePlayer = (id: string, field: keyof Player, value: string | number | boolean) => {
     setLocalT(prev => ({
       ...prev,
       players: prev.players.map(p => p.id === id ? { ...p, [field]: value } : p)
@@ -81,7 +81,8 @@ export const PlayerList: React.FC<PlayerListProps> = ({
               <th className="py-2 text-left font-bold uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_NAME}</th>
               <th className="py-2 text-left font-bold uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_AFFIL}</th>
               <th className="py-2 text-left font-bold uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_PROP}</th>
-              <th className="py-2 w-16 text-center uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_ACTION}</th>
+              <th className="py-2 w-16 text-center uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_DISQ}</th>
+              <th className="py-2 w-12 text-center uppercase tracking-wider text-[10px]">{MESSAGES.CONFIG_PLAYER_TH_ACTION}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 bg-white">
@@ -127,6 +128,15 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                   />
                 </td>
                 <td className="text-center py-1">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 rounded border-slate-300 text-danger focus:ring-danger/20 transition-all cursor-pointer"
+                    checked={p.isDisqualified || false}
+                    onChange={(e) => updatePlayer(p.id, 'isDisqualified', e.target.checked)}
+                    title={MESSAGES.CONFIG_PLAYER_TH_DISQ}
+                  />
+                </td>
+                <td className="text-center py-1">
                   <button 
                     onClick={() => removePlayer(p.id)} 
                     className="w-8 h-8 flex items-center justify-center mx-auto text-slate-300 hover:text-danger hover:bg-danger-bg rounded-lg transition-all"
@@ -138,7 +148,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
             ))}
             {localT.players.length === 0 && (
               <tr>
-                <td colSpan={5} className="text-center py-12 bg-slate-50/50">
+                <td colSpan={6} className="text-center py-12 bg-slate-50/50">
                   <span className="text-slate-400 text-sm font-medium italic">{MESSAGES.CONFIG_PLAYER_EMPTY}</span>
                 </td>
               </tr>
