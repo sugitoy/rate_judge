@@ -61,11 +61,10 @@ export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus =
           <input
             type="text"
             inputMode="decimal"
-            className={`form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums transition-all ${
-              isInvalidUnit 
-                ? 'border-danger text-danger bg-danger-bg focus:ring-danger/20' 
+            className={`form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums transition-all ${isInvalidUnit
+                ? 'border-danger text-danger bg-danger-bg focus:ring-danger/20'
                 : 'border-danger/30 text-danger bg-danger-bg/5 focus:border-danger focus:ring-danger/20'
-            }`}
+              }`}
             value={inputStr}
             onChange={handleChange}
             onFocus={(e) => {
@@ -87,7 +86,7 @@ export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus =
   }
 
   return (
-    <div className="flex flex-col items-center gap-0.5">
+    <div className="flex flex-col items-center justify-center gap-0.5 h-full w-full">
       <div className="flex items-center gap-1 justify-center">
         {showMinus && (
           <span className="text-danger font-bold text-sm select-none tabular-nums">−</span>
@@ -95,11 +94,10 @@ export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus =
         <input
           type="text"
           inputMode="decimal"
-          className={`form-input py-0.5 px-1 text-right text-sm w-12 font-bold tabular-nums transition-all ${
-            isInvalidUnit 
-              ? 'border-danger text-danger bg-danger-bg focus:ring-danger/20' 
+          className={`form-input py-0.5 px-1 text-right text-sm w-12 font-bold tabular-nums transition-all ${isInvalidUnit
+              ? 'border-danger text-danger bg-danger-bg focus:ring-danger/20'
               : 'border-danger/30 text-danger focus:border-danger focus:ring-danger/20'
-          }`}
+            }`}
           value={inputStr}
           onChange={handleChange}
           onFocus={(e) => {

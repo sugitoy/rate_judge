@@ -254,7 +254,7 @@ export const ScoringTab = () => {
                     </td>
 
                     {activeT.criteria.map(c => (
-                      <td key={c.id} className={`${isCompactMode ? 'px-1' : 'px-2'} py-1 border-r border-slate-100 align-middle bg-white group-hover:bg-slate-50/30`}>
+                      <td key={c.id} className={`${isCompactMode ? 'px-1' : 'px-2'} py-1.5 border-r border-slate-100 align-middle bg-white group-hover:bg-slate-50/30`}>
                         <ScoreCell
                           criterion={c}
                           inputUnit={activeT.inputUnit}
@@ -280,7 +280,7 @@ export const ScoringTab = () => {
 
                     {/* 減点セル（有効かつ非省略時のみ） */}
                     {hasDeduction && !isCompactMode && (
-                      <td className="px-0.5 py-1 border-l border-r border-danger/20 align-middle bg-danger-bg/10 group-hover:bg-danger-bg/20">
+                      <td className="px-0.5 py-1.5 border-l border-r border-danger/20 align-middle bg-danger-bg/10 group-hover:bg-danger-bg/20">
                         <DeductionCell
                           value={row.deduction}
                           onChange={(val) => updateDeduction(activeT.id, row.player.id, val)}

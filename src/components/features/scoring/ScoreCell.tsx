@@ -318,23 +318,25 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
       )}
 
       {/* エラーメッセージの表示 (共通) */}
-      <div className="flex flex-col items-center gap-0.5 mt-0.5">
-        {isOutOfRange && (
-          <span className="text-[8px] text-danger font-bold uppercase tracking-tight leading-none">
-            {MESSAGES.SCORING_ERR_RANGE}
-          </span>
-        )}
-        {isInvalidUnit && (
-          <span className="text-[8px] text-danger font-bold uppercase tracking-tight leading-none">
-            {MESSAGES.SCORING_ERR_UNIT}
-          </span>
-        )}
-        {mode === 'tier' && isTierMismatch && (
-          <span className="text-[8px] text-danger font-bold uppercase tracking-tight leading-none">
-            {MESSAGES.SCORING_ERR_TIER_MISMATCH}
-          </span>
-        )}
-      </div>
+      {hasError && (
+        <div className="flex flex-col items-center gap-0.5 mt-0.5">
+          {isOutOfRange && (
+            <span className="text-[8px] text-danger font-bold uppercase tracking-tight leading-none">
+              {MESSAGES.SCORING_ERR_RANGE}
+            </span>
+          )}
+          {isInvalidUnit && (
+            <span className="text-[8px] text-danger font-bold uppercase tracking-tight leading-none">
+              {MESSAGES.SCORING_ERR_UNIT}
+            </span>
+          )}
+          {mode === 'tier' && isTierMismatch && (
+            <span className="text-[8px] text-danger font-bold uppercase tracking-tight leading-none">
+              {MESSAGES.SCORING_ERR_TIER_MISMATCH}
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 };
