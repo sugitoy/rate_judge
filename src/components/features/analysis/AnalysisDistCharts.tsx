@@ -44,11 +44,11 @@ const SubtotalBarChart: React.FC<{
   });
 
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-[320px]">
       <ResponsiveContainer>
-        <BarChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 80 }}>
+        <BarChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 40 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-          <XAxis dataKey="label" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 11, fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
+          <XAxis dataKey="label" angle={-45} textAnchor="end" height={40} tick={{ fontSize: 11, fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
           <YAxis
             tick={{ fontSize: 12, fill: '#64748b' }}
             stroke="#e2e8f0"
@@ -106,11 +106,11 @@ const TotalBarChart: React.FC<{
   });
 
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-[320px]">
       <ResponsiveContainer>
-        <BarChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 80 }}>
+        <BarChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 40 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-          <XAxis dataKey="label" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 11, fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
+          <XAxis dataKey="label" angle={-45} textAnchor="end" height={40} tick={{ fontSize: 11, fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
           <YAxis
             tick={{ fontSize: 12, fill: '#64748b' }}
             stroke="#e2e8f0"
@@ -154,9 +154,6 @@ export const AnalysisOverallDistChart: React.FC<AnalysisOverallDistChartProps> =
       <div className="card shadow-sm w-full animate-in">
         <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center justify-between">
           <span>{hasDeduction ? '全体得点分布（小計）' : MESSAGES.ANALYSIS_TOTAL_DIST_TITLE}</span>
-          <span className="text-[10px] font-normal text-slate-400 italic px-2 py-1 bg-slate-50 border border-slate-100 rounded">
-            {MESSAGES.ANALYSIS_SORT_NOTE}
-          </span>
         </h3>
         <SubtotalBarChart activeT={activeT} subtotalBarData={subtotalBarData} displayMode={displayMode} />
       </div>
@@ -166,9 +163,6 @@ export const AnalysisOverallDistChart: React.FC<AnalysisOverallDistChartProps> =
         <div className="card shadow-sm w-full animate-in border-danger/10">
           <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center justify-between">
             <span>全体得点分布（合計）</span>
-            <span className="text-[10px] font-normal text-slate-400 italic px-2 py-1 bg-slate-50 border border-slate-100 rounded">
-              {MESSAGES.ANALYSIS_SORT_NOTE}
-            </span>
           </h3>
           <p className="text-[11px] text-slate-400 mb-5">バーの始点が −減点値、頂点が合計得点を示します</p>
           <TotalBarChart activeT={activeT} totalBarData={totalBarData} displayMode={displayMode} />
@@ -208,7 +202,7 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
               {MESSAGES.ANALYSIS_MAX_POINT}{c.maxScore}pt
             </span>
           </h3>
-          <div className="w-full h-[240px]">
+          <div className="w-full h-[320px]">
             <ResponsiveContainer>
               <BarChart
                 data={subtotalBarData.map(d => {
@@ -218,10 +212,10 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
                     [c.id]: c.maxScore > 0 ? (Number(d[c.id]) / c.maxScore) * 100 : 0
                   };
                 })}
-                margin={{ top: 10, right: 10, left: -20, bottom: 50 }}
+                margin={{ top: 10, right: 10, left: -20, bottom: 30 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="label" angle={-45} textAnchor="end" height={50} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
+                <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
                 <YAxis
                   tick={{ fontSize: 10, fill: '#64748b' }}
                   stroke="#e2e8f0"
@@ -260,7 +254,7 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
             <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: DEDUCTION_COLOR }} />
             <span className="flex-1">減点</span>
           </h3>
-          <div className="w-full h-[240px]">
+          <div className="w-full h-[320px]">
             <ResponsiveContainer>
               <BarChart
                 data={subtotalBarData.map(d => ({
@@ -269,10 +263,10 @@ export const AnalysisCritDistCharts: React.FC<AnalysisCritDistChartsProps> = ({
                     ? (totalMax > 0 ? (Number(d['deduction'] ?? 0) / totalMax) * 100 : 0)
                     : Number(d['deduction'] ?? 0)
                 }))}
-                margin={{ top: 10, right: 10, left: -20, bottom: 50 }}
+                margin={{ top: 10, right: 10, left: -20, bottom: 30 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="label" angle={-45} textAnchor="end" height={50} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
+                <XAxis dataKey="label" angle={-45} textAnchor="end" height={30} tick={{ fontSize: Math.max(9, 12 - Math.floor(selectedPlayersCount / 5)), fill: '#64748b' }} interval={0} stroke="#e2e8f0" />
                 <YAxis
                   tick={{ fontSize: 10, fill: '#64748b' }}
                   stroke="#e2e8f0"

@@ -52,12 +52,14 @@ export const AnalysisTab = () => {
       <div className="flex-1 min-w-0 order-2 lg:order-1 flex flex-col gap-8">
 
         {/* A) 統計分析 (Analytics) */}
-        <AnalysisStats
-          totalStat={totalStat!}
-          critStats={critStats}
-          deductionStat={deductionStat}
-          displayMode={displayMode}
-        />
+        <div className="lg:max-w-[50%] mx-auto w-full">
+          <AnalysisStats
+            totalStat={totalStat!}
+            critStats={critStats}
+            deductionStat={deductionStat}
+            displayMode={displayMode}
+          />
+        </div>
 
         {subtotalBarData.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
