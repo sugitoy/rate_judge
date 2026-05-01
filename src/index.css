@@ -33,11 +33,46 @@
   --color-slate-100: #f1f5f9;
   --color-slate-50: #f8fafc;
 
+  --tier-s-plus: #9333ea;
+  --tier-s: #dc2626;
+  --tier-a-plus: #ea580c;
+  --tier-a: #d97706;
+  --tier-b: #eab308;
+  --tier-c: #65a30d;
+  --tier-d: #059669;
+  --tier-e: #0891b2;
+  --tier-f: #2563eb;
+  --tier-g: #475569;
+
+  --color-tier-s-plus: var(--tier-s-plus);
+  --color-tier-s: var(--tier-s);
+  --color-tier-a-plus: var(--tier-a-plus);
+  --color-tier-a: var(--tier-a);
+  --color-tier-b: var(--tier-b);
+  --color-tier-c: var(--tier-c);
+  --color-tier-d: var(--tier-d);
+  --color-tier-e: var(--tier-e);
+  --color-tier-f: var(--tier-f);
+  --color-tier-g: var(--tier-g);
+
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
 
   --font-sans: "Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif";
+}
+
+.dark {
+  --tier-s-plus: #c084fc;
+  --tier-s: #f87171;
+  --tier-a-plus: #fb923c;
+  --tier-a: #fbbf24;
+  --tier-b: #fde047;
+  --tier-c: #a3e635;
+  --tier-d: #34d399;
+  --tier-e: #22d3ee;
+  --tier-f: #60a5fa;
+  --tier-g: #94a3b8;
 }
 
 @layer base {
@@ -72,7 +107,7 @@
 
   /* Buttons */
   .btn {
-    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xl border border-transparent cursor-pointer transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xl border border-transparent cursor-pointer transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 disabled:border-transparent dark:disabled:border-transparent disabled:shadow-none dark:disabled:shadow-none;
   }
 
   .btn-primary {
@@ -136,7 +171,7 @@
   }
 
   .dark input[type="checkbox"].checkbox-danger:checked {
-    @apply bg-rose-500 border-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.4)];
+    @apply bg-danger border-danger-light shadow-[0_0_10px_rgba(239,68,68,0.4)];
   }
 
   input[type="checkbox"]:checked::after {
@@ -184,6 +219,9 @@ tbody tr:hover {
   @apply bg-primary-light dark:bg-slate-800/80 dark:text-white;
 }
 
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
+
+/* Tier Glow Effect in Dark Mode */
+.dark [class*="text-tier-"] {
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  @apply saturate-150 brightness-110;
 }

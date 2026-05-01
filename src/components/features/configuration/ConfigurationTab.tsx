@@ -308,7 +308,7 @@ export const ConfigurationTab = ({
 
             {isCreatingNew && tournamentList.length > 0 && (
               <button
-                className="btn bg-danger-bg dark:bg-danger-dark/20 font-bold text-danger dark:text-danger-light border border-danger/10 dark:border-danger-dark/30 hover:bg-danger hover:text-white dark:hover:bg-danger-dark dark:hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
+                className="btn bg-danger-bg dark:bg-danger-dark/20 font-bold text-danger dark:text-danger-light border border-danger/10 dark:border-danger-dark/30 hover:bg-danger hover:text-white dark:hover:bg-danger/20 dark:hover:text-danger-light dark:hover:border-danger/50 dark:hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] w-full py-3 flex items-center justify-center gap-2 transition-all"
                 onClick={() => {
                   if (tournamentList.length > 0) {
                     setIsCreatingNew(false);
@@ -326,11 +326,11 @@ export const ConfigurationTab = ({
               <div className="flex flex-col gap-2">
                 <button
                   onClick={handleDeleteTournament}
-                  className="btn bg-danger-bg dark:bg-danger-dark/20 font-bold text-danger dark:text-danger-light border border-danger/10 dark:border-danger-dark/30 hover:bg-danger dark:hover:bg-danger-dark hover:text-white dark:hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
+                  className="btn bg-danger-bg dark:bg-danger-dark/20 font-bold text-danger dark:text-danger-light border border-danger/10 dark:border-danger-dark/30 hover:bg-danger hover:text-white dark:hover:bg-danger/20 dark:hover:text-danger-light dark:hover:border-danger/50 dark:hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] w-full py-3 flex items-center justify-center gap-2 transition-all"
                 >
                   <Trash2 size={18} /> {MESSAGES.CONFIG_DELETE_BTN}
                 </button>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center px-2">
+                <p className="text-[10px] text-slate-400 dark:text-slate-400 text-center px-2">
                   {MESSAGES.CONFIG_DELETE_NOTE}
                 </p>
               </div>

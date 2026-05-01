@@ -66,7 +66,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6 border-b border-slate-100 dark:border-slate-800 pb-6">
         <div>
           <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-none mb-1">{MESSAGES.CONFIG_PLAYER_TITLE}</h3>
-          <p className="text-xs text-slate-400 dark:text-slate-500">{MESSAGES.CONFIG_PLAYER_DESC}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-400">{MESSAGES.CONFIG_PLAYER_DESC}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button onClick={downloadPlayerSample} className="text-primary dark:text-cyan-400 hover:text-primary-hover text-[10px] uppercase font-bold px-3 py-1.5 rounded bg-primary-light/50 dark:bg-cyan-500/10 transition-colors mr-2">
@@ -98,7 +98,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
             {localT.players.map((p, index) => (
               <tr key={p.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group/row">
                 <td className="text-center font-bold text-slate-400 dark:text-slate-400 py-1 border-r border-slate-50 dark:border-slate-800/50">
-                  <span className="inline-block w-12 text-center font-bold text-slate-400 dark:text-slate-500 tabular-nums">
+                  <span className="inline-block w-12 text-center font-bold text-slate-400 dark:text-slate-400 tabular-nums">
                     {p.entryNumber || index + 1}
                   </span>
                 </td>
@@ -165,7 +165,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                 <td className="text-center py-1">
                   <button
                     onClick={() => removePlayer(p.id)}
-                    className="w-8 h-8 flex items-center justify-center mx-auto text-slate-300 dark:text-slate-600 hover:text-danger dark:hover:text-danger-light hover:bg-danger-bg dark:hover:bg-danger-dark/20 rounded-lg transition-all"
+                    className="w-8 h-8 flex items-center justify-center mx-auto text-slate-300 dark:text-slate-400 hover:text-danger dark:hover:text-danger-light hover:bg-danger-bg dark:hover:bg-danger/20 dark:hover:shadow-[0_0_10px_rgba(239,68,68,0.3)] rounded-lg transition-all"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -175,7 +175,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
             {localT.players.length === 0 && (
               <tr>
                 <td colSpan={6} className="text-center py-12 bg-slate-50/50 dark:bg-slate-800/50">
-                  <span className="text-slate-400 dark:text-slate-500 text-sm font-medium italic">{MESSAGES.CONFIG_PLAYER_EMPTY}</span>
+                  <span className="text-slate-400 dark:text-slate-400 text-sm font-medium italic">{MESSAGES.CONFIG_PLAYER_EMPTY}</span>
                 </td>
               </tr>
             )}

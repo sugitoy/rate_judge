@@ -207,8 +207,8 @@ export const ScoringTab = () => {
                   <th
                     className={`px-1 py-2 text-center border-l border-r transition-all cursor-pointer w-20 ${
                       sortKey === 'deduction'
-                        ? 'bg-danger-bg/40 dark:bg-rose-500/25 border-danger/40 dark:border-rose-400'
-                        : 'border-danger/20 dark:border-danger/40 bg-danger-bg/20 dark:bg-danger-dark/40 hover:bg-danger-bg/30 dark:hover:bg-rose-500/30 dark:hover:border-rose-400'
+                        ? 'bg-danger-bg/40 dark:bg-danger/25 border-danger/40 dark:border-danger-light'
+                        : 'border-danger/20 dark:border-danger/40 bg-danger-bg/20 dark:bg-danger-dark/40 hover:bg-danger-bg/30 dark:hover:bg-danger/30 dark:hover:border-danger-light'
                     }`}
                     onClick={() => handleHeaderClick('deduction')}
                   >
@@ -293,7 +293,7 @@ export const ScoringTab = () => {
                     {hasDeduction && !isCompactMode && (
                       <td className="px-3 py-1.5 text-center border-l border-slate-200 dark:border-slate-700 align-middle bg-slate-50/50 dark:bg-slate-900/30">
                         <div className="font-bold text-sm text-slate-500 dark:text-slate-200 tabular-nums tracking-tight">
-                          {row.subtotal}<span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold ml-0.5 uppercase">pt</span>
+                          {row.subtotal}<span className="text-[10px] text-slate-400 dark:text-slate-400 font-semibold ml-0.5 uppercase">pt</span>
                         </div>
                       </td>
                     )}

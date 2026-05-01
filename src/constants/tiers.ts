@@ -8,16 +8,16 @@ export interface TierDefinition {
 }
 
 export const TIERS: TierDefinition[] = [
-  { id: 'S+', label: 'S+', percentage: 95, color: '#A855F7', bgClass: 'bg-[#A855F7]/20', textClass: 'text-[#A855F7]' }, // Purple 500
-  { id: 'S', label: 'S', percentage: 90, color: '#EF4444', bgClass: 'bg-[#EF4444]/20', textClass: 'text-[#EF4444]' }, // Red 500
-  { id: 'A+', label: 'A+', percentage: 85, color: '#F97316', bgClass: 'bg-[#F97316]/20', textClass: 'text-[#F97316]' }, // Orange 500
-  { id: 'A', label: 'A', percentage: 80, color: '#F59E0B', bgClass: 'bg-[#F59E0B]/20', textClass: 'text-[#F59E0B]' }, // Amber 500
-  { id: 'B', label: 'B', percentage: 75, color: '#FBBF24', bgClass: 'bg-[#FBBF24]/20', textClass: 'text-[#FBBF24]' }, // Yellow 400
-  { id: 'C', label: 'C', percentage: 70, color: '#84CC16', bgClass: 'bg-[#84CC16]/20', textClass: 'text-[#84CC16]' }, // Lime 500
-  { id: 'D', label: 'D', percentage: 65, color: '#10B981', bgClass: 'bg-[#10B981]/20', textClass: 'text-[#10B981]' }, // Green 500
-  { id: 'E', label: 'E', percentage: 60, color: '#06B6D4', bgClass: 'bg-[#06B6D4]/20', textClass: 'text-[#06B6D4]' }, // Cyan 500
-  { id: 'F', label: 'F', percentage: 55, color: '#3B82F6', bgClass: 'bg-[#3B82F6]/20', textClass: 'text-[#3B82F6]' }, // Blue 500
-  { id: 'G', label: 'G', percentage: 50, color: '#64748B', bgClass: 'bg-[#64748B]/20', textClass: 'text-[#64748B]' }, // Slate 500
+  { id: 'S+', label: 'S+', percentage: 95, color: 'var(--tier-s-plus)', bgClass: 'bg-tier-s-plus/15', textClass: 'text-tier-s-plus' },
+  { id: 'S', label: 'S', percentage: 90, color: 'var(--tier-s)', bgClass: 'bg-tier-s/15', textClass: 'text-tier-s' },
+  { id: 'A+', label: 'A+', percentage: 85, color: 'var(--tier-a-plus)', bgClass: 'bg-tier-a-plus/15', textClass: 'text-tier-a-plus' },
+  { id: 'A', label: 'A', percentage: 80, color: 'var(--tier-a)', bgClass: 'bg-tier-a/15', textClass: 'text-tier-a' },
+  { id: 'B', label: 'B', percentage: 75, color: 'var(--tier-b)', bgClass: 'bg-tier-b/15', textClass: 'text-tier-b' },
+  { id: 'C', label: 'C', percentage: 70, color: 'var(--tier-c)', bgClass: 'bg-tier-c/15', textClass: 'text-tier-c' },
+  { id: 'D', label: 'D', percentage: 65, color: 'var(--tier-d)', bgClass: 'bg-tier-d/15', textClass: 'text-tier-d' },
+  { id: 'E', label: 'E', percentage: 60, color: 'var(--tier-e)', bgClass: 'bg-tier-e/15', textClass: 'text-tier-e' },
+  { id: 'F', label: 'F', percentage: 55, color: 'var(--tier-f)', bgClass: 'bg-tier-f/15', textClass: 'text-tier-f' },
+  { id: 'G', label: 'G', percentage: 50, color: 'var(--tier-g)', bgClass: 'bg-tier-g/15', textClass: 'text-tier-g' },
 ];
 
 export const getTierById = (id: string) => TIERS.find(t => t.id === id);

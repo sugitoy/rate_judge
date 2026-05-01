@@ -55,7 +55,7 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critSta
                  <td className="py-3 px-4 text-center whitespace-nowrap dark:text-slate-100">{fmtStats(totalStat.mean, totalStat.maxScore)}</td>
                 <td className="py-3 px-4 text-center whitespace-nowrap dark:text-slate-100">{fmtStats(totalStat.median, totalStat.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-blue-600 dark:text-cyan-400 font-bold whitespace-nowrap">{fmtStats(totalStat.max, totalStat.maxScore)}</td>
-                <td className="py-3 px-4 text-center text-danger dark:text-rose-400 font-bold whitespace-nowrap">{fmtStats(totalStat.min, totalStat.maxScore)}</td>
+                <td className="py-3 px-4 text-center text-danger dark:text-danger-light font-bold whitespace-nowrap">{fmtStats(totalStat.min, totalStat.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-slate-400 dark:text-slate-400 text-xs whitespace-nowrap">{totalStat.variance.toFixed(1)}</td>
               </tr>
             )}
@@ -67,19 +67,19 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critSta
                  <td className="py-3 px-4 text-center text-slate-600 dark:text-slate-300 whitespace-nowrap">{fmtStats(st.mean, st.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-slate-600 dark:text-slate-300 whitespace-nowrap">{fmtStats(st.median, st.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-blue-600 dark:text-cyan-400 font-semibold whitespace-nowrap">{fmtStats(st.max, st.maxScore)}</td>
-                <td className="py-3 px-4 text-center text-danger dark:text-rose-400 font-semibold whitespace-nowrap">{fmtStats(st.min, st.maxScore)}</td>
+                <td className="py-3 px-4 text-center text-danger dark:text-danger-light font-semibold whitespace-nowrap">{fmtStats(st.min, st.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-slate-400 dark:text-slate-400 text-xs whitespace-nowrap">{st.variance.toFixed(1)}</td>
               </tr>
             ))}
              {deductionStat && (
-              <tr className="bg-danger-bg/30 dark:bg-rose-500/20 border-t-2 border-danger/10 dark:border-rose-500/40 hover:bg-danger-bg/50 dark:hover:bg-rose-500/30 transition-colors">
-                <td className="py-3 px-4 whitespace-nowrap font-bold text-danger dark:text-rose-400">
+              <tr className="bg-danger-bg/30 dark:bg-danger/20 border-t-2 border-danger/10 dark:border-danger/40 hover:bg-danger-bg/50 dark:hover:bg-danger/30 transition-colors">
+                <td className="py-3 px-4 whitespace-nowrap font-bold text-danger dark:text-danger-light">
                   {deductionStat.name}
                 </td>
-                 <td className="py-3 px-4 text-center text-danger/80 dark:text-rose-300 whitespace-nowrap">{fmtStats(deductionStat.mean, deductionStat.maxScore)}</td>
-                <td className="py-3 px-4 text-center text-danger/80 dark:text-rose-300 whitespace-nowrap">{fmtStats(deductionStat.median, deductionStat.maxScore)}</td>
-                <td className="py-3 px-4 text-center text-danger dark:text-rose-400 font-bold whitespace-nowrap">{fmtStats(deductionStat.max, deductionStat.maxScore)}</td>
-                <td className="py-3 px-4 text-center text-danger/60 dark:text-rose-500/60 whitespace-nowrap">{fmtStats(deductionStat.min, deductionStat.maxScore)}</td>
+                 <td className="py-3 px-4 text-center text-danger/80 dark:text-danger-light/80 whitespace-nowrap">{fmtStats(deductionStat.mean, deductionStat.maxScore)}</td>
+                <td className="py-3 px-4 text-center text-danger/80 dark:text-danger-light/80 whitespace-nowrap">{fmtStats(deductionStat.median, deductionStat.maxScore)}</td>
+                <td className="py-3 px-4 text-center text-danger dark:text-danger-light font-bold whitespace-nowrap">{fmtStats(deductionStat.max, deductionStat.maxScore)}</td>
+                <td className="py-3 px-4 text-center text-danger/60 dark:text-danger/60 whitespace-nowrap">{fmtStats(deductionStat.min, deductionStat.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-slate-400 dark:text-slate-400 text-xs whitespace-nowrap">{deductionStat.variance.toFixed(1)}</td>
               </tr>
             )}

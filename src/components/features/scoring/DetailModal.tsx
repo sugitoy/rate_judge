@@ -160,7 +160,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                     <div className="font-bold text-slate-700 dark:text-slate-200 text-sm leading-tight mb-0.5">
                       {c.name}
                     </div>
-                    <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">MAX {c.maxScore}pt</div>
+                    <div className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">MAX {c.maxScore}pt</div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <ScoreCell
@@ -179,7 +179,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
 
               {/* 減点入力行（有効時のみ） */}
               {hasDeduction && (
-                <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm mt-4 flex items-center gap-4 transition-all hover:border-rose-500/50">
+                <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm mt-4 flex items-center gap-4 transition-all hover:border-danger/50 dark:hover:border-danger-light/50">
                   <div className="w-24 shrink-0">
                     <div className="font-bold text-danger dark:text-danger-light text-sm leading-tight mb-0.5">
                       {MESSAGES.SCORING_TABLE_HEAD_DEDUCTION}
@@ -221,7 +221,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               ) : (
                 <div />
               )}
-              <span className={`text-[10px] font-bold ${valCmt.length > 900 ? 'text-danger dark:text-danger-light' : 'text-slate-400 dark:text-slate-500'}`}>
+              <span className={`text-[10px] font-bold ${valCmt.length > 900 ? 'text-danger dark:text-danger-light' : 'text-slate-400 dark:text-slate-400'}`}>
                 {valCmt.length} / 1000
               </span>
             </div>
