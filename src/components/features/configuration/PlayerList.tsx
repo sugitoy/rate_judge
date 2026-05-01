@@ -98,34 +98,58 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                   />
                 </td>
                 <td className="py-1 pr-2 pl-2">
-                  <input 
-                    type="text" 
-                    className="form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all" 
-                    value={p.name} 
-                    onChange={e => updatePlayer(p.id, 'name', e.target.value)} 
-                    onFocus={(e) => e.target.select()}
-                    placeholder={MESSAGES.CONFIG_PLAYER_TH_NAME}
-                  />
+                  <div className="flex flex-col gap-0.5">
+                    <input 
+                      type="text" 
+                      className={`form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all ${
+                        p.name.length > 100 || (p.name.trim() === '' && p.name !== '') ? 'border-danger text-danger bg-danger-bg/5' : ''
+                      }`} 
+                      value={p.name} 
+                      onChange={e => updatePlayer(p.id, 'name', e.target.value)} 
+                      onBlur={e => updatePlayer(p.id, 'name', e.target.value.trim())}
+                      onFocus={(e) => e.target.select()}
+                      placeholder={MESSAGES.CONFIG_PLAYER_TH_NAME}
+                    />
+                    {p.name.length > 100 && (
+                      <p className="text-[8px] text-danger font-bold uppercase px-1">{MESSAGES.CONFIG_ERR_PLAYER_NAME_LENGTH}</p>
+                    )}
+                  </div>
                 </td>
                 <td className="py-1 pr-2">
-                  <input 
-                    type="text" 
-                    className="form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all" 
-                    value={p.affiliation || ''} 
-                    onChange={e => updatePlayer(p.id, 'affiliation', e.target.value)} 
-                    onFocus={(e) => e.target.select()}
-                    placeholder={MESSAGES.CONFIG_PLAYER_TH_AFFIL}
-                  />
+                  <div className="flex flex-col gap-0.5">
+                    <input 
+                      type="text" 
+                      className={`form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all ${
+                        (p.affiliation || '').length > 100 ? 'border-danger text-danger bg-danger-bg/5' : ''
+                      }`} 
+                      value={p.affiliation || ''} 
+                      onChange={e => updatePlayer(p.id, 'affiliation', e.target.value)} 
+                      onBlur={e => updatePlayer(p.id, 'affiliation', (e.target.value || '').trim())}
+                      onFocus={(e) => e.target.select()}
+                      placeholder={MESSAGES.CONFIG_PLAYER_TH_AFFIL}
+                    />
+                    {(p.affiliation || '').length > 100 && (
+                      <p className="text-[8px] text-danger font-bold uppercase px-1">{MESSAGES.CONFIG_ERR_PLAYER_AFFIL_LENGTH}</p>
+                    )}
+                  </div>
                 </td>
                 <td className="py-1 pr-2">
-                  <input 
-                    type="text" 
-                    className="form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all" 
-                    value={p.props || ''} 
-                    onChange={e => updatePlayer(p.id, 'props', e.target.value)} 
-                    onFocus={(e) => e.target.select()}
-                    placeholder={MESSAGES.CONFIG_PLAYER_TH_PROP}
-                  />
+                  <div className="flex flex-col gap-0.5">
+                    <input 
+                      type="text" 
+                      className={`form-input py-1 px-3 text-sm border-transparent group-hover/row:border-slate-200 focus:border-primary focus:bg-white bg-transparent w-full transition-all ${
+                        (p.props || '').length > 100 ? 'border-danger text-danger bg-danger-bg/5' : ''
+                      }`} 
+                      value={p.props || ''} 
+                      onChange={e => updatePlayer(p.id, 'props', e.target.value)} 
+                      onBlur={e => updatePlayer(p.id, 'props', (e.target.value || '').trim())}
+                      onFocus={(e) => e.target.select()}
+                      placeholder={MESSAGES.CONFIG_PLAYER_TH_PROP}
+                    />
+                    {(p.props || '').length > 100 && (
+                      <p className="text-[8px] text-danger font-bold uppercase px-1">{MESSAGES.CONFIG_ERR_PLAYER_PROP_LENGTH}</p>
+                    )}
+                  </div>
                 </td>
                 <td className="text-center py-1">
                   <input

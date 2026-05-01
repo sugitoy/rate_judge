@@ -3,6 +3,7 @@ import Papa from 'papaparse';
 import type { Criteria, Player, PlayerScore, TournamentConfig } from '../types';
 import { MESSAGES } from '../constants/messages';
 import { getClosestTier } from '../constants/tiers';
+import { roundToUnit, clamp } from './scoreFormatter';
 
 /**
  * 構成情報CSVから大会設定と審査項目を抽出 (横持ち形式対応)
@@ -28,15 +29,23 @@ export const parseConfigCSV = (file: File): Promise<Partial<TournamentConfig>> =
           const val = data[idx];
           if (!val) return;
 
-          if (h === MESSAGES.CSV_HEADER_T_NAME) configData.name = val;
-          else if (h === MESSAGES.CSV_HEADER_T_DIV) configData.division = val;
-          else if (h === MESSAGES.CSV_HEADER_T_UNIT) configData.inputUnit = Number(val) || 1;
-          else if (h.startsWith(MESSAGES.CSV_HEADER_CRITERIA_PREFIX)) {
-            newCriteria.push({
-              id: crypto.randomUUID(),
-              name: h.replace(MESSAGES.CSV_HEADER_CRITERIA_PREFIX, '').trim(),
-              maxScore: Number(val) || 0
-            });
+          if (h === MESSAGES.CSV_HEADER_T_NAME) {
+            configData.name = val.substring(0, 100);
+          } else if (h === MESSAGES.CSV_HEADER_T_DIV) {
+            configData.division = val.substring(0, 50);
+          } else if (h === MESSAGES.CSV_HEADER_T_UNIT) {
+            const unit = Number(val);
+            configData.inputUnit = [1, 0.5, 0.1].includes(unit) ? unit : 0.1;
+          } else if (h.startsWith(MESSAGES.CSV_HEADER_CRITERIA_PREFIX)) {
+            const cName = h.replace(MESSAGES.CSV_HEADER_CRITERIA_PREFIX, '').trim().substring(0, 50);
+            const mScore = Number(val);
+            if (cName && !isNaN(mScore)) {
+              newCriteria.push({
+                id: crypto.randomUUID(),
+                name: cName,
+                maxScore: Math.min(1000, Math.max(0.1, mScore))
+              });
+            }
           }
         });
 
@@ -45,7 +54,13 @@ export const parseConfigCSV = (file: File): Promise<Partial<TournamentConfig>> =
           return;
         }
 
-        if (newCriteria.length > 0) configData.criteria = newCriteria;
+        // 審査項目名の重複排除
+        const seenNames = new Set<string>();
+        configData.criteria = newCriteria.filter(c => {
+          if (seenNames.has(c.name)) return false;
+          seenNames.add(c.name);
+          return true;
+        });
         resolve(configData);
       },
       error: (err) => reject(err),
@@ -91,9 +106,9 @@ export const parsePlayersCSV = (file: File): Promise<Player[]> => {
             newPlayers.push({
               id: crypto.randomUUID(),
               entryNumber: newPlayers.length + 1,
-              name: nameVal,
-              affiliation: affilIdx !== -1 ? row[affilIdx]?.trim() : row[1]?.trim() || '',
-              props: propIdx !== -1 ? row[propIdx]?.trim() : row[2]?.trim() || '',
+              name: nameVal.substring(0, 100),
+              affiliation: (affilIdx !== -1 ? row[affilIdx]?.trim() : row[1]?.trim() || '').substring(0, 100),
+              props: (propIdx !== -1 ? row[propIdx]?.trim() : row[2]?.trim() || '').substring(0, 100),
               isDisqualified
             });
           }
@@ -158,26 +173,34 @@ export const parseScoresCSV = (file: File, activeT: TournamentConfig): Promise<R
             criteriaIndices.forEach(ci => {
               const val = Number(row[ci.idx]);
               if (!isNaN(val)) {
-                pScoreData[ci.cId] = val;
+                // スコアの丸めと範囲制限
+                const crit = activeT.criteria.find(c => c.id === ci.cId);
+                const correctedVal = crit 
+                  ? clamp(roundToUnit(val, activeT.inputUnit), 0, crit.maxScore)
+                  : val;
+                
+                pScoreData[ci.cId] = correctedVal;
                 
                 // スコアから最も近いTierを自動算出
-                const crit = activeT.criteria.find(c => c.id === ci.cId);
                 if (crit && crit.maxScore > 0) {
-                  const pct = (val / crit.maxScore) * 100;
+                  const pct = (correctedVal / crit.maxScore) * 100;
                   pSelectedTiers[ci.cId] = getClosestTier(pct).id;
                 }
               }
             });
             
             const cmt = commentIdx !== -1 ? row[commentIdx]?.trim() : '';
-            const deductionVal = deductionIdx !== -1 ? Number(row[deductionIdx]) : undefined;
+            const rawDeduction = deductionIdx !== -1 ? Number(row[deductionIdx]) : undefined;
+            const deductionVal = rawDeduction !== undefined && !isNaN(rawDeduction)
+              ? clamp(roundToUnit(rawDeduction, 0.1), 0, 1000) // 減点は0.1単位、0〜1000程度に制限
+              : undefined;
 
             newScoresData[pMatched.id] = {
               playerId: pMatched.id,
               scores: pScoreData,
               selectedTiers: pSelectedTiers,
-              ...(deductionVal !== undefined && !isNaN(deductionVal) ? { deduction: deductionVal } : {}),
-              comment: cmt
+              ...(deductionVal !== undefined ? { deduction: deductionVal } : {}),
+              comment: cmt.substring(0, 1000)
             };
           }
         }

@@ -206,17 +206,31 @@ export const DetailModal: React.FC<DetailModalProps> = ({
           </div>
 
           {/* Right Column: Comment (1/2 width) */}
-          <div className="p-8 bg-white/50">
+          <div className="p-8 bg-white/50 flex flex-col gap-2">
             <textarea
-              className="form-input w-full p-4 h-full text-sm rounded-xl border-slate-200 focus:border-primary focus:ring-primary/10 shadow-sm resize-none transition-all placeholder:text-slate-300 bg-white"
+              className={`form-input w-full p-4 h-full text-sm rounded-xl border-slate-200 focus:border-primary focus:ring-primary/10 shadow-sm resize-none transition-all placeholder:text-slate-300 bg-white ${
+                valCmt.length > 1000 ? 'border-danger ring-danger/10' : ''
+              }`}
               placeholder={MESSAGES.SCORING_MODAL_DESC_PH}
               value={valCmt}
               onChange={(e) => {
                 const newVal = e.target.value;
-                setValCmt(newVal);
-                onSaveComment(newVal);
+                if (newVal.length <= 1000 || newVal.length < valCmt.length) {
+                  setValCmt(newVal);
+                  onSaveComment(newVal);
+                }
               }}
             />
+            <div className="flex justify-between items-center px-1">
+              {valCmt.length > 1000 ? (
+                <p className="text-[10px] text-danger font-bold uppercase">{MESSAGES.SCORING_ERR_COMMENT_LENGTH}</p>
+              ) : (
+                <div />
+              )}
+              <span className={`text-[10px] font-bold ${valCmt.length > 900 ? 'text-danger' : 'text-slate-400'}`}>
+                {valCmt.length} / 1000
+              </span>
+            </div>
           </div>
         </div>
 

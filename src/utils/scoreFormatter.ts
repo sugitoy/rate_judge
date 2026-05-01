@@ -60,3 +60,22 @@ export const calculateAutoCorrect = (rawPct: number, maxScore: number, inputUnit
 export const formatScore = (val: number): string => {
   return Number(val.toFixed(1)).toString();
 };
+
+/**
+ * 指定された単位に最も近い値に丸める（等距離の場合は低い方に寄せる）
+ */
+export const roundToUnit = (val: number, unit: number): number => {
+  const ratio = val / unit;
+  const floor = Math.floor(ratio);
+  const diff = ratio - floor;
+  
+  const rounded = (diff <= 0.5 + 1e-10) ? floor * unit : (floor + 1) * unit;
+  return Number(rounded.toFixed(10));
+};
+
+/**
+ * 数値を指定された範囲内に収める
+ */
+export const clamp = (val: number, min: number, max: number): number => {
+  return Math.max(min, Math.min(max, val));
+};

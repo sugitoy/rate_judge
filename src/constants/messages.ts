@@ -71,6 +71,16 @@ export const MESSAGES = {
   CONFIG_NO_NAME_ALERT: '大会名を入力してください。',
   CONFIG_EDITING_NEW: '「新しい大会」を編集中です。保存すると追加されます。',
   CONFIG_EMPTY_LIST: '大会が1つも登録されていません。詳細を入力して設定を保存してください。',
+  CONFIG_ERR_NAME_LENGTH: '大会名は1〜100文字で入力してください。',
+  CONFIG_ERR_DIV_LENGTH: '部門名は50文字以内で入力してください。',
+  CONFIG_ERR_CRITERIA_NAME_EMPTY: '審査項目名を入力してください。',
+  CONFIG_ERR_CRITERIA_NAME_LENGTH: '審査項目名は50文字以内で入力してください。',
+  CONFIG_ERR_CRITERIA_NAME_DUP: '審査項目名が重複しています。',
+  CONFIG_ERR_CRITERIA_MAX_SCORE: '満点は0.1〜1000の間で設定してください。',
+  CONFIG_ERR_PLAYER_NAME_EMPTY: '選手名を入力してください。',
+  CONFIG_ERR_PLAYER_NAME_LENGTH: '選手名は100文字以内で入力してください。',
+  CONFIG_ERR_PLAYER_AFFIL_LENGTH: '所属は100文字以内で入力してください。',
+  CONFIG_ERR_PLAYER_PROP_LENGTH: '使用道具は100文字以内で入力してください。',
 
   // --- Scoring: Layout & Mode ---
   SCORING_TOGGLE_MODE: '入力モード',
@@ -94,9 +104,11 @@ export const MESSAGES = {
   SCORING_NEXT_PLAYER: '次の選手',
   SCORING_MODAL_DESC_PH: 'この選手へのメモ・講評...',
   SCORING_ERR_UNIT: '単位エラー',
+  SCORING_ERR_RANGE: '範囲外エラー',
   SCORING_ERR_TIER_MISMATCH: 'Tier不一致',
   SCORING_IMPORT_SUCCESS: 'スコアのインポートが完了しました。',
   SCORING_IMPORT_ERR: '一致する選手名・審査項目が見つかりませんでした。',
+  SCORING_ERR_COMMENT_LENGTH: 'コメントは1000文字以内で入力してください。',
   SCORING_EMPTY_SELECTION: '表示対象が選択されていません。右メニューで選手を選択してください。',
 
   // --- Analysis ---

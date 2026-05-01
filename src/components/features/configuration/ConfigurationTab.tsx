@@ -15,7 +15,7 @@ import { useUIStore } from '../../../store/useUIStore';
 const EMPTY_T_TEMPLATE = {
   name: '',
   division: '',
-  inputUnit: 1,
+  inputUnit: 0.1,
   hasDeduction: false,
   criteria: [],
   players: []
@@ -31,7 +31,7 @@ const createEmptyTournament = (): TournamentConfig => ({
   id: Date.now().toString(),
   name: '',
   division: '',
-  inputUnit: 1,
+  inputUnit: 0.1,
   hasDeduction: false,
   criteria: [],
   players: []
@@ -90,15 +90,72 @@ export const ConfigurationTab = ({
   };
 
   const handleSaveInfo = () => {
-    if (!localT.name.trim()) {
+    // 1. 大会名バリデーション
+    const name = localT.name.trim();
+    if (!name) {
       alert(MESSAGES.CONFIG_NO_NAME_ALERT);
       return;
     }
+    if (name.length > 100) {
+      alert(MESSAGES.CONFIG_ERR_NAME_LENGTH);
+      return;
+    }
+
+    // 2. 部門名バリデーション
+    if (localT.division.length > 50) {
+      alert(MESSAGES.CONFIG_ERR_DIV_LENGTH);
+      return;
+    }
+
+    // 3. 審査項目バリデーション
+    const criteriaNames = new Set<string>();
+    for (const c of localT.criteria) {
+      const cName = c.name.trim();
+      if (!cName) {
+        alert(MESSAGES.CONFIG_ERR_CRITERIA_NAME_EMPTY);
+        return;
+      }
+      if (cName.length > 50) {
+        alert(MESSAGES.CONFIG_ERR_CRITERIA_NAME_LENGTH);
+        return;
+      }
+      if (criteriaNames.has(cName)) {
+        alert(`${MESSAGES.CONFIG_ERR_CRITERIA_NAME_DUP}: ${cName}`);
+        return;
+      }
+      criteriaNames.add(cName);
+
+      if (c.maxScore < 0.1 || c.maxScore > 1000) {
+        alert(MESSAGES.CONFIG_ERR_CRITERIA_MAX_SCORE);
+        return;
+      }
+    }
+
+    // 4. 選手バリデーション
+    for (const p of localT.players) {
+      if (!p.name.trim()) {
+        alert(MESSAGES.CONFIG_ERR_PLAYER_NAME_EMPTY);
+        return;
+      }
+      if (p.name.length > 100) {
+        alert(MESSAGES.CONFIG_ERR_PLAYER_NAME_LENGTH);
+        return;
+      }
+      if ((p.affiliation || '').length > 100) {
+        alert(MESSAGES.CONFIG_ERR_PLAYER_AFFIL_LENGTH);
+        return;
+      }
+      if ((p.props || '').length > 100) {
+        alert(MESSAGES.CONFIG_ERR_PLAYER_PROP_LENGTH);
+        return;
+      }
+    }
+
     if (isCreatingNew) {
-      addTournament(localT);
+      addTournament({ ...localT, name });
       setIsCreatingNew(false);
     } else if (activeT) {
-      updateTournament(activeT.id, localT);
+      updateTournament(activeT.id, { ...localT, name });
     }
     alert(MESSAGES.CONFIG_SAVED);
   };

@@ -67,24 +67,36 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{MESSAGES.CONFIG_NAME_LABEL} <span className="text-danger">{MESSAGES.REQUIRE_MARK}</span></label>
             <input
               type="text"
-              className="form-input text-base py-2.5 px-4 bg-slate-50/50 border-slate-200 focus:bg-white"
+              className={`form-input text-base py-2.5 px-4 bg-slate-50/50 border-slate-200 focus:bg-white transition-all ${
+                localT.name.length > 100 || (localT.name.trim() === '' && localT.name !== '') ? 'border-danger text-danger bg-danger-bg/5' : ''
+              }`}
               value={localT.name}
               onChange={e => setLocalT({ ...localT, name: e.target.value })}
+              onBlur={e => setLocalT({ ...localT, name: e.target.value.trim() })}
               onFocus={(e) => e.target.select()}
               placeholder={MESSAGES.CONFIG_NAME_PH}
             />
+            {localT.name.length > 100 && (
+              <p className="text-[10px] text-danger font-bold uppercase">{MESSAGES.CONFIG_ERR_NAME_LENGTH}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{MESSAGES.CONFIG_DIV_LABEL}</label>
             <input
               type="text"
-              className="form-input text-base py-2.5 px-4 bg-slate-50/50 border-slate-200 focus:bg-white"
+              className={`form-input text-base py-2.5 px-4 bg-slate-50/50 border-slate-200 focus:bg-white transition-all ${
+                localT.division.length > 50 ? 'border-danger text-danger bg-danger-bg/5' : ''
+              }`}
               value={localT.division}
               onChange={e => setLocalT({ ...localT, division: e.target.value })}
+              onBlur={e => setLocalT({ ...localT, division: e.target.value.trim() })}
               onFocus={(e) => e.target.select()}
               placeholder={MESSAGES.CONFIG_DIV_PH}
             />
+            {localT.division.length > 50 && (
+              <p className="text-[10px] text-danger font-bold uppercase">{MESSAGES.CONFIG_ERR_DIV_LENGTH}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-1.5 w-full md:w-56">
@@ -141,24 +153,44 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
           <div className="flex flex-col gap-3">
             {localT.criteria.map((c) => (
               <div key={c.id} className="flex gap-2 items-center group/item animate-in slide-in-from-right-2 duration-200">
-                <input
-                  type="text"
-                  className="form-input text-sm py-2 px-3 flex-1 border-slate-200 bg-slate-50 group-hover/item:bg-white group-hover/item:border-slate-300 transition-all font-medium"
-                  value={c.name}
-                  onChange={e => updateCriteria(c.id, 'name', e.target.value)}
-                  onFocus={(e) => e.target.select()}
-                  placeholder={MESSAGES.CONFIG_CRITERIA_PH}
-                />
-                <div className="relative w-24 shrink-0 group/score">
+                <div className="flex flex-col flex-1 gap-1">
                   <input
-                    type="number"
-                    className="form-input text-sm py-2 pl-3 pr-8 w-full border-slate-200 bg-slate-50 group-hover/item:bg-white group-hover/item:border-slate-300 transition-all font-bold text-primary text-right"
-                    value={c.maxScore}
-                    onChange={e => updateCriteria(c.id, 'maxScore', Number(e.target.value))}
+                    type="text"
+                    className={`form-input text-sm py-2 px-3 w-full border-slate-200 bg-slate-50 group-hover/item:bg-white group-hover/item:border-slate-300 transition-all font-medium ${
+                      c.name.length > 50 || (localT.criteria.filter(x => x.name === c.name && x.name !== '').length > 1) ? 'border-danger text-danger bg-danger-bg/5' : ''
+                    }`}
+                    value={c.name}
+                    onChange={e => updateCriteria(c.id, 'name', e.target.value)}
+                    onBlur={e => updateCriteria(c.id, 'name', e.target.value.trim())}
                     onFocus={(e) => e.target.select()}
-                    min={1}
+                    placeholder={MESSAGES.CONFIG_CRITERIA_PH}
                   />
-                  <span className="text-[10px] font-bold text-slate-300 absolute right-2.5 top-1/2 -translate-y-1/2 uppercase select-none group-hover/score:text-primary/40 transition-colors">pt</span>
+                  {c.name.length > 50 && (
+                    <p className="text-[9px] text-danger font-bold uppercase">{MESSAGES.CONFIG_ERR_CRITERIA_NAME_LENGTH}</p>
+                  )}
+                  {localT.criteria.filter(x => x.name === c.name && x.name !== '').length > 1 && (
+                    <p className="text-[9px] text-danger font-bold uppercase">{MESSAGES.CONFIG_ERR_CRITERIA_NAME_DUP}</p>
+                  )}
+                </div>
+                <div className="flex flex-col w-24 shrink-0 gap-1">
+                  <div className="relative group/score">
+                    <input
+                      type="number"
+                      className={`form-input text-sm py-2 pl-3 pr-8 w-full border-slate-200 bg-slate-50 group-hover/item:bg-white group-hover/item:border-slate-300 transition-all font-bold text-primary text-right ${
+                        c.maxScore < 0.1 || c.maxScore > 1000 ? 'border-danger text-danger bg-danger-bg/5' : ''
+                      }`}
+                      value={c.maxScore}
+                      onChange={e => updateCriteria(c.id, 'maxScore', Number(e.target.value))}
+                      onFocus={(e) => e.target.select()}
+                      min={0.1}
+                      max={1000}
+                      step={0.1}
+                    />
+                    <span className="text-[10px] font-bold text-slate-300 absolute right-2.5 top-1/2 -translate-y-1/2 uppercase select-none group-hover/score:text-primary/40 transition-colors">pt</span>
+                  </div>
+                  {(c.maxScore < 0.1 || c.maxScore > 1000) && (
+                    <p className="text-[9px] text-danger font-bold uppercase">{MESSAGES.CONFIG_ERR_CRITERIA_MAX_SCORE}</p>
+                  )}
                 </div>
                 <button
                   onClick={() => removeCriteria(c.id)}

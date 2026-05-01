@@ -51,7 +51,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
   }, [value, criterion.maxScore]);
 
   const handleAbsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let newVal = trimZero(e.target.value.replace(/[^0-9.-]/g, ''));
+    let newVal = trimZero(e.target.value.replace(/[^0-9.]/g, ''));
     setAbsStr(newVal);
 
     const num = parseFloat(newVal);
@@ -71,7 +71,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
   };
 
   const handlePctChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let newVal = trimZero(e.target.value.replace(/[^0-9.-]/g, ''));
+    let newVal = trimZero(e.target.value.replace(/[^0-9.]/g, ''));
     const tempNum = parseFloat(newVal);
     if (!isNaN(tempNum) && tempNum > 100) {
       newVal = '100';
@@ -122,12 +122,13 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
   };
 
   const isInvalidUnit = !isValidUnit(absStr, inputUnit);
+  const isOutOfRange = value !== undefined && (value < 0 || value > criterion.maxScore);
 
   // Tier不一致チェック
   const tierDef = selectedTier ? getTierById(selectedTier) : null;
   const isTierMismatch = tierDef && value !== undefined && Math.abs(value - calculateAutoCorrect(tierDef.percentage, criterion.maxScore, inputUnit)) > 0.0001;
 
-  const hasError = isInvalidUnit || (mode === 'tier' && isTierMismatch);
+  const hasError = isInvalidUnit || isOutOfRange || (mode === 'tier' && isTierMismatch);
 
   // 詳細表示モード (Detailed)
   if (variant === 'detailed') {
@@ -164,7 +165,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 type="text"
                 inputMode="decimal"
                 disabled={mode === 'percentage'}
-                className={`form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums transition-all ${mode === 'percentage' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (isInvalidUnit ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 text-primary focus:ring-primary/20')}`}
+                className={`form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums transition-all ${mode === 'percentage' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (hasError ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 text-primary focus:ring-primary/20')}`}
                 value={absStr}
                 onChange={handleAbsChange}
                 onFocus={(e) => {
@@ -181,7 +182,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 type="text"
                 inputMode="decimal"
                 disabled={mode === 'points'}
-                className={`form-input py-1.5 px-3 text-right text-sm flex-1 tabular-nums transition-all ${mode === 'points' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (isInvalidUnit ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 focus:ring-primary/20')}`}
+                className={`form-input py-1.5 px-3 text-right text-sm flex-1 tabular-nums transition-all ${mode === 'points' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (hasError ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 focus:ring-primary/20')}`}
                 value={pctStr}
                 onChange={handlePctChange}
                 onBlur={() => {
@@ -198,11 +199,23 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
             </div>
           </div>
         )}
-        {(isInvalidUnit || (mode === 'tier' && isTierMismatch)) && (
-          <span className="text-[10px] text-danger font-bold uppercase tracking-tight">
-            {isInvalidUnit ? MESSAGES.SCORING_ERR_UNIT : MESSAGES.SCORING_ERR_TIER_MISMATCH}
-          </span>
-        )}
+        <div className="flex flex-col gap-0.5">
+          {isOutOfRange && (
+            <span className="text-[10px] text-danger font-bold uppercase tracking-tight">
+              {MESSAGES.SCORING_ERR_RANGE}
+            </span>
+          )}
+          {isInvalidUnit && (
+            <span className="text-[10px] text-danger font-bold uppercase tracking-tight">
+              {MESSAGES.SCORING_ERR_UNIT}
+            </span>
+          )}
+          {mode === 'tier' && isTierMismatch && (
+            <span className="text-[10px] text-danger font-bold uppercase tracking-tight">
+              {MESSAGES.SCORING_ERR_TIER_MISMATCH}
+            </span>
+          )}
+        </div>
       </div>
     );
   }
@@ -216,7 +229,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
             <input
               type="text"
               inputMode="decimal"
-              className={`form-input py-0.5 px-2 text-right text-sm tabular-nums focus:ring-primary/20 block transition-all ${showRank ? 'w-20' : 'w-16'} ${isInvalidUnit
+              className={`form-input py-0.5 px-2 text-right text-sm tabular-nums focus:ring-primary/20 block transition-all ${showRank ? 'w-20' : 'w-16'} ${hasError
                 ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
                 : 'border-slate-200 focus:border-primary'
                 }`}
@@ -250,7 +263,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
             <input
               type="text"
               inputMode="decimal"
-              className={`form-input py-0.5 px-2 text-right text-sm font-bold tabular-nums transition-all focus:ring-primary/20 ${showRank ? 'w-20' : 'w-16'} ${isInvalidUnit
+              className={`form-input py-0.5 px-2 text-right text-sm font-bold tabular-nums transition-all focus:ring-primary/20 ${showRank ? 'w-20' : 'w-16'} ${hasError
                 ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
                 : 'border-slate-200 text-primary focus:border-primary'
                 }`}
@@ -305,16 +318,23 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
       )}
 
       {/* エラーメッセージの表示 (共通) */}
-      {isInvalidUnit && (
-        <span className="text-[9px] text-danger font-bold uppercase tracking-tight animate-in fade-in slide-in-from-top-1 duration-150">
-          {MESSAGES.SCORING_ERR_UNIT}
-        </span>
-      )}
-      {mode === 'tier' && isTierMismatch && (
-        <span className="text-[9px] text-danger font-bold uppercase tracking-tight animate-in fade-in slide-in-from-top-1 duration-150">
-          {MESSAGES.SCORING_ERR_TIER_MISMATCH}
-        </span>
-      )}
+      <div className="flex flex-col items-center gap-0.5 mt-0.5">
+        {isOutOfRange && (
+          <span className="text-[8px] text-danger font-bold uppercase tracking-tight leading-none">
+            {MESSAGES.SCORING_ERR_RANGE}
+          </span>
+        )}
+        {isInvalidUnit && (
+          <span className="text-[8px] text-danger font-bold uppercase tracking-tight leading-none">
+            {MESSAGES.SCORING_ERR_UNIT}
+          </span>
+        )}
+        {mode === 'tier' && isTierMismatch && (
+          <span className="text-[8px] text-danger font-bold uppercase tracking-tight leading-none">
+            {MESSAGES.SCORING_ERR_TIER_MISMATCH}
+          </span>
+        )}
+      </div>
     </div>
   );
 };
