@@ -10,6 +10,7 @@ import { AnalysisOverallDistChart, AnalysisCritDistCharts } from './AnalysisDist
 import { AnalysisRadarChart } from './AnalysisRadarChart';
 import { SidePanel } from '../../ui/SidePanel';
 import { ToggleSwitch } from '../../ui/ToggleSwitch';
+import { Select } from '../../ui/Select';
 
 export const AnalysisTab = () => {
   const { tournaments, activeTournamentId } = useTournamentStore();
@@ -48,21 +49,21 @@ export const AnalysisTab = () => {
     <div className="flex flex-col lg:flex-row gap-8 animate-in pb-12 tabular-nums">
       {/* メインコンテンツ領域 (A, B, C, D) */}
       <div className="flex-1 min-w-0 order-2 lg:order-1 flex flex-col gap-8">
-        
+
         {/* A) 統計分析 (Analytics) */}
         <AnalysisStats totalStat={totalStat!} critStats={critStats} displayMode={displayMode} />
 
         {distBarData.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             {/* B) 全体得点分布 */}
-            <AnalysisOverallDistChart 
+            <AnalysisOverallDistChart
               activeT={activeT}
               distBarData={distBarData}
               displayMode={displayMode}
             />
 
             {/* C) 各項目別分布 (複数タイル) */}
-            <AnalysisCritDistCharts 
+            <AnalysisCritDistCharts
               activeT={activeT}
               distBarData={distBarData}
               selectedPlayersCount={selectedPlayers.length}
@@ -71,7 +72,7 @@ export const AnalysisTab = () => {
 
             {/* D) レーダーチャート (比較用) */}
             <div className="md:col-span-2 max-w-2xl mx-auto w-full">
-              <AnalysisRadarChart 
+              <AnalysisRadarChart
                 radarData={radarData}
                 radarPlayers={radarPlayers}
                 selectedPlayersCount={selectedPlayers.length}
@@ -103,26 +104,23 @@ export const AnalysisTab = () => {
           <div className="space-y-3 pt-4 border-t border-slate-100">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.PLAYER_SORT_TITLE}</span>
             <div className="flex flex-col gap-2">
-              <select 
-                className="form-input w-full text-sm"
+              <Select
                 value={sortKey}
-                onChange={(e) => {
-                  const newKey = e.target.value;
+                onChange={(newKey) => {
                   const newOrder = newKey === 'entryNo' ? 'asc' : 'desc';
                   setSortConfig(newKey, newOrder);
                 }}
-              >
-                <option value="entryNo">{MESSAGES.PLAYER_SORT_KEY_ENTRY}</option>
-                <option value="total">{MESSAGES.PLAYER_SORT_KEY_TOTAL}</option>
-                {activeT.criteria.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
+                options={[
+                  { value: 'entryNo', label: MESSAGES.PLAYER_SORT_KEY_ENTRY },
+                  { value: 'total', label: MESSAGES.PLAYER_SORT_KEY_TOTAL },
+                  ...activeT.criteria.map(c => ({ value: c.id, label: c.name })),
+                ]}
+              />
             </div>
           </div>
 
           <div className="pt-4 border-t border-slate-100">
-            <PlayerFilter 
+            <PlayerFilter
               players={playersInfo}
               selectedIds={selectedPlayers}
               onToggle={togglePlayer}

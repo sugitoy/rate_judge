@@ -3,6 +3,7 @@ import React from 'react';
 import { Upload, Download, Plus, Trash2 } from 'lucide-react';
 import type { TournamentConfig, Criteria } from '../../../types';
 import { MESSAGES } from '../../../constants/messages';
+import { Select } from '../../ui/Select';
 
 interface BasicConfigProps {
   localT: TournamentConfig;
@@ -88,15 +89,15 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
 
           <div className="flex flex-col gap-1.5 w-full md:w-56">
             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{MESSAGES.CONFIG_INPUT_UNIT_LABEL}</label>
-            <select
-              className="form-input text-base py-2.5 px-4 bg-slate-50/50 border-slate-200 focus:bg-white cursor-pointer"
-              value={localT.inputUnit}
-              onChange={e => setLocalT({ ...localT, inputUnit: Number(e.target.value) })}
-            >
-              <option value="1">{MESSAGES.CONFIG_UNIT_1}</option>
-              <option value="0.5">{MESSAGES.CONFIG_UNIT_05}</option>
-              <option value="0.1">{MESSAGES.CONFIG_UNIT_01}</option>
-            </select>
+            <Select
+              value={String(localT.inputUnit)}
+              onChange={(val) => setLocalT({ ...localT, inputUnit: Number(val) })}
+              options={[
+                { value: '1', label: MESSAGES.CONFIG_UNIT_1 },
+                { value: '0.5', label: MESSAGES.CONFIG_UNIT_05 },
+                { value: '0.1', label: MESSAGES.CONFIG_UNIT_01 },
+              ]}
+            />
           </div>
         </div>
 
@@ -137,8 +138,8 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
                   />
                   <span className="text-[10px] font-bold text-slate-300 absolute right-2.5 top-1/2 -translate-y-1/2 uppercase select-none group-hover/score:text-primary/40 transition-colors">pt</span>
                 </div>
-                <button 
-                  onClick={() => removeCriteria(c.id)} 
+                <button
+                  onClick={() => removeCriteria(c.id)}
                   className="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-danger hover:bg-danger-bg rounded-lg transition-all"
                 >
                   <Trash2 size={18} />
@@ -157,10 +158,10 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
               </div>
             )}
           </div>
-          
+
           <div className="mt-6">
-            <button 
-              onClick={addCriteria} 
+            <button
+              onClick={addCriteria}
               className="btn bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-primary hover:border-primary w-full flex items-center justify-center gap-2 py-3 dashed-border transition-all"
               style={{ borderStyle: 'dashed' }}
             >

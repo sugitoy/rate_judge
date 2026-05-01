@@ -13,6 +13,7 @@ import { ToggleSwitch } from '../../ui/ToggleSwitch';
 import { SidePanel } from '../../ui/SidePanel';
 import { useUIStore } from '../../../store/useUIStore';
 import { PlayerFilter } from '../shared/PlayerFilter';
+import { Select } from '../../ui/Select';
 import { useEffect } from 'react';
 
 export const ScoringTab = () => {
@@ -26,9 +27,9 @@ export const ScoringTab = () => {
   const currentScores = activeTournamentId ? tournamentScores[activeTournamentId] || {} : {};
 
   const { tableData } = useScoringData(activeT, currentScores);
-  const { 
-    selectedPlayerIds, 
-    togglePlayerSelection, 
+  const {
+    selectedPlayerIds,
+    togglePlayerSelection,
     setSelectedPlayerIds,
     initializedTournamentId,
     setInitializedTournamentId,
@@ -41,7 +42,7 @@ export const ScoringTab = () => {
   // 初期表示または大会切り替え時に全選手を選択状態にする
   useEffect(() => {
     if (!activeT || activeT.players.length === 0) return;
-    
+
     // 大会が切り替わった場合のみ初期化（全選択）
     if (initializedTournamentId !== activeT.id) {
       setSelectedPlayerIds(activeT.players.map(p => p.id));
@@ -84,7 +85,7 @@ export const ScoringTab = () => {
   const handlePrevPlayer = (currentComment: string) => {
     if (!activeT || !commentModalData) return;
     updateComment(activeT.id, commentModalData.playerId, currentComment);
-    
+
     const currentIndex = sortedPlayersForNav.findIndex(p => p.id === commentModalData.playerId);
     if (currentIndex > 0) {
       setCommentModalData({ playerId: sortedPlayersForNav[currentIndex - 1].id });
@@ -94,7 +95,7 @@ export const ScoringTab = () => {
   const handleNextPlayer = (currentComment: string) => {
     if (!activeT || !commentModalData) return;
     updateComment(activeT.id, commentModalData.playerId, currentComment);
-    
+
     const currentIndex = sortedPlayersForNav.findIndex(p => p.id === commentModalData.playerId);
     if (currentIndex < sortedPlayersForNav.length - 1) {
       setCommentModalData({ playerId: sortedPlayersForNav[currentIndex + 1].id });
@@ -139,55 +140,54 @@ export const ScoringTab = () => {
                   );
                 }
                 return filtered.map((row) => (
-                <tr key={row.player.id} className="hover:bg-slate-50/80 transition-colors group">
-                  <td className="px-3 py-1.5 text-center font-bold text-slate-400 sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-200">{row.entryNo}</td>
-                  <td className="px-3 py-1.5 sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[1px_0_0_#e2e8f0] border-r border-slate-200 align-middle">
-                    <div className="font-bold text-slate-900 tabular-nums">{row.player.name}</div>
-                  </td>
-
-                  {activeT.criteria.map(c => (
-                    <td key={c.id} className="px-2 py-1 border-r border-slate-100 align-middle bg-white group-hover:bg-slate-50/30">
-                      <ScoreCell
-                        criterion={c}
-                        inputUnit={activeT.inputUnit}
-                        mode={displayMode}
-                        value={row.scores[c.id]}
-                        rank={row.criterionRanks?.[c.id]}
-                        showRank={showRank}
-                        onChange={(val) => updateScore(activeT.id, row.player.id, c.id, val)}
-                      />
+                  <tr key={row.player.id} className="hover:bg-slate-50/80 transition-colors group">
+                    <td className="px-3 py-1.5 text-center font-bold text-slate-400 sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-200">{row.entryNo}</td>
+                    <td className="px-3 py-1.5 sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[1px_0_0_#e2e8f0] border-r border-slate-200 align-middle">
+                      <div className="font-bold text-slate-900 tabular-nums">{row.player.name}</div>
                     </td>
-                  ))}
 
-                  <td className="px-3 py-1.5 text-center border-l flex-none align-middle bg-primary-light/10">
-                    <div className="font-bold text-xl leading-none text-primary tabular-nums tracking-tight">
-                      {row.total}<span className="text-[10px] text-primary/60 font-semibold ml-0.5 uppercase">pt</span>
-                    </div>
-                  </td>
-                  {showRank && (
-                    <td className="px-3 py-1.5 text-center align-middle bg-primary-light/10 border-l border-primary/20">
-                      {(() => {
-                        const r = row.rank;
-                        if (r === 1) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-300 rounded-full font-bold text-yellow-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                        if (r === 2) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-300 rounded-full font-bold text-slate-600 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                        if (r === 3) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full font-bold text-orange-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                        return <div className="font-bold text-slate-400 text-sm tabular-nums">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                      })()}
+                    {activeT.criteria.map(c => (
+                      <td key={c.id} className="px-2 py-1 border-r border-slate-100 align-middle bg-white group-hover:bg-slate-50/30">
+                        <ScoreCell
+                          criterion={c}
+                          inputUnit={activeT.inputUnit}
+                          mode={displayMode}
+                          value={row.scores[c.id]}
+                          rank={row.criterionRanks?.[c.id]}
+                          showRank={showRank}
+                          onChange={(val) => updateScore(activeT.id, row.player.id, c.id, val)}
+                        />
+                      </td>
+                    ))}
+
+                    <td className="px-3 py-1.5 text-center border-l flex-none align-middle bg-primary-light/10">
+                      <div className="font-bold text-xl leading-none text-primary tabular-nums tracking-tight">
+                        {row.total}<span className="text-[10px] text-primary/60 font-semibold ml-0.5 uppercase">pt</span>
+                      </div>
                     </td>
-                  )}
-                  <td className="px-3 py-1.5 text-center border-l-2 border-slate-200 align-middle bg-slate-50/20">
-                    <button
-                      onClick={() => setCommentModalData({ playerId: row.player.id })}
-                      className={`w-8 h-8 rounded-xl transition-all flex items-center justify-center mx-auto border outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 ${
-                        row.comment
-                          ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white shadow-sm'
-                          : 'bg-white text-slate-400 border-slate-200 hover:text-primary hover:border-primary hover:bg-slate-50'
-                      }`}
-                    >
-                      <Maximize2 size={18} strokeWidth={2.5} className={row.comment ? 'text-primary' : 'text-slate-400'} />
-                    </button>
-                  </td>
-                </tr>
+                    {showRank && (
+                      <td className="px-3 py-1.5 text-center align-middle bg-primary-light/10 border-l border-primary/20">
+                        {(() => {
+                          const r = row.rank;
+                          if (r === 1) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-300 rounded-full font-bold text-yellow-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                          if (r === 2) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-300 rounded-full font-bold text-slate-600 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                          if (r === 3) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full font-bold text-orange-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                          return <div className="font-bold text-slate-400 text-sm tabular-nums">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                        })()}
+                      </td>
+                    )}
+                    <td className="px-3 py-1.5 text-center border-l-2 border-slate-200 align-middle bg-slate-50/20">
+                      <button
+                        onClick={() => setCommentModalData({ playerId: row.player.id })}
+                        className={`w-8 h-8 rounded-xl transition-all flex items-center justify-center mx-auto border outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 ${row.comment
+                            ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white shadow-sm'
+                            : 'bg-white text-slate-400 border-slate-200 hover:text-primary hover:border-primary hover:bg-slate-50'
+                          }`}
+                      >
+                        <Maximize2 size={18} strokeWidth={2.5} className={row.comment ? 'text-primary' : 'text-slate-400'} />
+                      </button>
+                    </td>
+                  </tr>
                 ));
               })()}
             </tbody>
@@ -213,21 +213,18 @@ export const ScoringTab = () => {
           <div className="space-y-3 pt-4 border-t border-slate-100">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{MESSAGES.PLAYER_SORT_TITLE}</span>
             <div className="flex flex-col gap-2">
-              <select 
-                className="form-input w-full text-sm"
+              <Select
                 value={sortKey}
-                onChange={(e) => {
-                  const newKey = e.target.value;
+                onChange={(newKey) => {
                   const newOrder = newKey === 'entryNo' ? 'asc' : 'desc';
                   setSortConfig(newKey, newOrder);
                 }}
-              >
-                <option value="entryNo">{MESSAGES.PLAYER_SORT_KEY_ENTRY}</option>
-                <option value="total">{MESSAGES.PLAYER_SORT_KEY_TOTAL}</option>
-                {activeT.criteria.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
+                options={[
+                  { value: 'entryNo', label: MESSAGES.PLAYER_SORT_KEY_ENTRY },
+                  { value: 'total', label: MESSAGES.PLAYER_SORT_KEY_TOTAL },
+                  ...activeT.criteria.map(c => ({ value: c.id, label: c.name })),
+                ]}
+              />
             </div>
           </div>
 
@@ -245,7 +242,7 @@ export const ScoringTab = () => {
           </div>
 
           <div className="pt-4 border-t border-slate-100">
-            <PlayerFilter 
+            <PlayerFilter
               players={tableData.map(d => ({
                 id: d.player.id,
                 name: d.player.name,
@@ -266,8 +263,8 @@ export const ScoringTab = () => {
                 <Download size={18} /> {MESSAGES.CSV_IMPORT_SCORES}
                 <input type="file" accept=".csv" onChange={handleImportCSV} className="hidden" />
               </label>
-              <button 
-                onClick={handleExportCSV} 
+              <button
+                onClick={handleExportCSV}
                 className="btn btn-outline btn-action w-full flex items-center justify-center gap-2 py-3"
               >
                 <Upload size={18} /> {MESSAGES.CSV_EXPORT_SCORES}

@@ -9,6 +9,7 @@ import { exportConfigToCSV, exportPlayersToCSV } from '../../../utils/csvExport'
 import { BasicConfig } from './BasicConfig';
 import { PlayerList } from './PlayerList';
 import { SidePanel } from '../../ui/SidePanel';
+import { Select } from '../../ui/Select';
 
 const createEmptyTournament = (): TournamentConfig => ({
   id: Date.now().toString(),
@@ -19,16 +20,16 @@ const createEmptyTournament = (): TournamentConfig => ({
   players: []
 });
 
-export const ConfigurationTab = ({ 
+export const ConfigurationTab = ({
   triggerCreateNew,
   onTriggerConsumed
-}: { 
+}: {
   triggerCreateNew?: number,
   onTriggerConsumed?: () => void
 }) => {
   const { tournaments, activeTournamentId, addTournament, updateTournament, deleteTournament, setActiveTournament, clearTournaments } = useTournamentStore();
   const { deleteTournamentScores, clearAllScores } = useScoringStore();
-  
+
   const activeT = activeTournamentId ? tournaments[activeTournamentId] : null;
   const tournamentList = Object.values(tournaments);
 
@@ -159,7 +160,7 @@ export const ConfigurationTab = ({
             <span className="font-medium">{MESSAGES.CONFIG_EMPTY_LIST}</span>
           </div>
         )}
-        
+
         {isCreatingNew && (
           <div className="bg-warning-bg text-warning border border-warning/20 p-4 rounded-xl font-bold text-sm shadow-sm flex items-center gap-2">
             <span className="bg-warning text-white rounded-full w-5 h-5 flex items-center justify-center shrink-0">!</span>
@@ -167,20 +168,20 @@ export const ConfigurationTab = ({
           </div>
         )}
 
-        <BasicConfig 
-          localT={localT} 
-          setLocalT={setLocalT} 
-          handleConfigCSV={handleConfigCSV} 
+        <BasicConfig
+          localT={localT}
+          setLocalT={setLocalT}
+          handleConfigCSV={handleConfigCSV}
           handleExportConfig={handleExportConfig}
-          downloadConfigSample={downloadConfigSample} 
+          downloadConfigSample={downloadConfigSample}
         />
 
-        <PlayerList 
-          localT={localT} 
-          setLocalT={setLocalT} 
-          handlePlayersCSV={handlePlayersCSV} 
+        <PlayerList
+          localT={localT}
+          setLocalT={setLocalT}
+          handlePlayersCSV={handlePlayersCSV}
           handleExportPlayers={handleExportPlayers}
-          downloadPlayerSample={downloadPlayerSample} 
+          downloadPlayerSample={downloadPlayerSample}
         />
       </div>
 
@@ -192,16 +193,12 @@ export const ConfigurationTab = ({
               {MESSAGES.HEADER_TOURNAMENT_SELECT}
             </label>
             <div className="flex flex-col gap-2">
-              <select
-                className="form-input py-2 px-3 text-sm font-bold w-full bg-slate-50 border-slate-200"
+              <Select
                 value={activeTournamentId || ''}
-                onChange={(e) => setActiveTournament(e.target.value)}
-              >
-                {!activeTournamentId && <option value='' disabled>（未選択）</option>}
-                {tournamentList.map(t => (
-                  <option key={t.id} value={t.id}>{t.name} ({t.division})</option>
-                ))}
-              </select>
+                onChange={(val) => setActiveTournament(val)}
+                options={tournamentList.map(t => ({ value: t.id, label: `${t.name} (${t.division})` }))}
+                placeholder="（未選択）"
+              />
               <button
                 onClick={handleAddNew}
                 className="btn border border-primary/20 text-primary hover:bg-primary-light flex items-center justify-center gap-2 py-2 text-sm"
@@ -216,16 +213,16 @@ export const ConfigurationTab = ({
             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider pl-1">
               アクション
             </label>
-            <button 
-              onClick={handleSaveInfo} 
+            <button
+              onClick={handleSaveInfo}
               className="btn btn-primary w-full py-3 text-base shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
             >
               <Save size={20} /> {MESSAGES.CONFIG_SAVE_BTN}
             </button>
-            
+
             {isCreatingNew && tournamentList.length > 0 && (
-              <button 
-                className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all" 
+              <button
+                className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
                 onClick={() => {
                   if (tournamentList.length > 0) {
                     setIsCreatingNew(false);
@@ -241,8 +238,8 @@ export const ConfigurationTab = ({
 
             {!isCreatingNew && activeT && (
               <div className="flex flex-col gap-2">
-                <button 
-                  onClick={handleDeleteTournament} 
+                <button
+                  onClick={handleDeleteTournament}
                   className="btn bg-danger-bg font-bold text-danger border border-danger/10 hover:bg-danger hover:text-white w-full py-3 flex items-center justify-center gap-2 transition-all"
                 >
                   <Trash2 size={18} /> {MESSAGES.CONFIG_DELETE_BTN}
