@@ -1,6 +1,7 @@
 // src/components/features/scoring/DeductionCell.tsx
 import React, { useState, useEffect } from 'react';
 import { trimZero } from '../../../utils/scoreFormatter';
+import { useUIStore } from '../../../store/useUIStore';
 
 interface DeductionCellProps {
   /** 減点の現在値（絶対値）。未入力の場合は undefined */
@@ -19,6 +20,7 @@ interface DeductionCellProps {
  * - 0.1 単位での入力を許容
  */
 export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus = false, variant = 'compact', onChange }) => {
+  const { setIsEditing } = useUIStore();
   const [inputStr, setInputStr] = useState(value !== undefined && value > 0 ? value.toString() : '');
 
   useEffect(() => {
@@ -56,7 +58,11 @@ export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus =
           className="form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums border-danger/30 text-danger bg-danger-bg/5 focus:border-danger focus:ring-danger/20 transition-all"
           value={inputStr}
           onChange={handleChange}
-          onFocus={(e) => e.target.select()}
+          onFocus={(e) => {
+            e.target.select();
+            setIsEditing(true);
+          }}
+          onBlur={() => setIsEditing(false)}
           placeholder="0"
         />
         <span className="text-danger/50 text-xs font-bold w-4 select-none">pt</span>
@@ -75,7 +81,11 @@ export const DeductionCell: React.FC<DeductionCellProps> = ({ value, showMinus =
         className="form-input py-0.5 px-1 text-right text-sm w-12 font-bold tabular-nums border-danger/30 text-danger focus:border-danger focus:ring-danger/20"
         value={inputStr}
         onChange={handleChange}
-        onFocus={(e) => e.target.select()}
+        onFocus={(e) => {
+          e.target.select();
+          setIsEditing(true);
+        }}
+        onBlur={() => setIsEditing(false)}
         placeholder="0"
       />
       <span className="text-[10px] text-danger/50 font-bold uppercase tracking-tighter select-none">pt</span>

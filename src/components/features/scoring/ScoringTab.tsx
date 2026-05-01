@@ -37,8 +37,28 @@ export const ScoringTab = () => {
     displayMode,
     setDisplayMode,
     sortKey,
-    setSortConfig
+    setSortConfig,
+    isEditing
   } = useUIStore();
+
+  const [frozenOrder, setFrozenOrder] = useState<string[]>([]);
+
+  // 入力中でないときのみソート順を更新する
+  useEffect(() => {
+    if (!isEditing && tableData.length > 0) {
+      setFrozenOrder(tableData.map(d => d.player.id));
+    }
+  }, [tableData, isEditing]);
+
+  // 表示用データの構築（順序はfrozenOrderに固定、中身は最新のtableData）
+  const displayData = React.useMemo(() => {
+    if (frozenOrder.length === 0) return tableData;
+    
+    const dataMap = new Map(tableData.map(d => [d.player.id, d]));
+    return frozenOrder
+      .map(id => dataMap.get(id))
+      .filter((d): d is typeof tableData[0] => d !== undefined);
+  }, [frozenOrder, tableData]);
 
   const hasDeduction = activeT?.hasDeduction ?? false;
 
@@ -146,7 +166,7 @@ export const ScoringTab = () => {
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
               {(() => {
-                const filtered = tableData.filter(row => selectedPlayerIds.includes(row.player.id));
+                const filtered = displayData.filter(row => selectedPlayerIds.includes(row.player.id));
                 if (filtered.length === 0) {
                   const extraCols = hasDeduction ? 2 : 0;
                   const colSpan = 4 + activeT.criteria.length + extraCols + (showRank ? 1 : 0);

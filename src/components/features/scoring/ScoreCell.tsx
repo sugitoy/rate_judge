@@ -4,6 +4,8 @@ import { trimZero, isValidUnit, calculateAutoCorrect } from '../../../utils/scor
 import { MESSAGES } from '../../../constants/messages';
 import { TIERS, getTierById } from '../../../constants/tiers';
 
+import { useUIStore } from '../../../store/useUIStore';
+
 interface ScoreCellProps {
   criterion: Criteria;
   value?: number;
@@ -29,6 +31,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
   onChange,
   onTierChange
 }) => {
+  const { setIsEditing } = useUIStore();
   const [absStr, setAbsStr] = useState(value !== undefined ? value.toString() : '');
   const [pctStr, setPctStr] = useState(value !== undefined && criterion.maxScore > 0 ? ((value / criterion.maxScore) * 100).toString() : '');
 
@@ -155,7 +158,11 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 className={`form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums transition-all ${mode === 'percentage' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (isInvalidUnit ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 text-primary focus:ring-primary/20')}`}
                 value={absStr}
                 onChange={handleAbsChange}
-                onFocus={(e) => e.target.select()}
+                onFocus={(e) => {
+                  e.target.select();
+                  setIsEditing(true);
+                }}
+                onBlur={() => setIsEditing(false)}
                 placeholder="pt"
               />
               <span className="text-slate-400 text-xs font-bold w-4">pt</span>
@@ -168,8 +175,14 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 className={`form-input py-1.5 px-3 text-right text-sm flex-1 tabular-nums transition-all ${mode === 'points' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (isInvalidUnit ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 focus:ring-primary/20')}`}
                 value={pctStr}
                 onChange={handlePctChange}
-                onBlur={handlePctBlur}
-                onFocus={(e) => e.target.select()}
+                onBlur={() => {
+                  handlePctBlur();
+                  setIsEditing(false);
+                }}
+                onFocus={(e) => {
+                  e.target.select();
+                  setIsEditing(true);
+                }}
                 placeholder="%"
               />
               <span className="text-slate-400 text-xs font-bold w-4">%</span>
@@ -200,8 +213,14 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 }`}
               value={pctStr}
               onChange={handlePctChange}
-              onBlur={handlePctBlur}
-              onFocus={(e) => e.target.select()}
+              onBlur={() => {
+                handlePctBlur();
+                setIsEditing(false);
+              }}
+              onFocus={(e) => {
+                e.target.select();
+                setIsEditing(true);
+              }}
               placeholder="%"
             />
           </div>
@@ -228,7 +247,11 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 }`}
               value={absStr}
               onChange={handleAbsChange}
-              onFocus={(e) => e.target.select()}
+              onFocus={(e) => {
+                e.target.select();
+                setIsEditing(true);
+              }}
+              onBlur={() => setIsEditing(false)}
               placeholder="pt"
             />
             <div className="flex flex-col items-start -space-y-0.5 min-w-[32px]">

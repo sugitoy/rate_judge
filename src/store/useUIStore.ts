@@ -17,6 +17,8 @@ interface UIState {
   setSortConfig: (key: string, order: 'asc' | 'desc') => void;
   isConfigDirty: boolean;
   setIsConfigDirty: (dirty: boolean) => void;
+  isEditing: boolean;
+  setIsEditing: (isEditing: boolean) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -29,6 +31,7 @@ export const useUIStore = create<UIState>()(
       sortKey: 'entryNo',
       sortOrder: 'asc',
       isConfigDirty: false,
+      isEditing: false,
       toggleSidePanel: () => set((state) => ({ isSidePanelOpen: !state.isSidePanelOpen })),
       setSidePanel: (isOpen: boolean) => set({ isSidePanelOpen: isOpen }),
       setSelectedPlayerIds: (ids: string[]) => set({ selectedPlayerIds: ids }),
@@ -41,11 +44,12 @@ export const useUIStore = create<UIState>()(
       setDisplayMode: (mode: 'points' | 'percentage' | 'tier') => set({ displayMode: mode }),
       setSortConfig: (key: string, order: 'asc' | 'desc') => set({ sortKey: key, sortOrder: order }),
       setIsConfigDirty: (dirty: boolean) => set({ isConfigDirty: dirty }),
+      setIsEditing: (isEditing: boolean) => set({ isEditing }),
     }),
     {
       name: 'rate-judge-ui-storage',
       partialize: (state) => {
-        const { isConfigDirty, ...rest } = state;
+        const { isConfigDirty, isEditing, ...rest } = state;
         return rest;
       },
     }
