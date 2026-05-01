@@ -21,7 +21,7 @@ export const ScoringTab = () => {
   const { tournaments, activeTournamentId } = useTournamentStore();
   const { tournamentScores, updateScore, updateTier, updateDeduction, updateComment, importScores } = useScoringStore();
 
-  const [showRank, setShowRank] = useState(true); // 順位表示の切り替え
+  const [isCompactMode, setIsCompactMode] = useState(false); // 省略表示の切り替え
   const [commentModalData, setCommentModalData] = useState<{ playerId: string } | null>(null);
 
   const activeT = activeTournamentId ? tournaments[activeTournamentId] : null;
@@ -53,8 +53,8 @@ export const ScoringTab = () => {
 
   const renderSortIcon = (key: string) => {
     if (sortKey !== key) return null;
-    return sortOrder === 'asc' 
-      ? <ChevronUp size={14} className="inline-block ml-1 text-primary" /> 
+    return sortOrder === 'asc'
+      ? <ChevronUp size={14} className="inline-block ml-1 text-primary" />
       : <ChevronDown size={14} className="inline-block ml-1 text-primary" />;
   };
 
@@ -70,7 +70,7 @@ export const ScoringTab = () => {
   // 表示用データの構築（順序はfrozenOrderに固定、中身は最新のtableData）
   const displayData = React.useMemo(() => {
     if (frozenOrder.length === 0) return tableData;
-    
+
     const dataMap = new Map(tableData.map(d => [d.player.id, d]));
     return frozenOrder
       .map(id => dataMap.get(id))
@@ -146,11 +146,11 @@ export const ScoringTab = () => {
     <div className="flex flex-col lg:flex-row gap-8 animate-in pb-12">
       {/* A) メインコンテンツ（採点テーブル） */}
       <div className="flex-1 min-w-0 order-2 lg:order-1">
-        <div className="card-table scroll-x-auto shadow-md border-slate-200">
-          <table className="min-w-full border-collapse" style={{ minWidth: hasDeduction ? '1200px' : '1000px' }}>
+        <div className={`card-table scroll-x-auto shadow-md border-slate-200 ${isCompactMode ? 'w-fit mx-auto' : 'w-full'}`}>
+          <table className={`border-collapse ${isCompactMode ? 'w-auto' : 'min-w-full'}`} style={{ minWidth: isCompactMode ? '0' : (hasDeduction ? '1200px' : '1000px') }}>
             <thead className="bg-slate-50">
               <tr className="border-b-2 border-slate-200 select-none">
-                <th 
+                <th
                   className="px-3 py-2 w-12 text-center font-bold text-slate-400 sticky left-0 z-20 bg-slate-50 border-r border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors"
                   onClick={() => handleHeaderClick('entryNo')}
                 >
@@ -159,12 +159,12 @@ export const ScoringTab = () => {
                     {renderSortIcon('entryNo')}
                   </div>
                 </th>
-                <th className="px-3 py-2 text-left font-bold text-slate-700 sticky left-12 z-20 bg-slate-50 shadow-[1px_0_0_#e2e8f0] whitespace-nowrap min-w-[200px] border-r border-slate-200">{MESSAGES.SCORING_TH_PLAYER}</th>
+                <th className={`px-2 py-2 text-left font-bold text-slate-700 sticky left-12 z-20 bg-slate-50 shadow-[1px_0_0_#e2e8f0] whitespace-nowrap border-r border-slate-200 ${isCompactMode ? 'min-w-[180px]' : 'min-w-[200px]'}`}>{MESSAGES.SCORING_TH_PLAYER}</th>
 
                 {activeT.criteria.map(c => (
-                  <th 
-                    key={c.id} 
-                    className="px-2 py-2 text-center border-r border-slate-100 min-w-[130px] cursor-pointer hover:bg-slate-100 transition-colors"
+                  <th
+                    key={c.id}
+                    className={`px-1 py-2 text-center border-r border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors ${isCompactMode ? 'w-24' : 'min-w-[130px]'}`}
                     onClick={() => handleHeaderClick(c.id)}
                   >
                     <div className="flex flex-col items-center">
@@ -177,9 +177,9 @@ export const ScoringTab = () => {
                   </th>
                 ))}
 
-                {/* 小計列（有効時のみ） */}
-                {hasDeduction && (
-                  <th 
+                {/* 小計列（有効かつ非省略時のみ） */}
+                {hasDeduction && !isCompactMode && (
+                  <th
                     className="px-3 py-2 text-center border-l border-slate-200 bg-slate-50 text-slate-500 font-bold cursor-pointer hover:bg-slate-100 transition-colors"
                     onClick={() => handleHeaderClick('subtotal')}
                   >
@@ -190,9 +190,9 @@ export const ScoringTab = () => {
                   </th>
                 )}
 
-                {/* 減点列（有効時のみ） */}
-                {hasDeduction && (
-                  <th 
+                {/* 減点列（有効かつ非省略時のみ） */}
+                {hasDeduction && !isCompactMode && (
+                  <th
                     className="px-1 py-2 text-center border-l border-r border-danger/20 bg-danger-bg/20 w-20 cursor-pointer hover:bg-danger-bg/30 transition-colors"
                     onClick={() => handleHeaderClick('deduction')}
                   >
@@ -207,7 +207,7 @@ export const ScoringTab = () => {
                 )}
 
                 <th 
-                  className="px-3 py-2 text-center border-l-2 border-slate-200 bg-primary-light/50 text-primary font-bold cursor-pointer hover:bg-primary-light/70 transition-colors"
+                  className="px-3 py-2 text-center border-l-2 border-slate-200 bg-primary-light/50 text-primary font-bold cursor-pointer hover:bg-primary-light/70 transition-colors w-28"
                   onClick={() => handleHeaderClick('total')}
                 >
                   <div className="flex items-center justify-center">
@@ -215,17 +215,17 @@ export const ScoringTab = () => {
                     {renderSortIcon('total')}
                   </div>
                 </th>
-                {showRank && (
-                  <th className="px-3 py-2 text-center border-l border-primary/20 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_RANK}</th>
-                )}
+                <th className={`px-3 py-2 text-center border-l border-primary/20 bg-primary-light/50 text-primary font-bold ${isCompactMode ? 'w-24' : ''}`}>
+                  {MESSAGES.SCORING_TABLE_HEAD_RANK}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
               {(() => {
                 const filtered = displayData.filter(row => selectedPlayerIds.includes(row.player.id));
                 if (filtered.length === 0) {
-                  const extraCols = hasDeduction ? 2 : 0;
-                  const colSpan = 4 + activeT.criteria.length + extraCols + (showRank ? 1 : 0);
+                  const extraCols = (hasDeduction && !isCompactMode) ? 2 : 0;
+                  const colSpan = 4 + activeT.criteria.length + extraCols + 1;
                   return (
                     <tr>
                       <td colSpan={colSpan} className="px-6 py-20 text-center text-slate-400 bg-slate-50/30 italic">
@@ -237,14 +237,14 @@ export const ScoringTab = () => {
                 return filtered.map((row) => (
                   <tr key={row.player.id} className="hover:bg-slate-50/80 transition-colors group">
                     <td className="px-3 py-1.5 text-center font-bold text-slate-400 sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-200">{row.entryNo}</td>
-                    <td className="px-3 py-1.5 sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[1px_0_0_#e2e8f0] border-r border-slate-200 align-middle">
+                    <td className={`py-1.5 sticky left-12 z-10 bg-white group-hover:bg-slate-50 shadow-[1px_0_0_#e2e8f0] border-r border-slate-200 align-middle ${isCompactMode ? 'px-2' : 'px-3'}`}>
                       <div className="flex items-center justify-between gap-2">
                         <div className="font-bold text-slate-900 tabular-nums truncate">{row.player.name}</div>
                         <button
                           onClick={() => setCommentModalData({ playerId: row.player.id })}
                           className={`w-7 h-7 shrink-0 rounded-lg transition-all flex items-center justify-center border outline-none focus:ring-2 focus:ring-primary/30 ${row.comment
-                              ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white shadow-sm'
-                              : 'bg-white text-slate-400 border-slate-200 hover:text-primary hover:border-primary hover:bg-slate-50'
+                            ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white shadow-sm'
+                            : 'bg-white text-slate-400 border-slate-200 hover:text-primary hover:border-primary hover:bg-slate-50'
                             }`}
                           title={MESSAGES.SCORING_TABLE_DETAIL_BTN}
                         >
@@ -254,7 +254,7 @@ export const ScoringTab = () => {
                     </td>
 
                     {activeT.criteria.map(c => (
-                      <td key={c.id} className="px-2 py-1 border-r border-slate-100 align-middle bg-white group-hover:bg-slate-50/30">
+                      <td key={c.id} className={`${isCompactMode ? 'px-1' : 'px-2'} py-1 border-r border-slate-100 align-middle bg-white group-hover:bg-slate-50/30`}>
                         <ScoreCell
                           criterion={c}
                           inputUnit={activeT.inputUnit}
@@ -262,15 +262,15 @@ export const ScoringTab = () => {
                           value={row.scores[c.id]}
                           selectedTier={currentScores[row.player.id]?.selectedTiers?.[c.id]}
                           rank={row.criterionRanks?.[c.id]}
-                          showRank={showRank}
+                          showRank={!isCompactMode}
                           onChange={(val) => updateScore(activeT.id, row.player.id, c.id, val)}
                           onTierChange={(tier) => updateTier(activeT.id, row.player.id, c.id, tier)}
                         />
                       </td>
                     ))}
 
-                    {/* 小計セル（有効時のみ） */}
-                    {hasDeduction && (
+                    {/* 小計セル（有効かつ非省略時のみ） */}
+                    {hasDeduction && !isCompactMode && (
                       <td className="px-3 py-1.5 text-center border-l border-slate-200 align-middle bg-slate-50/50">
                         <div className="font-bold text-sm text-slate-500 tabular-nums tracking-tight">
                           {row.subtotal}<span className="text-[10px] text-slate-400 font-semibold ml-0.5 uppercase">pt</span>
@@ -278,8 +278,8 @@ export const ScoringTab = () => {
                       </td>
                     )}
 
-                    {/* 減点セル（有効時のみ） */}
-                    {hasDeduction && (
+                    {/* 減点セル（有効かつ非省略時のみ） */}
+                    {hasDeduction && !isCompactMode && (
                       <td className="px-0.5 py-1 border-l border-r border-danger/20 align-middle bg-danger-bg/10 group-hover:bg-danger-bg/20">
                         <DeductionCell
                           value={row.deduction}
@@ -293,17 +293,15 @@ export const ScoringTab = () => {
                         {row.total}<span className="text-[10px] text-primary/60 font-semibold ml-0.5 uppercase">pt</span>
                       </div>
                     </td>
-                    {showRank && (
-                      <td className="px-3 py-1.5 text-center align-middle bg-primary-light/10 border-l border-primary/20">
-                        {(() => {
-                          const r = row.rank;
-                          if (r === 1) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-300 rounded-full font-bold text-yellow-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                          if (r === 2) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-300 rounded-full font-bold text-slate-600 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                          if (r === 3) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full font-bold text-orange-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                          return <div className="font-bold text-slate-400 text-sm tabular-nums">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
-                        })()}
-                      </td>
-                    )}
+                    <td className="px-3 py-1.5 text-center align-middle bg-primary-light/10 border-l border-primary/20">
+                      {(() => {
+                        const r = row.rank;
+                        if (r === 1) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 border border-yellow-300 rounded-full font-bold text-yellow-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                        if (r === 2) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-300 rounded-full font-bold text-slate-600 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                        if (r === 3) return <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full font-bold text-orange-700 shadow-sm text-sm leading-none">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                        return <div className="font-bold text-slate-400 text-sm tabular-nums">{r}{MESSAGES.ANALYSIS_RANK_SUFFIX}</div>;
+                      })()}
+                    </td>
                   </tr>
                 ));
               })()}
@@ -355,11 +353,11 @@ export const ScoringTab = () => {
               id="rank-toggle"
               type="checkbox"
               className="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary/20 cursor-pointer"
-              checked={showRank}
-              onChange={(e) => setShowRank(e.target.checked)}
+              checked={isCompactMode}
+              onChange={(e) => setIsCompactMode(e.target.checked)}
             />
             <label htmlFor="rank-toggle" className="text-sm font-bold text-slate-700 cursor-pointer select-none">
-              順位を表示する
+              {MESSAGES.SCORING_TOGGLE_COMPACT}
             </label>
           </div>
 

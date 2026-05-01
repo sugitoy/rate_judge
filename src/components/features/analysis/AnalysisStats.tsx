@@ -34,7 +34,7 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critSta
   return (
     <div className="card shadow-sm flex flex-col flex-1 animate-in" style={{ minWidth: 0 }}>
       <h3 className="text-lg font-bold text-slate-900 mb-4">{MESSAGES.ANALYSIS_STATS_TITLE}</h3>
-      <div className="scroll-x-auto flex-1 bg-slate-50 rounded-lg border border-slate-200">
+      <div className="scroll-x-auto w-full flex-1 bg-slate-50 rounded-lg border border-slate-200">
         <table className="w-full text-sm" style={{ minWidth: '1000px' }}>
           <thead className="bg-white sticky top-0 border-b-2 border-slate-200 z-10 shadow-sm">
             <tr>

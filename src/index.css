@@ -46,7 +46,7 @@
 
   /* Card for tables */
   .card-table {
-    @apply bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden w-full max-w-full;
+    @apply bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden max-w-full;
   }
 
   /* Buttons */
@@ -91,7 +91,7 @@
 
 /* Custom Utilities */
 .scroll-x-auto {
-  @apply overflow-x-auto max-w-full w-full block;
+  @apply overflow-x-auto max-w-full block;
   -webkit-overflow-scrolling: touch;
 }
 

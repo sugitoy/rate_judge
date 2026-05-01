@@ -92,6 +92,8 @@ export const MESSAGES = {
   SCORING_MODAL_DESC_PH: 'この選手へのメモ・講評...',
   SCORING_IMPORT_SUCCESS: 'スコアのインポートが完了しました。',
   SCORING_IMPORT_ERR: '一致する選手名・審査項目が見つかりませんでした。',
+  SCORING_TOGGLE_COMPACT: '省略表示',
+
 
   // Analysis Tab
   TAB_ANALYSIS: '分析',

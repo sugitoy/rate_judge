@@ -200,14 +200,14 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
 
   // コンパクト表示モード (Compact - Table用)
   return (
-    <div className="flex flex-col gap-1 w-full justify-center items-center h-full group/cell relative transition-colors">
+    <div className={`flex flex-col gap-1 w-full h-full group/cell relative transition-colors ${showRank ? 'justify-center items-center' : 'justify-center items-end pr-0.5'}`}>
       {mode === 'percentage' && (
-        <div className="flex items-center gap-1.5">
+        <div className={`flex items-center ${showRank ? 'gap-1.5' : 'gap-1'}`}>
           <div className="relative">
             <input
               type="text"
               inputMode="decimal"
-              className={`form-input py-0.5 px-2 text-right text-sm w-20 tabular-nums focus:ring-primary/20 block transition-all ${isInvalidUnit
+              className={`form-input py-0.5 px-2 text-right text-sm tabular-nums focus:ring-primary/20 block transition-all ${showRank ? 'w-20' : 'w-16'} ${isInvalidUnit
                 ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
                 : 'border-slate-200 focus:border-primary'
                 }`}
@@ -224,7 +224,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
               placeholder="%"
             />
           </div>
-          <div className="flex flex-col items-start -space-y-0.5 min-w-[32px]">
+          <div className={`flex flex-col items-end -space-y-0.5 ${showRank ? 'min-w-[32px]' : 'min-w-[18px]'}`}>
             <span className="text-slate-400 text-[10px] font-bold select-none">%</span>
             {showRank && rank && rank > 0 && (
               <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary' : 'text-slate-300'}`}>
@@ -236,12 +236,12 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
       )}
 
       {mode === 'points' && (
-        <div className="flex flex-col items-center gap-0.5">
-          <div className="flex items-center gap-1.5">
+        <div className={`flex flex-col gap-0.5 ${showRank ? 'items-center' : 'items-end'}`}>
+          <div className={`flex items-center ${showRank ? 'gap-1.5' : 'gap-0.5'}`}>
             <input
               type="text"
               inputMode="decimal"
-              className={`form-input py-0.5 px-2 text-right text-sm w-20 font-bold tabular-nums transition-all focus:ring-primary/20 ${isInvalidUnit
+              className={`form-input py-0.5 px-2 text-right text-sm font-bold tabular-nums transition-all focus:ring-primary/20 ${showRank ? 'w-20' : 'w-16'} ${isInvalidUnit
                 ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
                 : 'border-slate-200 text-primary focus:border-primary'
                 }`}
@@ -254,7 +254,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
               onBlur={() => setIsEditing(false)}
               placeholder="pt"
             />
-            <div className="flex flex-col items-start -space-y-0.5 min-w-[32px]">
+            <div className={`flex flex-col items-end -space-y-0.5 ${showRank ? 'min-w-[32px]' : 'min-w-[18px]'}`}>
               <span className="text-slate-400 text-[10px] font-bold select-none uppercase tracking-tighter">pt</span>
               {showRank && rank && rank > 0 && (
                 <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary' : 'text-slate-300'}`}>
@@ -268,12 +268,12 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
 
       {mode === 'tier' && (
         <div className="flex flex-col items-center gap-0.5 w-full">
-          <div className="flex items-center gap-1.5 w-full justify-center">
-            <div className="relative w-20">
+          <div className={`flex items-center w-full justify-center ${showRank ? 'gap-1.5' : 'gap-1'}`}>
+            <div className={`relative ${showRank ? 'w-20' : 'w-16'}`}>
               <select
                 className={`form-input py-0.5 px-2 text-center text-sm w-full font-bold appearance-none cursor-pointer transition-all ${hasError
-                    ? 'border-danger ring-1 ring-danger/20'
-                    : 'border-slate-200 focus:border-primary focus:ring-primary/20'
+                  ? 'border-danger ring-1 ring-danger/20'
+                  : 'border-slate-200 focus:border-primary focus:ring-primary/20'
                   } ${tierDef ? tierDef.bgClass + ' ' + tierDef.textClass : 'text-slate-400'}`}
                 value={selectedTier || ''}
                 onChange={handleTierChange}
@@ -285,7 +285,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
               </select>
             </div>
             {showRank && rank && rank > 0 && (
-              <div className="flex flex-col items-start -space-y-0.5 min-w-[32px]">
+              <div className={`flex flex-col items-end -space-y-0.5 ${showRank ? 'min-w-[32px]' : ''}`}>
                 <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary' : 'text-slate-300'}`}>
                   ({rank}{MESSAGES.ANALYSIS_RANK_SUFFIX})
                 </span>
