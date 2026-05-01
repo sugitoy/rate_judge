@@ -34,7 +34,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ options, value, onCh
           <div
             key={opt.value}
             className={`relative z-10 flex-1 text-center ${small ? 'py-1' : 'py-2'} text-[10px] font-bold transition-colors duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
-              isActive ? 'text-primary dark:text-primary-light' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+              isActive ? 'text-primary dark:text-cyan-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
             onClick={() => onChange(opt.value)}
           >

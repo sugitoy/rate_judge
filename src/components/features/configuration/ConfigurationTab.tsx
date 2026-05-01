@@ -239,7 +239,7 @@ export const ConfigurationTab = ({
     <div className="flex flex-col lg:flex-row gap-8 animate-in tabular-nums pb-12">
       <div className="flex-1 flex flex-col gap-8 min-w-0">
         {!activeT && !isCreatingNew && (
-          <div className="bg-primary-light dark:bg-primary-dark/20 text-primary dark:text-primary-light border border-primary/20 dark:border-primary-dark/40 p-4 rounded-xl flex items-center justify-between shadow-sm">
+          <div className="bg-primary-light dark:bg-cyan-500/10 text-primary dark:text-cyan-400 border-primary/20 dark:border-cyan-500/30 p-4 rounded-xl flex items-center justify-between shadow-sm">
             <span className="font-medium">{MESSAGES.CONFIG_EMPTY_LIST}</span>
           </div>
         )}
@@ -287,7 +287,7 @@ export const ConfigurationTab = ({
               />
               <button
                 onClick={handleAddNew}
-                className="btn border border-primary/20 dark:border-primary-dark/40 text-primary dark:text-primary-light hover:bg-primary-light dark:hover:bg-primary-dark/20 flex items-center justify-center gap-2 py-2 text-sm"
+                className="btn border border-primary/20 dark:border-cyan-500/30 text-primary dark:text-cyan-400 hover:bg-primary-light dark:hover:bg-cyan-500/10 flex items-center justify-center gap-2 py-2 text-sm"
               >
                 <Plus size={16} /> {MESSAGES.CONFIG_ADD_TOURNAMENT}
               </button>

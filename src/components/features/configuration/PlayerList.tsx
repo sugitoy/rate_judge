@@ -69,7 +69,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
           <p className="text-xs text-slate-400 dark:text-slate-500">{MESSAGES.CONFIG_PLAYER_DESC}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <button onClick={downloadPlayerSample} className="text-primary dark:text-primary-light hover:text-primary-hover text-[10px] uppercase font-bold px-3 py-1.5 rounded bg-primary-light/50 dark:bg-primary-dark/30 transition-colors mr-2">
+          <button onClick={downloadPlayerSample} className="text-primary dark:text-cyan-400 hover:text-primary-hover text-[10px] uppercase font-bold px-3 py-1.5 rounded bg-primary-light/50 dark:bg-cyan-500/10 transition-colors mr-2">
             {MESSAGES.CSV_SAMPLE_DL}
           </button>
           <label className="btn btn-outline btn-action cursor-pointer flex items-center gap-1.5 shadow-sm bg-white dark:bg-slate-800">

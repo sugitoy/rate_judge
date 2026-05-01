@@ -39,7 +39,7 @@ export const AnalysisTab = () => {
   if (!activeT || activeT.players.length === 0 || activeT.criteria.length === 0) {
     return (
       <div className="card text-center p-10 mt-6">
-        <p className="text-gray-500 mb-4">{MESSAGES.NO_DATA}</p>
+        <p className="text-slate-500 dark:text-slate-400 mb-4">{MESSAGES.NO_DATA}</p>
       </div>
     );
   }
@@ -108,8 +108,8 @@ export const AnalysisTab = () => {
             </div>
           </div>
         ) : (
-          <div className="card text-center p-10 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 border-dashed">
-            <p className="text-slate-500 dark:text-slate-300 font-medium">{MESSAGES.ANALYSIS_EMPTY_SELECTION}</p>
+          <div className="card text-center p-12 bg-slate-50/50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800 border-dashed">
+            <p className="text-slate-400 dark:text-slate-500 font-medium italic">{MESSAGES.ANALYSIS_EMPTY_SELECTION}</p>
           </div>
         )}
       </div>

@@ -47,7 +47,7 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
           <p className="text-xs text-slate-400 dark:text-slate-500">{MESSAGES.CONFIG_NAME_LABEL}{MESSAGES.CONFIG_BASIC_DESC}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <button onClick={downloadConfigSample} className="text-primary dark:text-primary-light hover:text-primary-hover text-[10px] uppercase font-bold px-3 py-1.5 rounded bg-primary-light/50 dark:bg-primary-dark/30 transition-colors mr-2">
+          <button onClick={downloadConfigSample} className="text-primary dark:text-cyan-400 hover:text-primary-hover text-[10px] uppercase font-bold px-3 py-1.5 rounded bg-primary-light/50 dark:bg-cyan-500/10 transition-colors mr-2">
             {MESSAGES.CSV_SAMPLE_DL}
           </button>
           <label className="btn btn-outline btn-action cursor-pointer flex items-center gap-1.5 shadow-sm bg-white dark:bg-slate-800">
@@ -112,26 +112,32 @@ export const BasicConfig: React.FC<BasicConfigProps> = ({
             />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{MESSAGES.ANALYSIS_DEDUCTION_LABEL}</label>
-            <label
-              htmlFor="deduction-toggle"
-              className="flex items-center gap-3 cursor-pointer group w-fit"
-            >
-              <input
-                id="deduction-toggle"
-                type="checkbox"
-                className="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-primary dark:accent-cyan-500 focus:ring-primary/20 transition-all cursor-pointer bg-white dark:bg-slate-900"
-                checked={localT.hasDeduction ?? false}
-                onChange={(e) => setLocalT({ ...localT, hasDeduction: e.target.checked })}
-              />
-              <div>
-                <span className="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-primary dark:group-hover:text-cyan-400 transition-colors select-none">
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              {MESSAGES.ANALYSIS_DEDUCTION_LABEL}
+            </label>
+            <div className="flex items-start gap-3">
+              <div className="pt-1">
+                <input
+                  id="deduction-toggle"
+                  type="checkbox"
+                  className="w-4 h-4 cursor-pointer"
+                  checked={localT.hasDeduction ?? false}
+                  onChange={(e) => setLocalT({ ...localT, hasDeduction: e.target.checked })}
+                />
+              </div>
+              <label
+                htmlFor="deduction-toggle"
+                className="flex flex-col cursor-pointer select-none"
+              >
+                <span className="text-sm font-bold text-slate-700 dark:text-slate-200 transition-colors">
                   {MESSAGES.CONFIG_DEDUCTION_LABEL}
                 </span>
-                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">{MESSAGES.CONFIG_DEDUCTION_HINT}</p>
-              </div>
-            </label>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5 leading-relaxed">
+                  {MESSAGES.CONFIG_DEDUCTION_HINT}
+                </p>
+              </label>
+            </div>
           </div>
         </div>
 

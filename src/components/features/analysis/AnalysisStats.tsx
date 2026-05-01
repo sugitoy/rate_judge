@@ -43,12 +43,12 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critSta
               <th className="py-3 px-4 text-center text-slate-600 dark:text-slate-400">{MESSAGES.ANALYSIS_TH_MEDIAN}</th>
               <th className="py-3 px-4 text-center text-slate-600 dark:text-slate-400">{MESSAGES.ANALYSIS_TH_MAX}</th>
               <th className="py-3 px-4 text-center text-slate-600 dark:text-slate-400">{MESSAGES.ANALYSIS_TH_MIN}</th>
-              <th className="py-3 px-4 text-center text-slate-400 dark:text-slate-500 text-xs font-normal">{MESSAGES.ANALYSIS_TH_VAR}</th>
+              <th className="py-3 px-4 text-center text-slate-400 dark:text-slate-400 text-xs font-normal">{MESSAGES.ANALYSIS_TH_VAR}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
             {totalStat && (
-              <tr className="bg-primary-light dark:bg-cyan-500/10 border-b border-primary/10 dark:border-cyan-500/20 font-bold group">
+              <tr className="bg-primary-light dark:bg-cyan-500/20 border-b border-primary/10 dark:border-cyan-500/30 font-bold group">
                 <td className="py-3 px-4 whitespace-nowrap text-primary dark:text-cyan-400">
                   {totalStat.name} <span className="text-xs font-normal text-slate-400 dark:text-slate-400">({totalStat.maxScore})</span>
                 </td>
@@ -56,7 +56,7 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critSta
                 <td className="py-3 px-4 text-center whitespace-nowrap dark:text-slate-100">{fmtStats(totalStat.median, totalStat.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-blue-600 dark:text-cyan-400 font-bold whitespace-nowrap">{fmtStats(totalStat.max, totalStat.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-danger dark:text-rose-400 font-bold whitespace-nowrap">{fmtStats(totalStat.min, totalStat.maxScore)}</td>
-                <td className="py-3 px-4 text-center text-slate-400 dark:text-slate-500 text-xs whitespace-nowrap">{totalStat.variance.toFixed(1)}</td>
+                <td className="py-3 px-4 text-center text-slate-400 dark:text-slate-400 text-xs whitespace-nowrap">{totalStat.variance.toFixed(1)}</td>
               </tr>
             )}
              {critStats.map(st => (
@@ -68,11 +68,11 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critSta
                 <td className="py-3 px-4 text-center text-slate-600 dark:text-slate-300 whitespace-nowrap">{fmtStats(st.median, st.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-blue-600 dark:text-cyan-400 font-semibold whitespace-nowrap">{fmtStats(st.max, st.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-danger dark:text-rose-400 font-semibold whitespace-nowrap">{fmtStats(st.min, st.maxScore)}</td>
-                <td className="py-3 px-4 text-center text-slate-400 dark:text-slate-500 text-xs whitespace-nowrap">{st.variance.toFixed(1)}</td>
+                <td className="py-3 px-4 text-center text-slate-400 dark:text-slate-400 text-xs whitespace-nowrap">{st.variance.toFixed(1)}</td>
               </tr>
             ))}
              {deductionStat && (
-              <tr className="bg-danger-bg/30 dark:bg-rose-500/10 border-t-2 border-danger/10 dark:border-rose-500/30 hover:bg-danger-bg/50 dark:hover:bg-rose-500/20 transition-colors">
+              <tr className="bg-danger-bg/30 dark:bg-rose-500/20 border-t-2 border-danger/10 dark:border-rose-500/40 hover:bg-danger-bg/50 dark:hover:bg-rose-500/30 transition-colors">
                 <td className="py-3 px-4 whitespace-nowrap font-bold text-danger dark:text-rose-400">
                   {deductionStat.name}
                 </td>
@@ -80,7 +80,7 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ totalStat, critSta
                 <td className="py-3 px-4 text-center text-danger/80 dark:text-rose-300 whitespace-nowrap">{fmtStats(deductionStat.median, deductionStat.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-danger dark:text-rose-400 font-bold whitespace-nowrap">{fmtStats(deductionStat.max, deductionStat.maxScore)}</td>
                 <td className="py-3 px-4 text-center text-danger/60 dark:text-rose-500/60 whitespace-nowrap">{fmtStats(deductionStat.min, deductionStat.maxScore)}</td>
-                <td className="py-3 px-4 text-center text-slate-400 dark:text-slate-500 text-xs whitespace-nowrap">{deductionStat.variance.toFixed(1)}</td>
+                <td className="py-3 px-4 text-center text-slate-400 dark:text-slate-400 text-xs whitespace-nowrap">{deductionStat.variance.toFixed(1)}</td>
               </tr>
             )}
           </tbody>

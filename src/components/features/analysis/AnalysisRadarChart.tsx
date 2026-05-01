@@ -53,8 +53,8 @@ export const AnalysisRadarChart: React.FC<AnalysisRadarChartProps> = ({
             <PolarRadiusAxis 
               angle={30} 
               domain={[minVal, maxVal]} 
-              tick={{ fill: isDark ? '#64748b' : '#94a3b8', fontSize: 10 }} 
-              stroke={isDark ? '#1e293b' : '#f1f5f9'} 
+              tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 10 }} 
+              stroke={isDark ? '#334155' : '#f1f5f9'} 
               tickFormatter={(val) => val.toFixed(1)}
             />
             <Tooltip 

@@ -93,7 +93,7 @@ export const ScoringTab = () => {
   if (!activeT || activeT.players.length === 0 || activeT.criteria.length === 0) {
     return (
       <div className="card text-center p-10 mt-6">
-        <p className="text-gray-500 mb-4">{MESSAGES.NO_DATA}</p>
+        <p className="text-slate-500 dark:text-slate-400 mb-4">{MESSAGES.NO_DATA}</p>
       </div>
     );
   }
@@ -226,7 +226,7 @@ export const ScoringTab = () => {
                   className={`px-3 py-2 text-center border-l-2 transition-all cursor-pointer font-bold w-28 ${
                     sortKey === 'total'
                       ? 'text-primary dark:text-cyan-400 bg-primary-light/40 dark:bg-cyan-500/25 border-slate-300 dark:border-cyan-400 shadow-[inset_0_0_10px_rgba(6,182,212,0.1)]'
-                      : 'text-primary dark:text-cyan-400 bg-primary-light/50 dark:bg-primary-dark/40 border-slate-200 dark:border-slate-700 hover:bg-primary-light/70 dark:hover:bg-cyan-500/20 dark:hover:border-cyan-400'
+                      : 'text-primary dark:text-cyan-400 bg-primary-light/50 dark:bg-cyan-900/40 border-slate-200 dark:border-slate-700 hover:bg-primary-light/70 dark:hover:bg-cyan-500/20 dark:hover:border-cyan-400'
                   }`}
                   onClick={() => handleHeaderClick('total')}
                 >
@@ -235,7 +235,7 @@ export const ScoringTab = () => {
                     {renderSortIcon('total')}
                   </div>
                 </th>
-                <th className={`px-3 py-2 text-center border-l border-primary/20 dark:border-cyan-500/30 bg-primary-light/50 dark:bg-primary-dark/40 text-primary dark:text-cyan-400 font-bold ${isCompactMode ? 'w-24' : ''}`}>
+                <th className={`px-3 py-2 text-center border-l border-primary/20 dark:border-cyan-500/30 bg-primary-light/50 dark:bg-cyan-500/10 text-primary dark:text-cyan-400 font-bold ${isCompactMode ? 'w-24' : ''}`}>
                   {MESSAGES.SCORING_TABLE_HEAD_RANK}
                 </th>
               </tr>
@@ -310,7 +310,7 @@ export const ScoringTab = () => {
 
                     <td className="px-3 py-1.5 text-center border-l flex-none align-middle bg-primary-light/10 dark:bg-cyan-500/10">
                       <div className="font-bold text-xl leading-none text-primary dark:text-cyan-400 tabular-nums tracking-tight">
-                        {row.total}<span className="text-[10px] text-primary/60 dark:text-primary-light/60 font-semibold ml-0.5 uppercase">pt</span>
+                        {row.total}<span className="text-[10px] text-primary/60 dark:text-cyan-400/60 font-semibold ml-0.5 uppercase">pt</span>
                       </div>
                     </td>
                     <td className="px-3 py-1.5 text-center align-middle bg-primary-light/10 dark:bg-cyan-500/10 border-l border-primary/20 dark:border-cyan-500/30">

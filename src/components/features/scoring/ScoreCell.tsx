@@ -141,7 +141,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
                 key={t.id}
                 onClick={() => handleTierSelect(t.id)}
                 className={`flex-1 h-8 rounded-md text-[10px] font-bold transition-all border-2 flex items-center justify-center min-w-0 ${selectedTier === t.id
-                  ? `${t.bgClass} ${t.textClass} border-primary dark:border-primary-light shadow-sm scale-105 z-10`
+                  ? `${t.bgClass} ${t.textClass} border-primary dark:border-cyan-400 shadow-sm scale-105 z-10`
                   : 'bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-100 dark:border-slate-700 hover:border-slate-200 dark:hover:border-slate-600'
                   }`}
               >
@@ -249,7 +249,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
           <div className={`flex flex-col items-end -space-y-0.5 ${showRank ? 'min-w-[32px]' : 'min-w-[18px]'}`}>
             <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold select-none">%</span>
             {showRank && rank && rank > 0 && (
-              <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary dark:text-primary-light' : 'text-slate-300 dark:text-slate-600'}`}>
+              <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary dark:text-cyan-400' : 'text-slate-300 dark:text-slate-600'}`}>
                 ({rank}{MESSAGES.ANALYSIS_RANK_SUFFIX})
               </span>
             )}
@@ -279,7 +279,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
             <div className={`flex flex-col items-end -space-y-0.5 ${showRank ? 'min-w-[32px]' : 'min-w-[18px]'}`}>
               <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold select-none uppercase tracking-tighter">pt</span>
               {showRank && rank && rank > 0 && (
-                <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary dark:text-primary-light' : 'text-slate-300 dark:text-slate-600'}`}>
+                <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary dark:text-cyan-400' : 'text-slate-300 dark:text-slate-600'}`}>
                   ({rank}{MESSAGES.ANALYSIS_RANK_SUFFIX})
                 </span>
               )}
@@ -308,7 +308,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
             </div>
             {showRank && rank && rank > 0 && (
               <div className={`flex flex-col items-end -space-y-0.5 ${showRank ? 'min-w-[32px]' : ''}`}>
-                <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary dark:text-primary-light' : 'text-slate-300 dark:text-slate-600'}`}>
+                <span className={`text-[9px] font-bold tabular-nums ${rank <= 3 ? 'text-primary dark:text-cyan-400' : 'text-slate-300 dark:text-slate-600'}`}>
                   ({rank}{MESSAGES.ANALYSIS_RANK_SUFFIX})
                 </span>
               </div>

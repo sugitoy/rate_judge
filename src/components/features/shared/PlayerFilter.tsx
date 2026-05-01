@@ -26,7 +26,7 @@ export const PlayerFilter: React.FC<PlayerFilterProps> = ({
         <div className="flex gap-1">
           <button 
             onClick={onSelectAll} 
-            className="btn py-1 px-2 bg-primary-light dark:bg-primary-dark/30 text-primary dark:text-primary-light border border-primary/20 dark:border-primary-dark/40 text-[10px] uppercase font-bold hover:bg-primary dark:hover:bg-primary-dark hover:text-white transition-all"
+            className="btn py-1 px-2 bg-primary-light dark:bg-cyan-500/10 text-primary dark:text-cyan-400 border border-primary/20 dark:border-cyan-500/30 text-[10px] uppercase font-bold hover:bg-primary dark:hover:bg-cyan-500 hover:text-white transition-all"
           >
             {MESSAGES.ANALYSIS_SELECT_ALL}
           </button>
@@ -47,7 +47,7 @@ export const PlayerFilter: React.FC<PlayerFilterProps> = ({
             <label
               key={p.id}
               className={`flex items-center gap-3 px-3 py-2 cursor-pointer transition-colors text-sm border-b border-slate-50 dark:border-slate-800 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-800 ${
-                isSelected ? 'bg-primary-light/50 dark:bg-primary-dark/20 text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'
+                isSelected ? 'bg-primary-light/50 dark:bg-cyan-500/10 text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'
               }`}
             >
               <input
