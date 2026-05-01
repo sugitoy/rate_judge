@@ -320,15 +320,22 @@ export const ScoringTab = () => {
         const rowData = tableData.find(d => d.player.id === commentModalData.playerId);
         if (!rowData) return null;
         const navIndex = sortedPlayersForNav.findIndex(p => p.id === rowData.player.id);
+        const handleModalSwitch = (playerId: string, currentComment: string) => {
+          updateComment(activeT.id, rowData.player.id, currentComment);
+          setCommentModalData({ playerId });
+        };
 
         return (
           <DetailModal
             player={rowData.player}
+            players={activeT.players}
             activeT={activeT}
             scores={rowData.scores}
             selectedTiers={currentScores[rowData.player.id]?.selectedTiers}
             deduction={rowData.deduction}
             comment={rowData.comment}
+            rank={rowData.rank}
+            total={rowData.total}
             inputMode={displayMode}
             toggleInputMode={(mode) => setDisplayMode(mode)}
             onSaveScore={(cId, val) => updateScore(activeT.id, rowData.player.id, cId, val)}
@@ -338,6 +345,7 @@ export const ScoringTab = () => {
             onClose={() => setCommentModalData(null)}
             onPrevPlayer={handlePrevPlayer}
             onNextPlayer={handleNextPlayer}
+            onSelectPlayer={handleModalSwitch}
             hasPrev={navIndex > 0}
             hasNext={navIndex < sortedPlayersForNav.length - 1}
           />

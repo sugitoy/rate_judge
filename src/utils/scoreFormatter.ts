@@ -53,3 +53,10 @@ export const calculateAutoCorrect = (rawPct: number, maxScore: number, inputUnit
   // 有効桁数は inputUnit の精度に合わせるのが理想
   return Number(correctedScore.toFixed(10)) * 1 / 1;
 };
+
+/**
+ * 表示用にスコアをフォーマットする（小数点第1位まで。不要な0は表示しない）
+ */
+export const formatScore = (val: number): string => {
+  return Number(val.toFixed(1)).toString();
+};

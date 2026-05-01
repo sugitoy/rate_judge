@@ -12,6 +12,7 @@ interface ScoreCellProps {
   selectedTier?: string;
   rank?: number;
   showRank?: boolean;
+  variant?: 'compact' | 'detailed';
   onChange: (val: number) => void;
   onTierChange?: (tier: string | undefined) => void;
 }
@@ -24,6 +25,7 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
   selectedTier,
   rank,
   showRank,
+  variant = 'compact',
   onChange,
   onTierChange
 }) => {
@@ -88,6 +90,10 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
 
   const handleTierChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const tierId = e.target.value;
+    handleTierSelect(tierId || undefined);
+  };
+
+  const handleTierSelect = (tierId: string | undefined) => {
     if (!tierId) {
       onTierChange?.(undefined);
       return;
@@ -111,6 +117,75 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
 
   const hasError = isInvalidUnit || (mode === 'tier' && isTierMismatch);
 
+  // 詳細表示モード (Detailed)
+  if (variant === 'detailed') {
+    return (
+      <div className="flex flex-col gap-2 w-full">
+        {mode === 'tier' ? (
+          <div className="flex flex-nowrap gap-0.5 w-full">
+            {TIERS.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => handleTierSelect(t.id)}
+                className={`flex-1 h-8 rounded-md text-[10px] font-bold transition-all border-2 flex items-center justify-center min-w-0 ${selectedTier === t.id
+                  ? `${t.bgClass} ${t.textClass} border-primary shadow-sm scale-105 z-10`
+                  : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'
+                  }`}
+              >
+                {t.label}
+              </button>
+            ))}
+            <button
+              onClick={() => handleTierSelect(undefined)}
+              className={`flex-1 h-8 rounded-md text-[10px] font-bold transition-all border-2 flex items-center justify-center min-w-0 ${!selectedTier
+                ? 'bg-slate-100 text-slate-600 border-slate-300'
+                : 'bg-white text-slate-300 border-slate-100 hover:border-slate-200'
+                }`}
+            >
+              -
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 flex-1">
+              <input
+                type="text"
+                inputMode="decimal"
+                disabled={mode === 'percentage'}
+                className={`form-input py-1.5 px-3 text-right text-sm flex-1 font-bold tabular-nums transition-all ${mode === 'percentage' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (isInvalidUnit ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 text-primary focus:ring-primary/20')}`}
+                value={absStr}
+                onChange={handleAbsChange}
+                onFocus={(e) => e.target.select()}
+                placeholder="pt"
+              />
+              <span className="text-slate-400 text-xs font-bold w-4">pt</span>
+            </div>
+            <div className="flex items-center gap-2 flex-1">
+              <input
+                type="text"
+                inputMode="decimal"
+                disabled={mode === 'points'}
+                className={`form-input py-1.5 px-3 text-right text-sm flex-1 tabular-nums transition-all ${mode === 'points' ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60' : (isInvalidUnit ? 'border-danger text-danger bg-danger-bg' : 'border-slate-200 focus:ring-primary/20')}`}
+                value={pctStr}
+                onChange={handlePctChange}
+                onBlur={handlePctBlur}
+                onFocus={(e) => e.target.select()}
+                placeholder="%"
+              />
+              <span className="text-slate-400 text-xs font-bold w-4">%</span>
+            </div>
+          </div>
+        )}
+        {(isInvalidUnit || (mode === 'tier' && isTierMismatch)) && (
+          <span className="text-[10px] text-danger font-bold uppercase tracking-tight">
+            {isInvalidUnit ? MESSAGES.SCORING_ERR_UNIT : MESSAGES.SCORING_ERR_TIER_MISMATCH}
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  // コンパクト表示モード (Compact - Table用)
   return (
     <div className="flex flex-col gap-1 w-full justify-center items-center h-full group/cell relative transition-colors">
       {mode === 'percentage' && (
@@ -120,8 +195,8 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
               type="text"
               inputMode="decimal"
               className={`form-input py-0.5 px-2 text-right text-sm w-20 tabular-nums focus:ring-primary/20 block transition-all ${isInvalidUnit
-                  ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
-                  : 'border-slate-200 focus:border-primary'
+                ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
+                : 'border-slate-200 focus:border-primary'
                 }`}
               value={pctStr}
               onChange={handlePctChange}
@@ -148,8 +223,8 @@ export const ScoreCell: React.FC<ScoreCellProps> = ({
               type="text"
               inputMode="decimal"
               className={`form-input py-0.5 px-2 text-right text-sm w-20 font-bold tabular-nums transition-all focus:ring-primary/20 ${isInvalidUnit
-                  ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
-                  : 'border-slate-200 text-primary focus:border-primary'
+                ? 'border-danger text-danger bg-danger-bg focus:border-danger focus:ring-danger/20'
+                : 'border-slate-200 text-primary focus:border-primary'
                 }`}
               value={absStr}
               onChange={handleAbsChange}
