@@ -1,6 +1,6 @@
 // src/components/features/scoring/ScoringTab.tsx
 import React, { useState } from 'react';
-import { Download, Upload, Maximize2 } from 'lucide-react';
+import { Download, Upload, Maximize2, ChevronUp, ChevronDown } from 'lucide-react';
 import { MESSAGES } from '../../../constants/messages';
 import { useTournamentStore } from '../../../store/useTournamentStore';
 import { useScoringStore } from '../../../store/useScoringStore';
@@ -37,9 +37,26 @@ export const ScoringTab = () => {
     displayMode,
     setDisplayMode,
     sortKey,
+    sortOrder,
     setSortConfig,
     isEditing
   } = useUIStore();
+
+  const handleHeaderClick = (key: string) => {
+    if (sortKey === key) {
+      setSortConfig(key, sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      const defaultOrder = key === 'entryNo' ? 'asc' : 'desc';
+      setSortConfig(key, defaultOrder);
+    }
+  };
+
+  const renderSortIcon = (key: string) => {
+    if (sortKey !== key) return null;
+    return sortOrder === 'asc' 
+      ? <ChevronUp size={14} className="inline-block ml-1 text-primary" /> 
+      : <ChevronDown size={14} className="inline-block ml-1 text-primary" />;
+  };
 
   const [frozenOrder, setFrozenOrder] = useState<string[]>([]);
 
@@ -132,33 +149,72 @@ export const ScoringTab = () => {
         <div className="card-table scroll-x-auto shadow-md border-slate-200">
           <table className="min-w-full border-collapse" style={{ minWidth: hasDeduction ? '1200px' : '1000px' }}>
             <thead className="bg-slate-50">
-              <tr className="border-b-2 border-slate-200">
-                <th className="px-3 py-2 w-12 text-center font-bold text-slate-400 sticky left-0 z-20 bg-slate-50 border-r border-slate-200">{MESSAGES.CONFIG_PLAYER_TH_NO}</th>
+              <tr className="border-b-2 border-slate-200 select-none">
+                <th 
+                  className="px-3 py-2 w-12 text-center font-bold text-slate-400 sticky left-0 z-20 bg-slate-50 border-r border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors"
+                  onClick={() => handleHeaderClick('entryNo')}
+                >
+                  <div className="flex items-center justify-center">
+                    {MESSAGES.CONFIG_PLAYER_TH_NO}
+                    {renderSortIcon('entryNo')}
+                  </div>
+                </th>
                 <th className="px-3 py-2 text-left font-bold text-slate-700 sticky left-12 z-20 bg-slate-50 shadow-[1px_0_0_#e2e8f0] whitespace-nowrap min-w-[200px] border-r border-slate-200">{MESSAGES.SCORING_TH_PLAYER}</th>
 
                 {activeT.criteria.map(c => (
-                  <th key={c.id} className="px-2 py-2 text-center border-r border-slate-100 min-w-[130px]">
-                    <div className="font-bold text-slate-800 leading-tight">{c.name}</div>
-                    <div className="text-[11px] text-slate-400 font-normal mt-0.5 border-t border-slate-100 pt-0.5">MAX {c.maxScore}pt</div>
+                  <th 
+                    key={c.id} 
+                    className="px-2 py-2 text-center border-r border-slate-100 min-w-[130px] cursor-pointer hover:bg-slate-100 transition-colors"
+                    onClick={() => handleHeaderClick(c.id)}
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="flex items-center font-bold text-slate-800 leading-tight">
+                        {c.name}
+                        {renderSortIcon(c.id)}
+                      </div>
+                      <div className="text-[11px] text-slate-400 font-normal mt-0.5 border-t border-slate-100 pt-0.5 w-full">MAX {c.maxScore}pt</div>
+                    </div>
                   </th>
                 ))}
 
                 {/* 小計列（有効時のみ） */}
                 {hasDeduction && (
-                  <th className="px-3 py-2 text-center border-l border-slate-200 bg-slate-50 text-slate-500 font-bold">
-                    {MESSAGES.SCORING_TABLE_HEAD_SUBTOTAL}
+                  <th 
+                    className="px-3 py-2 text-center border-l border-slate-200 bg-slate-50 text-slate-500 font-bold cursor-pointer hover:bg-slate-100 transition-colors"
+                    onClick={() => handleHeaderClick('subtotal')}
+                  >
+                    <div className="flex items-center justify-center">
+                      {MESSAGES.SCORING_TABLE_HEAD_SUBTOTAL}
+                      {renderSortIcon('subtotal')}
+                    </div>
                   </th>
                 )}
 
                 {/* 減点列（有効時のみ） */}
                 {hasDeduction && (
-                  <th className="px-1 py-2 text-center border-l border-r border-danger/20 bg-danger-bg/20 w-20">
-                    <div className="font-bold text-danger leading-tight text-xs">{MESSAGES.SCORING_TABLE_HEAD_DEDUCTION}</div>
-                    <div className="text-[10px] text-danger/50 font-normal mt-0.5 border-t border-danger/10 pt-0.5">pt</div>
+                  <th 
+                    className="px-1 py-2 text-center border-l border-r border-danger/20 bg-danger-bg/20 w-20 cursor-pointer hover:bg-danger-bg/30 transition-colors"
+                    onClick={() => handleHeaderClick('deduction')}
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="flex items-center font-bold text-danger leading-tight text-xs">
+                        {MESSAGES.SCORING_TABLE_HEAD_DEDUCTION}
+                        {renderSortIcon('deduction')}
+                      </div>
+                      <div className="text-[10px] text-danger/50 font-normal mt-0.5 border-t border-danger/10 pt-0.5 w-full">pt</div>
+                    </div>
                   </th>
                 )}
 
-                <th className="px-3 py-2 text-center border-l-2 border-slate-200 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_TOTAL}</th>
+                <th 
+                  className="px-3 py-2 text-center border-l-2 border-slate-200 bg-primary-light/50 text-primary font-bold cursor-pointer hover:bg-primary-light/70 transition-colors"
+                  onClick={() => handleHeaderClick('total')}
+                >
+                  <div className="flex items-center justify-center">
+                    {MESSAGES.SCORING_TABLE_HEAD_TOTAL}
+                    {renderSortIcon('total')}
+                  </div>
+                </th>
                 {showRank && (
                   <th className="px-3 py-2 text-center border-l border-primary/20 bg-primary-light/50 text-primary font-bold">{MESSAGES.SCORING_TABLE_HEAD_RANK}</th>
                 )}
@@ -285,6 +341,10 @@ export const ScoringTab = () => {
                   { value: 'entryNo', label: MESSAGES.PLAYER_SORT_KEY_ENTRY },
                   { value: 'total', label: MESSAGES.PLAYER_SORT_KEY_TOTAL },
                   ...activeT.criteria.map(c => ({ value: c.id, label: c.name })),
+                  ...(hasDeduction ? [
+                    { value: 'subtotal', label: MESSAGES.SCORING_TABLE_HEAD_SUBTOTAL },
+                    { value: 'deduction', label: MESSAGES.SCORING_TABLE_HEAD_DEDUCTION }
+                  ] : []),
                 ]}
               />
             </div>

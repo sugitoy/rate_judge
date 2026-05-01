@@ -106,6 +106,12 @@ export const useScoringData = (
       } else if (sortKey === 'total') {
         valA = a.total;
         valB = b.total;
+      } else if (sortKey === 'subtotal') {
+        valA = a.subtotal;
+        valB = b.subtotal;
+      } else if (sortKey === 'deduction') {
+        valA = a.deduction;
+        valB = b.deduction;
       } else {
         // 審査項目IDによるソート
         valA = a.scores[sortKey] || 0;

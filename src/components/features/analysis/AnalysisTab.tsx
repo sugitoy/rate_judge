@@ -122,6 +122,10 @@ export const AnalysisTab = () => {
                   { value: 'entryNo', label: MESSAGES.PLAYER_SORT_KEY_ENTRY },
                   { value: 'total', label: MESSAGES.PLAYER_SORT_KEY_TOTAL },
                   ...activeT.criteria.map(c => ({ value: c.id, label: c.name })),
+                  ...(activeT.hasDeduction ? [
+                    { value: 'subtotal', label: MESSAGES.SCORING_TABLE_HEAD_SUBTOTAL },
+                    { value: 'deduction', label: MESSAGES.SCORING_TABLE_HEAD_DEDUCTION }
+                  ] : []),
                 ]}
               />
             </div>
